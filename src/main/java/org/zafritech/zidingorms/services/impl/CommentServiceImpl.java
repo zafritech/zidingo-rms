@@ -8,10 +8,11 @@ package org.zafritech.zidingorms.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.daos.CommentDao;
-import org.zafritech.zidingorms.daos.converters.DaoToCommentConverter;
 import org.zafritech.zidingorms.domain.ItemComment;
 import org.zafritech.zidingorms.repositories.ItemCommentRepository;
+import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.services.CommentService;
+import org.zafritech.zidingorms.services.GeneralService;
 
 /**
  *
@@ -21,13 +22,21 @@ import org.zafritech.zidingorms.services.CommentService;
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
-    ItemCommentRepository commentRepository;
+    private GeneralService generalService;
+    
+    @Autowired
+    private ItemCommentRepository commentRepository;
+    
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Override
     public ItemComment saveCommentDao(CommentDao commentDao) {
 
-        DaoToCommentConverter converter = new DaoToCommentConverter();
-
-        return commentRepository.save(converter.convert(commentDao));
+        ItemComment comment = new ItemComment(itemRepository.findOne(commentDao.getItemId()), 
+                                              commentDao.getComment(), 
+                                              generalService.loggedInUser());
+        
+        return commentRepository.save(comment);
     }
 }

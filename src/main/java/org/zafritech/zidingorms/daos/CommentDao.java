@@ -8,7 +8,6 @@ package org.zafritech.zidingorms.daos;
 import java.util.Date;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import org.zafritech.zidingorms.domain.User;
 
 /**
  *
@@ -24,14 +23,15 @@ public class CommentDao {
 
     private String comment;
 
-    private User author;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
     @Override
     public String toString() {
-        return "CommentDao{" + "id=" + id + ", uuId=" + uuId + ", itemId=" + itemId + ", comment=" + comment + ", author=" + author + ", creationDate=" + creationDate + '}';
+        
+        return "CommentDao{" + "id=" + id + ", uuId=" + uuId + ", itemId=" + itemId + 
+               ", item=" + ", comment=" + comment + ", author=" + 
+               ", creationDate=" + creationDate + '}';
     }
 
     public Long getId() {
@@ -64,14 +64,6 @@ public class CommentDao {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 
     public Date getCreationDate() {

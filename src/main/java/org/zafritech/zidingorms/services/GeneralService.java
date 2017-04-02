@@ -6,15 +6,14 @@
 package org.zafritech.zidingorms.services;
 
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.daos.CommentDao;
-import org.zafritech.zidingorms.domain.ItemComment;
+import org.zafritech.zidingorms.domain.User;
 
 /**
  *
  * @author LukeS
  */
 @Service
-public interface CommentService {
-
-    ItemComment saveCommentDao(CommentDao commentDao);
+public interface GeneralService {
+    
+    User loggedInUser();
 }

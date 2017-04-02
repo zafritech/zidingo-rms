@@ -33,10 +33,10 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/api/comments/new", method = RequestMethod.POST)
-    public ResponseEntity<ItemComment> newComment(@RequestBody CommentDao commentDao) {
+    public ResponseEntity<Long> newComment(@RequestBody CommentDao commentDao) {
 
         ItemComment comment = commentService.saveCommentDao(commentDao);
 
-        return new ResponseEntity<ItemComment>(comment, HttpStatus.OK);
+        return new ResponseEntity<Long>(comment.getId(), HttpStatus.OK);
     }
 }

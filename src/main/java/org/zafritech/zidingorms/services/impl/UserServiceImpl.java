@@ -29,8 +29,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
 
-//    @Autowired
-//    private UserToDaoConverter userToDao;
     @Autowired
     private DaoToUserConverter daoToUser;
 
@@ -116,6 +114,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.delete(id);
     }
 
+    @Override
     public boolean passwordAndConfirmationMatch(UserDao userDao) {
 
         if (userDao.getPassword().equals(userDao.getConfirmPassword())) {
@@ -125,6 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return false;
     }
 
+    @Override
     public boolean userExists(String email) {
 
         if (userRepository.findByEmail(email) != null) {
