@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.zafritech.zidingorms.daos.CommentDao;
+import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemComment;
 import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.ItemCommentRepository;
@@ -41,12 +42,15 @@ public class DaoToCommentConverter implements Converter<CommentDao, ItemComment>
     @Override
     public ItemComment convert(CommentDao commentDao) {
 
-        System.out.println("============================================================\n\r" + commentDao.toString());
+        // DEBUG CODE
+        System.out.println("============================================================\n\r");
+        System.out.println(commentDao.toString());
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String name = userDetails.getUsername();
 
+        // DEBUG CODE
         System.out.println("\n\rUser name: " + name + "\n\r");
 
         User user = userRepository.findByEmail(name);
@@ -63,8 +67,8 @@ public class DaoToCommentConverter implements Converter<CommentDao, ItemComment>
 
         } else {
 
-            ItemComment comment = new ItemComment(itemRepository.findOne(commentDao.getItemId()),
-                    commentDao.getComment());
+            Item item = itemRepository.findOne(commentDao.getItemId());
+            ItemComment comment = new ItemComment(item, commentDao.getComment());
 
             return comment;
         }
