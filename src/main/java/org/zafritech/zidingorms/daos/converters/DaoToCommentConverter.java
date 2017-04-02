@@ -28,44 +28,44 @@ public class DaoToCommentConverter implements Converter<CommentDao, ItemComment>
 
     @Autowired
     ItemCommentRepository commentRepository;
-    
+
     @Autowired
     private ItemRepository itemRepository;
-    
-//    @Autowired
-//    private UserService userService;
-//    
-//    @Autowired
-//    private UserRepository userRepository;
-    
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public ItemComment convert(CommentDao commentDao) {
-  
+
         System.out.println("============================================================\n\r" + commentDao.toString());
-        
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        UserDetails userDetails = (UserDetails)auth.getPrincipal();
-//        String name = userDetails.getUsername();
-//        
-//        System.out.println("\n\rUser name: " + name + "\n\r");
-//        
-//        User user = userRepository.findByEmail(name);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        String name = userDetails.getUsername();
+
+        System.out.println("\n\rUser name: " + name + "\n\r");
+
+        User user = userRepository.findByEmail(name);
 
         if (commentDao.getId() != null) {
-            
+
             ItemComment comment = commentRepository.findOne(commentDao.getId());
-            
+
             comment.setItem(itemRepository.findOne(commentDao.getItemId()));
             comment.setComment(commentDao.getComment());
-//            comment.setAuthor(user); 
-            
+            comment.setAuthor(user);
+
             return comment;
-            
+
         } else {
-            
-            ItemComment comment = new ItemComment(itemRepository.findOne(commentDao.getItemId()), 
-                                                  commentDao.getComment());
-            
+
+            ItemComment comment = new ItemComment(itemRepository.findOne(commentDao.getItemId()),
+                    commentDao.getComment());
+
             return comment;
         }
     }

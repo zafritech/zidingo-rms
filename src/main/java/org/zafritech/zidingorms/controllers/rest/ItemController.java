@@ -81,9 +81,9 @@ public class ItemController {
     }
 
     @RequestMapping(value = "/api/items/nextidentifier", method = RequestMethod.GET)
-    
+
     public ResponseEntity<String> getNextRequirementID(@RequestParam(value = "id", required = true) Long id,
-                                                       @RequestParam(value = "template", required = true) String template) {
+            @RequestParam(value = "template", required = true) String template) {
 
         String reqIdentifier = itemService.getNextRequirementIdentifier(id, template);
 

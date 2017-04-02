@@ -13,6 +13,6 @@ import org.zafritech.zidingorms.domain.ArtifactType;
  * @author LukeS
  */
 public interface ArtifactTypeRepository extends CrudRepository<ArtifactType, Long> {
-    
-	ArtifactType findByArtifactTypeName(String name);
+
+    ArtifactType findByArtifactTypeName(String name);
 }

@@ -25,110 +25,112 @@ import org.zafritech.zidingorms.repositories.UserRepository;
  * @author LukeS
  */
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService{
-    
+public class UserServiceImpl implements UserService, UserDetailsService {
+
     private UserRepository userRepository;
-    
+
 //    @Autowired
 //    private UserToDaoConverter userToDao;
-    
     @Autowired
     private DaoToUserConverter daoToUser;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
-        
+
         this.userRepository = userRepository;
     }
 
     @Override
     public List<User> findAll() {
-        
+
         List<User> users = new ArrayList<>();
-        
+
         userRepository.findAll().forEach(users::add);
-        
+
         return users;
     }
-    
+
     @Override
     public User findByUserName(String name) {
-        
+
         return userRepository.findByEmail(name);
     }
-    
+
     @Override
     public User findByEmail(String email) {
-        
+
         return userRepository.findByEmail(email);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        
+
         User user = userRepository.findByEmail(username);
-        
-        if (user == null){
-            
+
+        if (user == null) {
+
             throw new UsernameNotFoundException(username);
         }
-        
+
         return new UserDetailsImpl(user);
     }
 
     @Override
     public User findById(Long id) {
-        
+
         return userRepository.findOne(id);
     }
-    
+
     @Override
     public User getByUuId(String uuid) {
-        
+
         return userRepository.getByUuId(uuid);
     }
-    
+
     @Override
     public User saveUser(User user) {
-        
-        if (userExists(user.getEmail())) { return null; }
+
+        if (userExists(user.getEmail())) {
+            return null;
+        }
 
         User newUser = new User(user.getEmail(), user.getPassword(), (HashSet<Role>) user.getUserRoles());
-        
+
         return userRepository.save(newUser);
     }
 
     @Override
     public User saveDao(UserDao userDao) {
-        
+
         if (userDao != null) {
-                        
+
             return userRepository.save(daoToUser.convert(userDao));
         }
-        
+
         return null;
     }
-    
+
     @Override
     public void deleteUser(Long id) {
-        
-        userRepository.delete(id); 
+
+        userRepository.delete(id);
     }
-    
+
     public boolean passwordAndConfirmationMatch(UserDao userDao) {
-    	
-    	if (userDao.getPassword().equals(userDao.getConfirmPassword())) 
-        {
+
+        if (userDao.getPassword().equals(userDao.getConfirmPassword())) {
             return true;
         }
-    	
-    	return false;
+
+        return false;
     }
-        
+
     public boolean userExists(String email) {
-        
-        if (userRepository.findByEmail(email) != null) { return true; }
-        
+
+        if (userRepository.findByEmail(email) != null) {
+            return true;
+        }
+
         return false;
     }
 }

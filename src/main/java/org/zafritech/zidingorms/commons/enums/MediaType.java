@@ -10,6 +10,6 @@ package org.zafritech.zidingorms.commons.enums;
  * @author LukeS
  */
 public enum MediaType {
-    
+
     TEXT, IMAGE, URL, TABLE, EQUATION
 }

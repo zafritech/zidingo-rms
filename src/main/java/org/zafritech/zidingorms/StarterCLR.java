@@ -174,7 +174,6 @@ public class StarterCLR implements CommandLineRunner {
 //        projectService.create("Project Rooivalk AH III", "Project Rooivalk AH III", company2);
 //        projectService.create("Project Phoenix", "Project Phoenix", company1);
 //        projectService.create("Lukuluba Upgrade 2020", "Lukuluba Upgrade 2020", company2);
-
         // Seed Project #1
         Folder folder1 = folderRepository.save(new Folder(project1.getProjectShortName(), FolderTypes.PROJECT, project1));
         Folder input1 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder1, project1));
@@ -189,7 +188,6 @@ public class StarterCLR implements CommandLineRunner {
 //        folderRepository.save(new Folder("Electrical System", FolderTypes.DOCUMENT, detal1, project1));
 //        folderRepository.save(new Folder("Communication System", FolderTypes.DOCUMENT, detal1, project1));
 //        folderRepository.save(new Folder("Subsystem #1", FolderTypes.DOCUMENT, detal1, project1));
-
         Folder gencon1 = folderRepository.save(new Folder("General Conditions", FolderTypes.DOCUMENT, contract1, project1));
         Folder appenx1 = folderRepository.save(new Folder("Appendices", FolderTypes.DOCUMENT, contract1, project1));
 
@@ -244,14 +242,12 @@ public class StarterCLR implements CommandLineRunner {
 
 //        artifactRepository.save(new Artifact("Z822-SYS-RQL-1201", "Requirements Lists", artifactTypeRepository.findByArtifactTypeName("RLS"), project1, internal1));
 //        artifactRepository.save(new Artifact("ZFTC-GEN-STD-0002", "Design Standard", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, internal1));
-
 //        artifactRepository.save(new Artifact("Z822-SYS-SSS-2201", "System Specification", artifactTypeRepository.findByArtifactTypeName("SyRS"), project1, specn1));
 //        artifactRepository.save(new Artifact("Z822-SYS-VRS-2202", "Validation Test Spec", artifactTypeRepository.findByArtifactTypeName("VRS"), project1, specn1));
 //
 //        artifactRepository.save(new Artifact("Z822-SYS-SDD-2301", "Architectural Description", artifactTypeRepository.findByArtifactTypeName("SyDD"), project1, desig1));
 //        artifactRepository.save(new Artifact("Z822-SYS-SDD-2302", "Design Description", artifactTypeRepository.findByArtifactTypeName("SyDD"), project1, desig1));
 //        artifactRepository.save(new Artifact("Z822-SYS-ICD-2303", "System Main ICD", artifactTypeRepository.findByArtifactTypeName("ICD"), project1, desig1));
-
         // Seed Project #2 #########################
         Folder folder2 = folderRepository.save(new Folder(project2.getProjectShortName(), FolderTypes.PROJECT, project2));
         Folder input2 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder2, project2));
@@ -338,20 +334,20 @@ public class StarterCLR implements CommandLineRunner {
 
         itemTypeRepository.findAll().forEach(System.out::println);
     }
-    
+
     @Transactional
     private void SeedSystemVariable() {
 
         Iterable<Artifact> artifacts = artifactRepository.findAll();
-                
+
         for (Artifact artifact : artifacts) {
-            
-            String uuidTemplate = artifact.getArtifactName().substring(0, 3).toUpperCase() + "-ID" + String.format("%02d", artifact.getId()); 
-            String reqIdTemplate = artifact.getArtifactName().substring(0, 2).toUpperCase() + String.format("%02d", artifact.getId()); 
-            
+
+            String uuidTemplate = artifact.getArtifactName().substring(0, 3).toUpperCase() + "-ID" + String.format("%02d", artifact.getId());
+            String reqIdTemplate = artifact.getArtifactName().substring(0, 2).toUpperCase() + String.format("%02d", artifact.getId());
+
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", artifact.getId()));
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", artifact.getId()));
-            
+
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_TEMPLATE.name(), uuidTemplate, "DOCUMENT", artifact.getId()));
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-GENL", "DOCUMENT", artifact.getId()));
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-FCNL", "DOCUMENT", artifact.getId()));
@@ -360,7 +356,7 @@ public class StarterCLR implements CommandLineRunner {
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-QLTY", "DOCUMENT", artifact.getId()));
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-SAFT", "DOCUMENT", artifact.getId()));
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-STAT", "DOCUMENT", artifact.getId()));
-        
+
         }
     }
 }

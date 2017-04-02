@@ -16,33 +16,32 @@ import javax.persistence.TemporalType;
 @Entity(name = "TBL_FOLDERS")
 public class Folder implements Serializable {
 
-	private static final long serialVersionUID = -7335525087566303043L;
+    private static final long serialVersionUID = -7335525087566303043L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long Id;
-    
+
     private String uuId;
-    
+
     @Column(nullable = false)
     private String folderName;
-    
+
     private String folderType;
-    
+
     @ManyToOne
-    @JoinColumn(name="parentId")
+    @JoinColumn(name = "parentId")
     private Folder parent;
-    
+
     @ManyToOne
-    @JoinColumn(name="projectId")
+    @JoinColumn(name = "projectId")
     private Project project;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
-    
 
     @Override
     public String toString() {
@@ -57,7 +56,7 @@ public class Folder implements Serializable {
     }
 
     public Folder(String folderName, String folderType, Project project) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.folderName = folderName;
         this.folderType = folderType;
@@ -66,9 +65,9 @@ public class Folder implements Serializable {
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     public Folder(String folderName, String folderType, Folder parent, Project project) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.folderName = folderName;
         this.folderType = folderType;
@@ -142,14 +141,14 @@ public class Folder implements Serializable {
     }
 
     public Project getProject() {
-		return project;
-	}
+        return project;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-	public Date getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
@@ -164,6 +163,5 @@ public class Folder implements Serializable {
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
-    
-    
+
 }

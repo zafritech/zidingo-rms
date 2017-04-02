@@ -14,13 +14,13 @@ import org.zafritech.zidingorms.domain.User;
  * @author LukeS
  */
 public interface UserRepository extends CrudRepository<User, Long> {
-    
+
     User findByEmail(String email);
-    
+
     User findByUserName(String username);
-    
+
     @Override
     Set<User> findAll();
-    
+
     User getByUuId(String uuid);
 }

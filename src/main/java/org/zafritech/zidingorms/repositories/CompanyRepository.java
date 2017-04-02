@@ -13,6 +13,6 @@ import org.zafritech.zidingorms.domain.Company;
  * @author LukeS
  */
 public interface CompanyRepository extends CrudRepository<Company, Long> {
-    
+
     Company findByCompanyName(String name);
 }

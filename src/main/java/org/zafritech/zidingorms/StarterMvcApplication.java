@@ -9,6 +9,6 @@ public class StarterMvcApplication {
     public static void main(String[] args) {
 
         SpringApplication.run(StarterMvcApplication.class, args);
-        
+
     }
 }

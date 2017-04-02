@@ -67,8 +67,8 @@ public class AdminUserController {
 
     @RequestMapping(value = "/admin/users", method = RequestMethod.POST)
     public String saveUser(@ModelAttribute("user") @Valid UserDao userDao,
-                           BindingResult bindingResult,
-                           Model model) throws Exception {
+            BindingResult bindingResult,
+            Model model) throws Exception {
 
         if (!userService.passwordAndConfirmationMatch(userDao)) {
 

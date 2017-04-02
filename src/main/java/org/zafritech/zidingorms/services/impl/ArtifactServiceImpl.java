@@ -44,7 +44,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Autowired
     private ItemTypeRepository itemTypeRepository;
-    
+
     @Autowired
     private DaoToItemConverter daoToItem;
 
@@ -61,36 +61,36 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public void initializeArtifact(Long id, String variableType) {
-        
+
         switch (variableType) {
-        
+
             case "ITEM_UUID_TEMPLATE":
-                
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_TEMPLATE.name(), "ZID-REF", "DOCUMENT", id));
-            break;
-            
+
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_TEMPLATE.name(), "ZID-REF", "DOCUMENT", id));
+                break;
+
             case "REQUIREMENT_ID_TEMPLATE":
-                
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-COM", "DOCUMENT", id));
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-GEN", "DOCUMENT", id));
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-REL", "DOCUMENT", id));
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-STA", "DOCUMENT", id));
-            break;
-            
+
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-COM", "DOCUMENT", id));
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-GEN", "DOCUMENT", id));
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-REL", "DOCUMENT", id));
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), "SYS-STA", "DOCUMENT", id));
+                break;
+
             case "ITEM_UUID_NUMERIC_DIGITS":
-                
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", id));
-            break;
-            
+
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", id));
+                break;
+
             case "REQUIREMENT_ID_NUMERIC_DIGITS":
-                
-            sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", id));
-            break;
-            
+
+                sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name(), "4", "DOCUMENT", id));
+                break;
+
         }
-        
+
     }
-    
+
     @Override
     public Artifact importExcel(Long artifactId, String filePath) {
 
@@ -140,9 +140,9 @@ public class ArtifactServiceImpl implements ArtifactService {
                 itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : ItemClass.PROSE.name());
 
                 // Set the Requirement type
-                itemDao.setItemType((itemClass.equalsIgnoreCase("DEF")) ? itemTypeRepository.findByItemTypeName("Unclassified") 
-                                                                        : itemTypeRepository.findByItemTypeName("Prose"));
-                
+                itemDao.setItemType((itemClass.equalsIgnoreCase("DEF")) ? itemTypeRepository.findByItemTypeName("Unclassified")
+                        : itemTypeRepository.findByItemTypeName("Prose"));
+
                 // Item level in hierachy
                 int level = (int) (double) getCellValue(row.getCell(14));
                 itemDao.setItemLevel(level);

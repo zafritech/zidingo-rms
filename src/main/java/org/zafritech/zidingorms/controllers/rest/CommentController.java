@@ -23,18 +23,18 @@ import org.zafritech.zidingorms.services.impl.CommentServiceImpl;
  */
 @RestController
 public class CommentController {
-    
+
     private CommentService commentService;
-    
+
     @Autowired
     public void setCommentService(CommentServiceImpl commentService) {
 
         this.commentService = commentService;
     }
-    
+
     @RequestMapping(value = "/api/comments/new", method = RequestMethod.POST)
     public ResponseEntity<ItemComment> newComment(@RequestBody CommentDao commentDao) {
-        
+
         ItemComment comment = commentService.saveCommentDao(commentDao);
 
         return new ResponseEntity<ItemComment>(comment, HttpStatus.OK);

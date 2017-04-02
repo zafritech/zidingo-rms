@@ -21,22 +21,22 @@ public class DaoToUserConverter implements Converter<UserDao, User> {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Override
     public User convert(UserDao userDao) {
-        
+
         if (userDao.getId() != null) {
-            
+
             User user = userRepository.findOne(userDao.getId());
-            user.setEmail(userDao.getEmail()); 
-            user.setPassword(userDao.getPassword()); 
-            
+            user.setEmail(userDao.getEmail());
+            user.setPassword(userDao.getPassword());
+
             return user;
-            
+
         } else {
-            
+
             User user = new User(userDao.getEmail(), userDao.getPassword());
-            
+
             return user;
         }
     }

@@ -13,55 +13,55 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity(name = "TBL_CONTACTS")
-public class Contact implements Serializable{
+public class Contact implements Serializable {
 
-	private static final long serialVersionUID = 4669091304090562573L;
+    private static final long serialVersionUID = 4669091304090562573L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long id;
-    
+
     private String uuId;
-    
+
     private String firstName;
-    
+
     private String lastName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String physicalAddress;
-    
+
     @Column(columnDefinition = "TEXT")
     private String postalAddress;
-    
+
     private String city;
-    
+
     private String region;
-    
+
     private String postCode;
-    
+
     private String country;
-    
+
     private String telephoneNumber;
-    
+
     private String faxNumber;
-    
+
     private String mobileNumber;
-    
+
     private String emailAddress;
-    
+
     private String websiteAddress;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
-        
+
     public Contact() {
     }
-        
+
     public Contact(String telephone) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.telephoneNumber = telephone;
         this.creationDate = new Timestamp(System.currentTimeMillis());
@@ -299,5 +299,4 @@ public class Contact implements Serializable{
         this.modifiedDate = modifiedDate;
     }
 
-    
 }

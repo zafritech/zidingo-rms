@@ -16,47 +16,47 @@ import javax.persistence.TemporalType;
 @Entity(name = "TBL_ARTIFACTS")
 public class Artifact implements Serializable {
 
-	private static final long serialVersionUID = -3931394851232097879L;
+    private static final long serialVersionUID = -3931394851232097879L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long id;
-    
+
     private String uuId;
-    
+
     private String identifier;
-    
+
     private String artifactName;
-    
+
     private String artifactLongName;
-        
+
     @Column(columnDefinition = "TEXT")
     private String artifactDescription;
-    
+
     @ManyToOne
     private ArtifactType artifactType;
-    
+
     @ManyToOne
     private Project artifactProject;
-    
+
     @ManyToOne
     private Folder artifactFolder;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
 
     public Artifact() {
     }
 
-    public Artifact(String identifier, 
-                    String artifactName, 
-                    ArtifactType artifactType, 
-                    Project artifactProject, 
-                    Folder artifactFolder) {
-        
+    public Artifact(String identifier,
+            String artifactName,
+            ArtifactType artifactType,
+            Project artifactProject,
+            Folder artifactFolder) {
+
         this.uuId = UUID.randomUUID().toString();
         this.identifier = identifier;
         this.artifactName = artifactName;
@@ -67,14 +67,13 @@ public class Artifact implements Serializable {
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
 
+    public Artifact(String identifier,
+            String artifactName,
+            String artifactLongName,
+            ArtifactType artifactType,
+            Project artifactProject,
+            Folder artifactFolder) {
 
-    public Artifact(String identifier, 
-                    String artifactName, 
-                    String artifactLongName,
-                    ArtifactType artifactType, 
-                    Project artifactProject, 
-                    Folder artifactFolder) {
-        
         this.uuId = UUID.randomUUID().toString();
         this.identifier = identifier;
         this.artifactName = artifactName;
@@ -85,7 +84,7 @@ public class Artifact implements Serializable {
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     @Override
     public String toString() {
         return "Artifact {"
@@ -157,7 +156,7 @@ public class Artifact implements Serializable {
         this.artifactLongName = artifactLongName;
     }
 
-	/**
+    /**
      * @return the artifactDescription
      */
     public String getArtifactDescription() {

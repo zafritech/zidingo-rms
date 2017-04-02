@@ -5,15 +5,15 @@ $(document).ready(function () {
 
     var list = '';
     var url = '/api/projects';
-    
+
     $.ajax({
         url: url,
         type: "GET",
         dataType: "json",
         success: function (data) {
-            
+
             $.each(data, function (key, index) {
-                
+
                 list = list
                         + '<li>'
                         + '<a href="#" onclick="return loadProjectTree(' + index.id + ');">'
@@ -24,13 +24,13 @@ $(document).ready(function () {
             });
 
             $("#projectsList").append(list);
-            
+
             if (localStorage.getItem('currentProjectId')) {
-                
+
                 projectId = localStorage.getItem('currentProjectId');
                 loadProjectTree(projectId);
             }
-            
+
         },
         error: function () {
             $("#projectsList").append('<br/>No projects to list.');
@@ -41,9 +41,9 @@ $(document).ready(function () {
 
 //Retrieve project specification tree
 function loadProjectTree(id) {
-    
+
     localStorage.setItem('currentProjectId', id);
-    
+
     var url = '/api/folders/' + id;
     var zTreeObj;
     var setting = {
@@ -56,66 +56,67 @@ function loadProjectTree(id) {
             }
         },
         view: {
-		dblClickExpand: true
-	},
+            dblClickExpand: true
+        },
         callback: {
-            
+
             onClick: zTreeOnClick
         }
     };
-    
+
     $.ajax({
         url: url,
         type: "GET",
         dataType: "json",
         success: function (data) {
-            
+
             if (!$.trim(data)) {
-                
+
                 $.fn.zTree.destroy("projectTree");
                 $('#projectTree').empty();
                 $("#projectTree").append('<li style="width: 200px; margin: 10px; color:red;">No documents or folders found</li>');
-                
+
             } else {
-                
+
                 $("#projectsList").collapse('hide');
                 $("#more-less").removeClass('fa-minus-square').addClass('fa-plus-square');
-                
+
                 zTreeObj = $.fn.zTree.init($("#projectTree"), setting, data);
-                
+
                 if (localStorage.getItem('currentFolderId')) {
-                
+
                     var treeObj = $.fn.zTree.getZTreeObj("projectTree");
                     var currFolderId = localStorage.getItem('currentFolderId');
-                    
+
                     currNode = treeObj.getNodeByParam("id", currFolderId, null);
                     treeObj.expandNode(currNode, true, false, true);
                 }
             }
         },
         error: function () {
-            
+
             $('#projectTree').empty();
             $("#projectTree").append('<br/>Error!');
         }
     });
-};
+}
+;
 
 
 function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 
     var treeObj = $.fn.zTree.getZTreeObj("projectTree");
-    
+
     if (treeNode.isParent) {
-        
+
         if (treeNode.pId === 0) {
-            
+
             window.location.replace('/projects/' + treeNode.id);
         }
-        
+
         localStorage.setItem('currentFolderId', treeNode.id);
         treeObj.expandNode(treeNode, true, false, true);
-        
+
     } else {
 
         if (treeNode.linkId !== null) {
@@ -127,14 +128,14 @@ function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 
 
 $(document).ready(function () {
-    
+
     $("#projectsList").on("hide.bs.collapse", function () {
-        
+
         $("#more-less").toggleClass('fa-minus-square fa-plus-square');
     });
-    
+
     $("#projectModules").on("show.bs.collapse", function () {
-        
+
         $("#more-less-modules").toggleClass('fa-plus-square fa-minus-square');
     });
 });
@@ -142,9 +143,9 @@ $(document).ready(function () {
 
 // Manage user roles script
 (function () {
-    
+
     $('#btnRoleToRight').click(function (e) {
-        
+
         var selectedOpts = $('#availableRolesList option:selected');
         if (selectedOpts.length === 0) {
             alert("Nothing to move.");
@@ -209,7 +210,7 @@ $(document).ready(function () {
                 removeOptions(document.getElementById('editItemLevel'));
                 removeOptions(document.getElementById('editItemType'));
                 removeOptions(document.getElementById('editIdentTemplate'));
-                
+
                 getItemClasses(data.itemClass, 'edit');
                 getItemLevels(data.itemLevel, 'edit');
                 getItemTypes(data.itemType.itemTypeName, 'edit');
@@ -225,23 +226,23 @@ $(document).ready(function () {
                 $(e.currentTarget).find('input[name="editSortIndex"]').val(data.sortIndex);
 
                 if (isEmpty(data.identifier)) {
-                    
+
                     document.getElementById('editItemType').disabled = true;
                     document.getElementById('editIdentifier').disabled = true;
-                    
+
                 } else {
-                    
+
                     document.getElementById('editItemType').disabled = false;
                     document.getElementById('editIdentifier').disabled = false;
                 }
 
                 if (data.itemClass !== "REQUIREMENT") {
-                    
+
                     $('#editRequirementRow').hide();
                     $('#editIdentField').hide();
-                    
+
                 } else {
-                    
+
                     $('#editRequirementRow').show();
                     $('#editIdentField').show();
                 }
@@ -262,7 +263,7 @@ $(document).ready(function () {
 
 
     $('#createItemModal').on('show.bs.modal', function (e) {
-        
+
         var artifictId = document.getElementById('artifactId').value;
         var refItemId = $(e.relatedTarget).data('ref-item-id');
         var refAboveIdx = $(e.relatedTarget).data('ref-item-idx');
@@ -281,10 +282,10 @@ $(document).ready(function () {
         getItemTypes('Functional', 'create');
         getIdentifierTemplates(artifictId, 'create');
         getMediaTypes('TEXT', 'create');
-        
+
         $(e.currentTarget).find('input[name="artifactId"]').val(artifictId);
         $(e.currentTarget).find('input[name="createId"]').val(refItemId);
-            
+
         if (refPosition === 'ABOVE') {
 
             $(e.currentTarget).find('input[name="createSortIndex"]').val(refAboveIdx);
@@ -299,7 +300,7 @@ $(document).ready(function () {
         document.getElementById('createIdentTemplate').disabled = true;
         document.getElementById('createItemType').disabled = true;
         document.getElementById('createIdentifier').disabled = true;
-        
+
         $('#createRequirementRow').hide();
         $('#createIdentifierContainer').hide();
     });
@@ -315,7 +316,7 @@ $(document).ready(function () {
             dataType: "text",
             timeout: 60000,
             success: function (responseText) {
-                
+
                 console.log(responseText);
 
                 var data = {};
@@ -329,7 +330,7 @@ $(document).ready(function () {
                 data['mediaType'] = document.getElementById('createMediaType').value;
                 data['itemValue'] = document.getElementById('createItemValue').value;
                 data['sortIndex'] = document.getElementById('createSortIndex').value;
-                
+
                 $.ajax({
                     type: "POST",
                     contentType: "application/json",
@@ -340,13 +341,13 @@ $(document).ready(function () {
                     success: function (data) {
 
                         console.log(data);
-                        
+
                         var refElementId = '';
                         var newItemElement = '';
-                        
+
                         var refItemId = document.getElementById('createId').value;
                         var refSortIdx = document.getElementById('createSortIndex').value;
-                            
+
                         if (!isEmpty(document.getElementById('createInsertBefore').value)) {
 
                             refElementId = document.getElementById('createInsertBefore').value;
@@ -355,67 +356,67 @@ $(document).ready(function () {
 
                             refElementId = document.getElementById('createInsertAfter').value;
                         } else {
-                            
+
                             location.reload();
                             return true;
                         }
-                        
+
                         var regex1 = new RegExp(refItemId, "g");
                         var regex2 = new RegExp(refElementId, "g");
                         var regex3 = new RegExp(refSortIdx, "g");
-                        
+
                         var menuElement = $(document.getElementById('menu-container-' + refElementId)).clone().html();
                         console.log(menuElement);
-                        
+
                         menuElement = menuElement.replace(regex1, data.id);
                         menuElement = menuElement.replace(regex2, data.sysId);
                         var menuElementHTML = menuElement.replace(regex3, data.sortIndex);
                         console.log(menuElementHTML);
-                        
-                        if (data['itemClass'] === "REQUIREMENT") {
-                            
-                            newItemElement  =    '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel +'">' +
-                                                 '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
-                                                 '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                                 '</div>' +
-                                                 '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
-                                                 '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
-                                                 '</div>' +
-                                                 '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                                 menuElementHTML +
-                                                 '</div>';
-                            
-                            
-                            
-                        } else {
-                            
-                            var itemClass = (data.itemClass === "HEADER") ? 'item-header-' + data.itemLevel : 'item-level-' + data.itemLevel;
-                                
-                            newItemElement  =    '<div id="' + data.sysId + '" class="row ' + itemClass +'">' +
-                                                 '<div id="value-container-' + data.sysId + '" class="col-xs-11">' +
-                                                 '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                                 '</div>' +
-                                                 '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                                 menuElementHTML +
-                                                 '</div>';
-                        }
-                        
-                         if (!isEmpty(document.getElementById('createInsertBefore').value)) {
 
-                            $(newItemElement).insertBefore('#'+refElementId);
+                        if (data['itemClass'] === "REQUIREMENT") {
+
+                            newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
+                                    '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
+                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                    '</div>' +
+                                    '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
+                                    '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
+                                    '</div>' +
+                                    '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                    menuElementHTML +
+                                    '</div>';
+
+
+
+                        } else {
+
+                            var itemClass = (data.itemClass === "HEADER") ? 'item-header-' + data.itemLevel : 'item-level-' + data.itemLevel;
+
+                            newItemElement = '<div id="' + data.sysId + '" class="row ' + itemClass + '">' +
+                                    '<div id="value-container-' + data.sysId + '" class="col-xs-11">' +
+                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                    '</div>' +
+                                    '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                    menuElementHTML +
+                                    '</div>';
+                        }
+
+                        if (!isEmpty(document.getElementById('createInsertBefore').value)) {
+
+                            $(newItemElement).insertBefore('#' + refElementId);
 
                         } else if (!isEmpty(document.getElementById('createInsertAfter').value)) {
 
-                            $(newItemElement).insertAfter('#'+refElementId);
+                            $(newItemElement).insertAfter('#' + refElementId);
                         }
-                        
+
                         $(data.sysId).show();
-                        
+
                         $('#createItemModal').modal('hide');
                         showToastr('success', 'Item successfully created!');
                     },
                     error: function (e) {
-                        
+
                         console.log(e);
 
                         $('#createItemModal').modal('hide');
@@ -444,7 +445,7 @@ $(document).ready(function () {
         data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('editIdentifier').value : '';
         data['itemLevel'] = document.getElementById('editItemLevel').value;
         data['itemValue'] = document.getElementById('editItemValue').value;
-        
+
         $.ajax({
             type: "POST",
             contentType: "application/json",
@@ -459,43 +460,43 @@ $(document).ready(function () {
                     document.getElementById(data.sysId).className = 'row item-header-' + data.itemLevel;
 
                 } else if (data.itemClass === "REQUIREMENT") {
-                    
+
                     var reqElementId = document.getElementById('ident-' + data.sysId);
-                    
+
                     // Not a requirement yet (converted from prose)
                     if (!document.getElementById(reqElementId)) {
-                        
-                        var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel +'">' +
-                                             '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
-                                             '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                             '</div>' +
-                                             '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
-                                             '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
-                                             '</div>' +
-                                             '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                             document.getElementById('menu-container-' + data.sysId).innerHTML +
-                                             '</div>' +
-                                             '</div>';
-                        
+
+                        var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
+                                '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
+                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                '</div>' +
+                                '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
+                                '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
+                                '</div>' +
+                                '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                document.getElementById('menu-container-' + data.sysId).innerHTML +
+                                '</div>' +
+                                '</div>';
+
                         var currentItemElement = document.getElementById(data.sysId);
-                        
+
                         $(currentItemElement).replaceWith(newItemElement);
                     }
 
-                // Is PROSE or other itemClass
+                    // Is PROSE or other itemClass
                 } else {
 
                     var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + ' ' + data.itemClass + '">' +
-                                         '<div id="value-container-' + data.sysId + '" class="col-xs-11 ' + data.itemClass.toLowerCase() + '">' +
-                                         '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                         '</div>' +
-                                         '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                         document.getElementById('menu-container-' + data.sysId).innerHTML +
-                                         '</div>' + 
-                                         '</div>';
-                     
+                            '<div id="value-container-' + data.sysId + '" class="col-xs-11 ' + data.itemClass.toLowerCase() + '">' +
+                            '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                            '</div>' +
+                            '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                            document.getElementById('menu-container-' + data.sysId).innerHTML +
+                            '</div>' +
+                            '</div>';
+
                     var currentItemElement = document.getElementById(data.sysId);
-                        
+
                     $(currentItemElement).replaceWith(newItemElement);
                 }
 
@@ -510,9 +511,9 @@ $(document).ready(function () {
         });
     });
 
-    
+
     $('#manageIdentFormatsModal').on('show.bs.modal', function () {
-        
+
         var id = document.getElementById('artifactId').value;
 
         $.ajax({
@@ -520,42 +521,42 @@ $(document).ready(function () {
             type: "GET",
             dataType: "json",
             success: function (data) {
-                
+
                 console.log(data);
-                
+
                 var container = document.getElementById('format-container');
-                var formats =   '';
+                var formats = '';
 
                 $.each(data, function (key, index) {
-                    
+
                     formats = formats + '<div class="row">' +
-                                        '<div class="col-sm-10">' +
-                                        '<span>' + index.variableValue + '</span>' +
-                                        '<input type="hidden" name="formats[]" value="' + index.variableValue + '" />' +
-                                        '</div>' +
-                                        '<div class="col-sm-2">' +
-                                        '<button type="button" class="close pull-right">' +
-                                        '<span style="color:red;" aria-hidden="true">×</span>' +
-                                        '<span class="sr-only">Close</span>' +
-                                        '</button>' +
-                                        '</div>' +
-                                        '</div>';
+                            '<div class="col-sm-10">' +
+                            '<span>' + index.variableValue + '</span>' +
+                            '<input type="hidden" name="formats[]" value="' + index.variableValue + '" />' +
+                            '</div>' +
+                            '<div class="col-sm-2">' +
+                            '<button type="button" class="close pull-right">' +
+                            '<span style="color:red;" aria-hidden="true">×</span>' +
+                            '<span class="sr-only">Close</span>' +
+                            '</button>' +
+                            '</div>' +
+                            '</div>';
                 });
-                
+
                 container.innerHTML = formats;
             },
-            error:function() {
-                
+            error: function () {
+
             }
         });
-    
+
     });
 
-    
+
     function getItemTypes(selectedOption, action) {
 
         var url = '/api/items/itemtypes';
-        
+
         $.ajax({
             url: url,
             type: "GET",
@@ -569,7 +570,7 @@ $(document).ready(function () {
                     opt.innerHTML = index.itemTypeLongName;
                     select.appendChild(opt);
                 });
-                
+
                 select.value = selectedOption;
             }
         });
@@ -586,16 +587,16 @@ $(document).ready(function () {
 
                 // Populate options
                 var select = document.getElementById(action + 'ItemClass');
-                
+
                 $.each(data, function (key, index) {
-                    
+
                     var opt = document.createElement('option');
-                    
+
                     opt.value = index;
                     opt.innerHTML = index;
                     select.appendChild(opt);
                 });
-                
+
                 select.value = selectedValue;
             }
         });
@@ -603,9 +604,9 @@ $(document).ready(function () {
 
 
     function getIdentifierTemplates(id, action) {
-        
+
         var url = '/api/items/identifiers/' + id;
-        
+
         $.ajax({
             url: url,
             type: "GET",
@@ -615,18 +616,18 @@ $(document).ready(function () {
                 // Populate options
                 var select = document.getElementById(action + 'IdentTemplate');
                 var input = document.getElementById(action + 'Identifier');
-                
+
                 $.each(data, function (key, index) {
-                    
+
                     var opt = document.createElement('option');
-                    
+
                     opt.value = index.variableValue;
                     opt.innerHTML = index.variableValue;
                     select.appendChild(opt);
                 });
-                
+
                 if (!isEmpty(input.value)) {
-                    
+
                     select.value = input.value.substr(0, input.value.lastIndexOf("-"));
                 }
             }
@@ -635,9 +636,9 @@ $(document).ready(function () {
 
 
     function getMediaTypes(selectedOption, action) {
-        
+
         var url = '/api/items/mediatypes';
-        
+
         $.ajax({
             url: url,
             type: "GET",
@@ -648,9 +649,9 @@ $(document).ready(function () {
                 var select = document.getElementById(action + 'MediaType');
 
                 $.each(data, function (key, index) {
-                    
+
                     var opt = document.createElement('option');
-                    
+
                     opt.value = index;
                     opt.innerHTML = index;
                     select.appendChild(opt);
@@ -756,11 +757,11 @@ function itemCreateIdentTemplateChange() {
 
 
 function itemEditIdentTemplateChange() {
-   
+
     var str = document.getElementById('editIdentifier').value;
-    
+
     if (isEmpty(str)) {
-        
+
         $.ajax({
             type: "GET",
             url: "/api/items/nextidentifier",
@@ -772,12 +773,12 @@ function itemEditIdentTemplateChange() {
                 document.getElementById('editIdentifier').value = responseText;
             }
         });
-        
+
     } else {
-        
+
         var identTemplate = document.getElementById('editIdentTemplate').value;
-        var editIdentifierNumericValue = str.substr(str.lastIndexOf("-")+1);
-        
+        var editIdentifierNumericValue = str.substr(str.lastIndexOf("-") + 1);
+
         document.getElementById('editIdentifier').value = identTemplate + '-' + editIdentifierNumericValue;
     }
 }
@@ -866,71 +867,71 @@ function isEmpty(str) {
 function BootboxItemComments(id) {
 
     $.ajax({
-        
+
         type: "GET",
         contentType: "application/json",
         url: "/api/item/" + id,
         dataType: "json",
         cache: false
     })
-    .done (function (data) {
-        
-        var msg =   '<div class="row">' +
-                    '<div class="col-sm-12" style="padding: 15px;">' +
-                    '<span style="font-weight: bold;">' + data.itemValue + '</span>' +
-                    '</div>' +
-                    '<div class="col-sm-12">' +
-                    '<form action="/api/itemcomments/save" method="post">' +
-                    '<div class="row" style="margin-top: 10px;">' +
-                    '<div class="col-sm-12">' +
-                    '<div class="form-group">' +
-                    '<input type="hidden" name="itemId" id="itemId" value="' + data.id + '" />' +
-                    '<label for="commentValue">New comment:</label>' +
-                    '<textarea class="form-control" rows="5" cols="50" id="commentValue" name="commentValue"></textarea>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</form>' +
-                    '</div>' +
-                    '</div>';
-                
-        bootbox.confirm({
+            .done(function (data) {
 
-            message: msg,
-            title: data.sysId + " Comments",
-            buttons: {
-                cancel: {
-                    label: 'Close',
-                    className: 'btn-danger'
-                },
-                confirm: {
-                    label: "Save!",
-                    className: "btn-success"                            }
-            },
-            callback: function (comment) {
+                var msg = '<div class="row">' +
+                        '<div class="col-sm-12" style="padding: 15px;">' +
+                        '<span style="font-weight: bold;">' + data.itemValue + '</span>' +
+                        '</div>' +
+                        '<div class="col-sm-12">' +
+                        '<form action="/api/itemcomments/save" method="post">' +
+                        '<div class="row" style="margin-top: 10px;">' +
+                        '<div class="col-sm-12">' +
+                        '<div class="form-group">' +
+                        '<input type="hidden" name="itemId" id="itemId" value="' + data.id + '" />' +
+                        '<label for="commentValue">New comment:</label>' +
+                        '<textarea class="form-control" rows="5" cols="50" id="commentValue" name="commentValue"></textarea>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</form>' +
+                        '</div>' +
+                        '</div>';
 
-                if (comment){
+                bootbox.confirm({
 
-                        var data = {};
-                        data['itemId'] = $("#itemId").val();
-                        data['comment'] = $("#commentValue").val();
+                    message: msg,
+                    title: data.sysId + " Comments",
+                    buttons: {
+                        cancel: {
+                            label: 'Close',
+                            className: 'btn-danger'
+                        },
+                        confirm: {
+                            label: "Save!",
+                            className: "btn-success"}
+                    },
+                    callback: function (comment) {
 
-                        $.ajax({
-                        type: "POST",
-                        contentType: "application/json",
-                        url: "/api/comments/new",
-                        data: JSON.stringify(data),
-                        dataType: "json",
-                        timeout: 60000,
-                        success: function (data) {
-                            
-                            console.log(data);
+                        if (comment) {
+
+                            var data = {};
+                            data['itemId'] = $("#itemId").val();
+                            data['comment'] = $("#commentValue").val();
+
+                            $.ajax({
+                                type: "POST",
+                                contentType: "application/json",
+                                url: "/api/comments/new",
+                                data: JSON.stringify(data),
+                                dataType: "json",
+                                timeout: 60000,
+                                success: function (data) {
+
+                                    console.log(data);
+                                }
+                            });
                         }
-                    });
-                }
-            }
-        });
-    });
+                    }
+                });
+            });
 }
 
 function showToastr(msgType, message) {
@@ -956,34 +957,34 @@ function showToastr(msgType, message) {
     toastr[msgType](message);
 }
 
-$(function(){
-   
-    $('.spinner .btn:first-of-type').on('click', function(){
-        
+$(function () {
+
+    $('.spinner .btn:first-of-type').on('click', function () {
+
         var btn = $(this);
         var input = btn.closest('.spinner').find('input');
-        
-        if (input.attr('max') === undefined || parseInt(input.val()) < input.attr('max')){
-            
+
+        if (input.attr('max') === undefined || parseInt(input.val()) < input.attr('max')) {
+
             input.val(parseInt(input.val(), 10) + 1);
-            
+
         } else {
-            
+
             btn.next("disabled", true);
         }
     });
-   
-    $('.spinner .btn:last-of-type').on('click', function(){
-        
+
+    $('.spinner .btn:last-of-type').on('click', function () {
+
         var btn = $(this);
         var input = btn.closest('.spinner').find('input');
-        
-        if (input.attr('min') === undefined || parseInt(input.val()) > input.attr('min')){
-            
+
+        if (input.attr('min') === undefined || parseInt(input.val()) > input.attr('min')) {
+
             input.val(parseInt(input.val(), 10) - 1);
-            
+
         } else {
-            
+
             btn.prev("disabled", true);
         }
     });

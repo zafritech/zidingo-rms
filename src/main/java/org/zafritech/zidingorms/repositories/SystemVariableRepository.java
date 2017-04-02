@@ -7,7 +7,7 @@ import org.zafritech.zidingorms.domain.SystemVariable;
 
 public interface SystemVariableRepository extends CrudRepository<SystemVariable, Long> {
 
-	List<SystemVariable> findByOwnerIdAndOwnerTypeAndVariableName(Long id, String ownerType, String name); 
-        
-	List<SystemVariable> findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(Long id, String ownerType, String name); 
+    List<SystemVariable> findByOwnerIdAndOwnerTypeAndVariableName(Long id, String ownerType, String name);
+
+    List<SystemVariable> findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(Long id, String ownerType, String name);
 }

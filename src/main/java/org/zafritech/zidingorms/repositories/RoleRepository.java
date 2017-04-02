@@ -14,6 +14,6 @@ import org.zafritech.zidingorms.domain.Role;
  */
 public interface RoleRepository extends CrudRepository<Role, Long> {
 
-	Role findByRoleName(String string);  
-    
+    Role findByRoleName(String string);
+
 }

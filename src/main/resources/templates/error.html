@@ -8,49 +8,49 @@
         <title>Standard Error Handler</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
-    
+
     <body>
         <div layout:fragment="content">
-		
+
             <div class="row">
                 <div class="col-md-4 col-md-offset-4 text-center">
-                    
+
                     <h1 style="color:red;">Oops!</h1>
-                    
+
                     <h1 th:text="${status} + ': ' + ${error}" style="color:red;">Oops!</h1>
                     <br/>
                     <br/>
                     <p style="color: #369;"><strong>Sorry, an error has occured, Requested page not found!</strong></p>
-            
-                    <div style="margin-top: 50px;">
-                        
-                        
 
-                    <div class="form-group" style="margin-left: -15px;">
-                        <div class="col-sm-6">
-                            <a href="/" class="btn btn-md btn-success pull-right">
-                                <i class="fa fa-fw fa-home fa-lg"></i> Take Me Home
-                            </a>
+                    <div style="margin-top: 50px;">
+
+
+
+                        <div class="form-group" style="margin-left: -15px;">
+                            <div class="col-sm-6">
+                                <a href="/" class="btn btn-md btn-success pull-right">
+                                    <i class="fa fa-fw fa-home fa-lg"></i> Take Me Home
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="/contacts/admin" class="btn btn-md btn-primary pull-left">
+                                    <i class="fa fa-fw fa-envelope"></i> Contact Admin
+                                </a>
+                            </div>
                         </div>
-                        <div class="col-sm-6">
-                            <a href="/contacts/admin" class="btn btn-md btn-primary pull-left">
-                                <i class="fa fa-fw fa-envelope"></i> Contact Admin
-                            </a>
-                        </div>
-                    </div>
-                        
+
                     </div>
                 </div>
-                
+
             </div>
-                
+
         </div>
     </body>
-    
+
     <th:block layout:fragment="scripts">
 
         <!-- No java script specific files for this page! -->
-        
+
     </th:block>
-    
+
 </html>

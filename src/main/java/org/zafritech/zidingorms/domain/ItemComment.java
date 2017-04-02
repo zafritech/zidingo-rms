@@ -38,11 +38,11 @@ public class ItemComment implements Serializable {
     private Date creationDate;
 
     public ItemComment() {
-    
+
     }
 
     public ItemComment(Item item, String comment) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.item = item;
         this.comment = comment;
@@ -50,14 +50,14 @@ public class ItemComment implements Serializable {
     }
 
     public ItemComment(Item item, String comment, User author) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.item = item;
         this.comment = comment;
         this.author = author;
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     public String getUuId() {
         return uuId;
     }

@@ -13,6 +13,6 @@ import org.zafritech.zidingorms.domain.ItemComment;
  * @author LukeS
  */
 public interface CommentService {
-    
+
     ItemComment saveCommentDao(CommentDao commentDao);
 }

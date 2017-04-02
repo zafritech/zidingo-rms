@@ -2,74 +2,74 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorator="/layouts/main">
-    
+
     <head>
         <meta charset="UTF-8" />
         <title>User Profile - Administration</title>
     </head>
     <body>
         <div layout:fragment="content">
-            
+
             <div class="row" style="margin: 0px 4px;">
-            	<div class="col-lg-10">
-	                <h1 class="page-header" style="border: none;">
-	                    User Profile: <small th:text="${profile.email}">All Users</small>
-	                </h1>
-            	</div>
-	            <div class="col-lg-2 pull-right">
-	            	<div class="btn-group pull-right" style="padding-top: 10px;">
-	                   <li class="btn btn-primary btn-sm"><i class="fa fa-wrench fa-fw"></i> Actions</li>
-	                   <li class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown">
-	                       <span class="fa fa-caret-down" title="User actions menu"></span>
-	                   </li>
-	                   <ul class="dropdown-menu" role="menu">
-	                       <li>
-	                           <a href="#updateDetailsModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-list-alt fa-fw text-primary"></span> Update Details
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#changePasswordModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-key fa-fw text-primary"></span> Change Password
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#manageRolesModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-tasks fa-fw text-primary"></span> Manage Roles
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#manageClaimsModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-legal fa-fw text-primary"></span> Manage Claims
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-check-square fa-fw text-success"></span> Enable User
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-ban fa-fw text-danger"></span> Disable User
-	                           </a>
-	                       </li>
-	                       <li>
-	                           <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
-	                               <span class="fa fa-trash fa-fw text-danger"></span> Delete User
-	                           </a>
-	                       </li>
-	                   </ul>
-	               </div>
-	            </div>
-	            
+                <div class="col-lg-10">
+                    <h1 class="page-header" style="border: none;">
+                        User Profile: <small th:text="${profile.email}">All Users</small>
+                    </h1>
+                </div>
+                <div class="col-lg-2 pull-right">
+                    <div class="btn-group pull-right" style="padding-top: 10px;">
+                        <li class="btn btn-primary btn-sm"><i class="fa fa-wrench fa-fw"></i> Actions</li>
+                        <li class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown">
+                            <span class="fa fa-caret-down" title="User actions menu"></span>
+                        </li>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="#updateDetailsModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-list-alt fa-fw text-primary"></span> Update Details
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#changePasswordModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-key fa-fw text-primary"></span> Change Password
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#manageRolesModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-tasks fa-fw text-primary"></span> Manage Roles
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#manageClaimsModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-legal fa-fw text-primary"></span> Manage Claims
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-check-square fa-fw text-success"></span> Enable User
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-ban fa-fw text-danger"></span> Disable User
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#squarespaceModal" role="button" data-toggle="modal" style="padding-left:3px;">
+                                    <span class="fa fa-trash fa-fw text-danger"></span> Delete User
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
-            
+
             <div id="content" class="row" style="margin: 40px 4px;">
-                
+
                 <div class="col-md-4">
-                    
+
                     <img src="/images/profile.png" class="img-rounded img-responsive" />
-                    
+
 
                 </div>
                 <div class="col-md-8">
@@ -79,10 +79,10 @@
                         <h4>Bootstrap user profile template </h4>
                         <p>
                             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-                             3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. 
+                            3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. 
                         </p>
                     </div>
-                    
+
                     <div >
                         <a href="#" class="btn btn-social btn-facebook">
                             <i class="fa fa-facebook"></i>&nbsp; Facebook
@@ -97,239 +97,239 @@
                             <i class="fa fa-linkedin"></i>&nbsp; Linkedin 
                         </a>
                     </div>
-                    
+
                 </div>
-                
+
             </div>
-            
+
             <div id="content" class="row" style="margin: 40px 4px;">
-                
+
                 <div class="col-md-4">
-                        
+
                     <h3 style="margin-bottom: 20px;">Personal Details</h3>
-                    
+
                     <table>
-                    	<tr>
-                    		<td width="40%"><strong>Email:</strong></td>
-                    		<td th:text="${profile.email}">Email></td>
-                    	</tr>
+                        <tr>
+                            <td width="40%"><strong>Email:</strong></td>
+                            <td th:text="${profile.email}">Email></td>
+                        </tr>
                     </table>
-                    
+
                 </div>
-                
+
                 <div class="col-md-4">
-                    
+
                     <h3 style="margin-bottom: 20px;">User Roles</h3>
-                    
+
                     <table>
-                    	<tr th:each="role : ${profile.userRoles}">
-                    		<td th:text="${role.roleName}">Role</td>
-                    	</tr>
+                        <tr th:each="role : ${profile.userRoles}">
+                            <td th:text="${role.roleName}">Role</td>
+                        </tr>
                     </table>
-                    
+
                 </div>
-                
+
                 <div class="col-md-4">
-                    
+
                     <h3 style="margin-bottom: 20px;">User Claims</h3>
 
                 </div>
-                
+
             </div>
-            
+
             <!-- Update User Details modal -->
-			<div class="modal fade" id="updateDetailsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-						<h3 class="modal-title" id="lineModalLabel">Update User Details</h3>
-					</div>
-					<div class="modal-body">
-						
-			            <!-- content goes here -->
-						<form>
-						
-			              <div class="form-group">
-			                <label for="firstName">First Name</label>
-			                <input type="text" class="form-control" id="firstName" placeholder="Enter first name" />
-			              </div>
-			              
-			              <div class="form-group">
-			                <label for="lastName">Last Name</label>
-			                <input type="text" class="form-control" id="lastName" placeholder="Enter last name" />
-			              </div>
-			              
-			            </form>
-			
-					</div>
-					<div class="modal-footer">
-						<div class="btn-group btn-group-justified" role="group" aria-label="group button">
-							<div class="btn-group" role="group">
-								<button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-							</div>
-							<div class="btn-group btn-delete hidden" role="group">
-								<button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Update</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			  </div>
-			</div>
-			
-			<!-- Update User Password modal ############################################ -->
-			<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-						<h3 class="modal-title" id="lineModalLabel">Change User Password</h3>
-					</div>
-					<div class="modal-body">
-						
-			            <!-- content goes here -->
-						<form>
-						
-			              <div class="form-group">
-			                <label for="password">Password</label>
-			                <input type="password" class="form-control" id="password" placeholder="Enter password" />
-			              </div>
-			              
-			              <div class="form-group">
-			                <label for="confirmPassword">Confirm Password</label>
-			                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" />
-			              </div>
-			              
-			            </form>
-			
-					</div>
-					<div class="modal-footer">
-						<div class="btn-group btn-group-justified" role="group" aria-label="group button">
-							<div class="btn-group" role="group">
-								<button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-							</div>
-							<div class="btn-group btn-delete hidden" role="group">
-								<button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Change</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			  </div>
-			</div>
-			
-			<!-- Manage User Roles modal ############################################ -->
-			<div class="modal fade" id="manageRolesModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-						<h3 class="modal-title" id="lineModalLabel">Manage User Roles</h3>
-					</div>
-					<div class="modal-body">
-						
-			            <!-- content goes here -->
-						<form>
-						
-							<div class="row">
-								<div class="col-md-5 choices-multiselect-list-1">
-									<h4>Available Roles</h4>
-									  <select multiple="multiple" id='availableRolesList' class="form-control">
-										    <option 
-										    	th:each="role : ${rolesList}" 
-										    	th:value="${role.roleName}" 
-										    	th:text="${#strings.replace(role.roleName, 'ROLE_', '')}">Role
-									    	</option>
-									  </select>
-								</div>
-								
-								<div class="col-md-2 text-sm choices-info-arrows text-center" style="padding-top:70px;">
-									  <input type="button" id="btnRolesAllToRight" value="&gt;&gt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
-									  <input type="button" id="btnRoleToRight" value="&gt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
-									  <input type="button" id="btnRoleToLeft" value="&lt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
-									  <input type="button" id="btnRolesAllToLeft" value="&lt;&lt;" class="btn btn-sm btn-default" style="margin: 2px 0;" />
-								</div>
-								
-								<div class="col-md-5 choices-multiselect-list-2">
-									<h4>User Roles</h4>
-								  <select multiple="multiple" id='userRolesList' class="form-control">
-								    <option 
-								    	th:each="role : ${profile.userRoles}" 
-								    	th:value="${role.roleName}" 
-								    	th:text="${#strings.replace(role.roleName, 'ROLE_', '')}">Role
-							    	</option>
-								  </select>
-								</div>
-							</div>
-			              
-			            </form>
-			
-					</div>
-					<div class="modal-footer">
-						<div class="btn-group btn-group-justified" role="group" aria-label="group button">
-							<div class="btn-group" role="group">
-								<button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-							</div>
-							<div class="btn-group btn-delete hidden" role="group">
-								<button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Update Roles</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			  </div>
-			</div>
-			
-			<!-- Manage User Claims modal ############################################ -->
-			<div class="modal fade" id="manageClaimsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-						<h3 class="modal-title" id="lineModalLabel">Manage User Claims</h3>
-					</div>
-					<div class="modal-body">
-						
-			            <!-- content goes here -->
-						<form>
-						
-			              <div class="form-group">
-			                <label for="password">Password</label>
-			                <input type="password" class="form-control" id="password" placeholder="Enter password" />
-			              </div>
-			              
-			              <div class="form-group">
-			                <label for="confirmPassword">Confirm Password</label>
-			                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" />
-			              </div>
-			              
-			            </form>
-			
-					</div>
-					<div class="modal-footer">
-						<div class="btn-group btn-group-justified" role="group" aria-label="group button">
-							<div class="btn-group" role="group">
-								<button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-							</div>
-							<div class="btn-group btn-delete hidden" role="group">
-								<button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Change</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			  </div>
-			</div>
-            
+            <div class="modal fade" id="updateDetailsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h3 class="modal-title" id="lineModalLabel">Update User Details</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- content goes here -->
+                            <form>
+
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" placeholder="Enter first name" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Enter last name" />
+                                </div>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
+                                </div>
+                                <div class="btn-group btn-delete hidden" role="group">
+                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update User Password modal ############################################ -->
+            <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h3 class="modal-title" id="lineModalLabel">Change User Password</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- content goes here -->
+                            <form>
+
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter password" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" />
+                                </div>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
+                                </div>
+                                <div class="btn-group btn-delete hidden" role="group">
+                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage User Roles modal ############################################ -->
+            <div class="modal fade" id="manageRolesModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h3 class="modal-title" id="lineModalLabel">Manage User Roles</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- content goes here -->
+                            <form>
+
+                                <div class="row">
+                                    <div class="col-md-5 choices-multiselect-list-1">
+                                        <h4>Available Roles</h4>
+                                        <select multiple="multiple" id='availableRolesList' class="form-control">
+                                            <option 
+                                                th:each="role : ${rolesList}" 
+                                                th:value="${role.roleName}" 
+                                                th:text="${#strings.replace(role.roleName, 'ROLE_', '')}">Role
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2 text-sm choices-info-arrows text-center" style="padding-top:70px;">
+                                        <input type="button" id="btnRolesAllToRight" value="&gt;&gt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
+                                        <input type="button" id="btnRoleToRight" value="&gt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
+                                        <input type="button" id="btnRoleToLeft" value="&lt;" class="btn btn-sm btn-default" style="margin: 2px 0;" /><br />
+                                        <input type="button" id="btnRolesAllToLeft" value="&lt;&lt;" class="btn btn-sm btn-default" style="margin: 2px 0;" />
+                                    </div>
+
+                                    <div class="col-md-5 choices-multiselect-list-2">
+                                        <h4>User Roles</h4>
+                                        <select multiple="multiple" id='userRolesList' class="form-control">
+                                            <option 
+                                                th:each="role : ${profile.userRoles}" 
+                                                th:value="${role.roleName}" 
+                                                th:text="${#strings.replace(role.roleName, 'ROLE_', '')}">Role
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
+                                </div>
+                                <div class="btn-group btn-delete hidden" role="group">
+                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Update Roles</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage User Claims modal ############################################ -->
+            <div class="modal fade" id="manageClaimsModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h3 class="modal-title" id="lineModalLabel">Manage User Claims</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <!-- content goes here -->
+                            <form>
+
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter password" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password" />
+                                </div>
+
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
+                                </div>
+                                <div class="btn-group btn-delete hidden" role="group">
+                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="saveImage" class="btn btn-success btn-hover-green" data-action="save" role="button">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </body>
 </html>

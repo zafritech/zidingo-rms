@@ -15,27 +15,28 @@ import javax.persistence.TemporalType;
 @Entity(name = "TBL_COMPANIES")
 public class Company implements Serializable {
 
-	private static final long serialVersionUID = -2569109922025524359L;
+    private static final long serialVersionUID = -2569109922025524359L;
 
-	@Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long Id;
-    
+
     private String uuId;
-    
+
     private String companyName;
-    
+
     private String companyShortName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String companyRoleDescription;
-    
+
     private byte[] companyLogo;
-    
+
     private Contact contact;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
 
@@ -43,7 +44,7 @@ public class Company implements Serializable {
     }
 
     public Company(String name, String shortName) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.companyName = name;
         this.companyShortName = shortName;
@@ -52,26 +53,26 @@ public class Company implements Serializable {
     }
 
     public Company(String name, String shortName, Contact contact) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.companyName = name;
         this.companyShortName = shortName;
         this.contact = contact;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
-        
+
     }
 
     @Override
     public String toString() {
-        
+
         return "Project {"
                 + "ID: " + getId()
                 + ", Project Name = '" + getCompanyName() + '\''
                 + ", Project Type = '" + getCompanyShortName() + '\''
                 + '}';
     }
-    
+
     /**
      * @return the Id
      */

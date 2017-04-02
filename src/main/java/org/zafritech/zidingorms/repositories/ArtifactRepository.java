@@ -17,8 +17,8 @@ import org.zafritech.zidingorms.domain.Project;
  * @author LukeS
  */
 public interface ArtifactRepository extends CrudRepository<Artifact, Long> {
-    
-	List<Artifact> findByArtifactFolder(Folder folder);
 
-	List<Artifact> findByArtifactProject(Project project);
+    List<Artifact> findByArtifactFolder(Folder folder);
+
+    List<Artifact> findByArtifactProject(Project project);
 }

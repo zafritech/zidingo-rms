@@ -30,7 +30,7 @@ public class DaoToItemConverter implements Converter<ItemDao, Item> {
         if (itemDao.getId() != null) {
 
             ItemType itemType = itemTypeRepository.findByItemTypeName(itemDao.getItemType().getItemTypeName());
-            
+
             Item item = itemRepository.findOne(itemDao.getId());
 
             item.setSysId(itemDao.getSysId());
@@ -40,25 +40,25 @@ public class DaoToItemConverter implements Converter<ItemDao, Item> {
             item.setItemClass(itemDao.getItemClass());
             item.setItemLevel(itemDao.getItemLevel());
             item.setArtifact(artifactRepository.findOne(itemDao.getArtifactId()));
-            item.setModifiedDate(new Timestamp(System.currentTimeMillis())); 
+            item.setModifiedDate(new Timestamp(System.currentTimeMillis()));
 
             return item;
 
         } else {
 
             ItemType itemType = new ItemType();
-            
+
             if (itemDao.getItemType() != null) {
-                
+
                 itemType = itemTypeRepository.findByItemTypeName(itemDao.getItemType().getItemTypeName());
-                
+
             } else {
-                
+
                 itemType = null;
             }
-            
-            Item item = new Item(itemDao.getSysId(),    // To be fixed
-                    itemDao.getIdentifier(),            // To be fixed
+
+            Item item = new Item(itemDao.getSysId(), // To be fixed
+                    itemDao.getIdentifier(), // To be fixed
                     itemDao.getItemValue(),
                     itemType,
                     MediaType.TEXT,

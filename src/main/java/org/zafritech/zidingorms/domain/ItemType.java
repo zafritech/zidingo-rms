@@ -14,47 +14,48 @@ import javax.persistence.TemporalType;
 @Entity(name = "REF_ITEM_TYPES")
 public class ItemType implements Serializable {
 
-	private static final long serialVersionUID = -5610201579805529720L;
+    private static final long serialVersionUID = -5610201579805529720L;
 
-	@Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long Id;
-    
+
     private String uuId;
-    
+
     private String itemTypeName;
-    
+
     private String itemTypeLongName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String itemTypeDescription;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
-    
-    public ItemType() {
-    	super();
-    }
-    
-    public ItemType(String itemTypeName) {
-		super();
-		this.itemTypeName = itemTypeName;
-	}
 
-	@Override
+    public ItemType() {
+        super();
+    }
+
+    public ItemType(String itemTypeName) {
+        super();
+        this.itemTypeName = itemTypeName;
+    }
+
+    @Override
     public String toString() {
-    	return "Item Type {"
-    			+ "ID: " + getId()
-    			+ ", Item Type Name = '" + getItemTypeName() + '\''
-    			+ ", Item Type Long Name = '" + getItemTypeLongName() + '\''
-    			+ ", Item Type Description = '" + getItemTypeDescription() + '\''
-    			+ '}';
+        return "Item Type {"
+                + "ID: " + getId()
+                + ", Item Type Name = '" + getItemTypeName() + '\''
+                + ", Item Type Long Name = '" + getItemTypeLongName() + '\''
+                + ", Item Type Description = '" + getItemTypeDescription() + '\''
+                + '}';
     }
 
     public ItemType(String itemTypeName, String itemTypeLongName, String itemTypeDescription) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.itemTypeName = itemTypeName;
         this.itemTypeLongName = itemTypeLongName;
@@ -62,7 +63,7 @@ public class ItemType implements Serializable {
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     /**
      * @return the Id
      */

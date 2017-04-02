@@ -15,11 +15,11 @@ import org.zafritech.zidingorms.domain.User;
  * @author LukeS
  */
 public class CommentDao {
-    
+
     private Long id;
 
     private String uuId;
-    
+
     private Long itemId;
 
     private String comment;

@@ -20,42 +20,43 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
 @Entity(name = "TBL_USERS")
 public class User implements Serializable {
 
-	private static final long serialVersionUID = -687205007426664632L;
+    private static final long serialVersionUID = -687205007426664632L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long id;
-    
+
     private String uuId;
-    
+
     @Column(unique = true, nullable = false)
     private String email;
-    
+
     @Column(unique = true, nullable = false)
     private String userName;
-    
+
     private String password;
-    
+
     private String firstName;
-    
+
     private String lastName;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
-        name = "XREF_USER_ROLES",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
+            name = "XREF_USER_ROLES",
+            joinColumns = {
+                @JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
     private Set<Role> userRoles = new HashSet<Role>();
-    
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    
+
     @Override
     public String toString() {
         return "User {"
@@ -64,19 +65,20 @@ public class User implements Serializable {
                 + '}';
     }
 
-    public User() { }
+    public User() {
+    }
 
     public User(String email, String password) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.email = email;
         this.userName = email;
         this.password = new BCryptPasswordEncoder().encode(password);
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     public User(String email, String password, HashSet<Role> roles) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.email = email;
         this.userName = email;
@@ -84,9 +86,9 @@ public class User implements Serializable {
         this.userRoles = roles;
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     public User(String email, String password, String firstName, String lastName, HashSet<Role> roles) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.email = email;
         this.userName = email;

@@ -8,16 +8,16 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
-    
+
     <body>
-        
+
         <div layout:fragment="content">
-            
+
             <div sec:authorize="!isAuthenticated()" class="row">
                 <div class="col-lg-4 col-lg-offset-4" style="margin-top: 60px;">
-                    
+
                     <h2 class="form-signin-heading">Please sign in</h2>
-                    
+
                     <form name="f" th:action="@{/login}" method="post" class="form-signin">
 
                         <div th:if="${param.error}" class="alert alert-danger">    
@@ -27,7 +27,7 @@
                         <div th:if="${param.logout}" class="alert alert-success"> 
                             You have been logged out.
                         </div>
-                        
+
                         <div style="margin: 20px 0 10px 0;">
                             <label for="username" class="sr-only">Username</label>
                             <div class="input-group">
@@ -35,7 +35,7 @@
                                 <input type="text" id="username" name="username" class="form-control" placeholder="Email address" required="true" />
                             </div>
                         </div>
-                        
+
                         <div style="margin: 10px 0 20px 0;">
                             <label for="password" class="sr-only">Password</label>
                             <div class="input-group">
@@ -43,7 +43,7 @@
                                 <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="true" />
                             </div>
                         </div>
-                        
+
                         <div class="checkbox" style="margin-bottom: 20px;">
                             <label>
                                 <input id="remember-me" name="remember-me" type="checkbox" /> Remember me
@@ -53,11 +53,11 @@
                         <button class="btn btn-sm btn-primary col-sm-2" type="submit">Sign in</button>
 
                     </form>
-                    
+
                     <div class="col-md-12" style=" margin: 25px -15px;">
                         <div class="small pull-left"><a href="/login/reset">Forgot password?</a></div>
                     </div>
-                    
+
                 </div>
 
             </div>
@@ -68,13 +68,13 @@
             </div>
 
         </div>
-        
+
     </body>
-    
+
     <th:block layout:fragment="scripts">
-        
+
         <!-- <script src="/js/login.js" type="application/javascript"></script> -->
-        
+
     </th:block>
-    
+
 </html>

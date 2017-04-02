@@ -8,16 +8,16 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
-    
+
     <body>
-        
+
         <div layout:fragment="content">
-            
+
             <div sec:authorize="isAuthenticated()" class="row">
                 <div class="col-lg-4 col-lg-offset-3" style="margin-top: 60px;">
-                    
+
                     <h2 class="form-signin-heading">Create new user.</h2>
-                    
+
                     <form name="user" th:object="${user}" th:action="@{/admin/users}" method="post" class="form-signin">
 
                         <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">    
@@ -25,7 +25,7 @@
                         </div>
 
                         <input type="hidden" th:field="${user.id}"/>
-                        
+
                         <div th:class="${#fields.hasErrors('email')} ? 'form-group has-error' : 'form-group'" style="margin: 20px 0 10px 0;">
                             <label for="email" class="sr-only">Email</label>
                             <div class="input-group">
@@ -51,7 +51,7 @@
                                 </u>
                             </span>
                         </div>
-                        
+
                         <div th:class="${#fields.hasErrors('confirmPassword')} ? 'form-group has-error' : 'form-group'" style="margin: 10px 0 20px 0;">
                             <label for="confirmPassword" class="sr-only">Confirm Password</label>
                             <div class="input-group">
@@ -64,19 +64,19 @@
                                 </u>
                             </span>
                         </div>
-      
+
                         <button class="btn btn-sm btn-success col-sm-3" type="submit">Create</button>
 
                     </form>
-                    
+
                 </div>
 
             </div>
 
         </div>
-        
+
     </body>
-    
+
     <th:block layout:fragment="scripts"></th:block>
-    
+
 </html>

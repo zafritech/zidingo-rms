@@ -17,40 +17,41 @@ import javax.persistence.TemporalType;
 @Entity(name = "XREF_DOCUMENTS")
 public class ArtifactHierachy implements Serializable {
 
-	private static final long serialVersionUID = -463724910897591213L;
+    private static final long serialVersionUID = -463724910897591213L;
 
-	@Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
-    
+
     private String uuId;
 
     @ManyToOne
-    @JoinColumn(name="artifactId")
+    @JoinColumn(name = "artifactId")
     private Artifact artifact;
-    
+
     @OneToOne
-    @JoinColumn(name="itemId")
+    @JoinColumn(name = "itemId")
     private Item item;
-    
+
     @ManyToOne
-    @JoinColumn(name="parentId")
+    @JoinColumn(name = "parentId")
     private Item parent;
-    
+
     private int sortIndex;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
 
     public ArtifactHierachy() {
     }
 
-    public ArtifactHierachy(Artifact artifact, 
-                            Item item, 
-                            Item parent) {
-        
+    public ArtifactHierachy(Artifact artifact,
+            Item item,
+            Item parent) {
+
         this.uuId = UUID.randomUUID().toString();
         this.artifact = artifact;
         this.item = item;
@@ -58,12 +59,12 @@ public class ArtifactHierachy implements Serializable {
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
-    
-    public ArtifactHierachy(Artifact artifact, 
-                            Item item, 
-                            Item parent,
-                            int index) {
-        
+
+    public ArtifactHierachy(Artifact artifact,
+            Item item,
+            Item parent,
+            int index) {
+
         this.uuId = UUID.randomUUID().toString();
         this.artifact = artifact;
         this.item = item;

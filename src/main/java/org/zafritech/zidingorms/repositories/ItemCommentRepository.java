@@ -13,5 +13,5 @@ import org.zafritech.zidingorms.domain.ItemComment;
  * @author LukeS
  */
 public interface ItemCommentRepository extends CrudRepository<ItemComment, Long> {
-    
+
 }

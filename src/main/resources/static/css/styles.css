@@ -334,27 +334,27 @@ ul.alert-dropdown {
 }
 
 .item-header-2 {
-    
+
     font-size: 24px; 
 }
 
 .item-header-3 {
-    
+
     font-size: 20px; 
 }
 
 .item-header-4 {
-    
+
     font-size: 18px; 
 }
 
 .item-header-5 {
-    
+
     font-size: 16px; 
 }
 
 .item-header-6 {
-    
+
     font-size: 16px; 
     font-style: italic;
 }
@@ -400,14 +400,14 @@ ul.alert-dropdown {
 }
 
 .item-toolbar-ul {
-    
+
     list-style: none; 
     padding: 0 15px; 
     margin-right: -16px;
 }
 
 .item-toolbar-li {
-    
+
     display: inline-block; 
     font-size: 14px;
     width: 28px;
@@ -424,25 +424,25 @@ ul.alert-dropdown {
 }
 
 .choices-info-arrows {
-    
+
     float: left;
     width: 12%;
 }
 
 .choices-info-arrows > input {
-    
+
     width: 100%;
     margin-bottom: 2px;
 }
 
 /* Form number spinner control */
 .spinner input{
-    
+
     text-align: right;
 }
 
 .input-group-btn-vertical {
-    
+
     position: relative;
     white-space: nowrap;
     width: 2%;
@@ -451,7 +451,7 @@ ul.alert-dropdown {
 }
 
 .input-group-btn-vertical > .btn{
-    
+
     display: block;
     float: none;
     width: 100%;

@@ -15,24 +15,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class MonitoringController {
-    
+
     @RequestMapping("/admin/monitor")
     public String home(Model model) {
-        
+
         model.addAttribute("attribute", "value");
         return "/admin/monitor/index";
     }
-    
+
     @RequestMapping("/admin/monitor/health")
     public String health(Model model) {
-        
+
         model.addAttribute("health", "/health");
         return "/admin/monitor/health";
     }
-    
-     @RequestMapping("/admin/monitor/metrics")
+
+    @RequestMapping("/admin/monitor/metrics")
     public String metrics(Model model) {
-        
+
         model.addAttribute("metrics", "/metrics");
         return "/admin/monitor/metrics";
     }

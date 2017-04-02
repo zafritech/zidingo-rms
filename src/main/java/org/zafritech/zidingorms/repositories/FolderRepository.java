@@ -16,8 +16,8 @@ import org.zafritech.zidingorms.domain.Project;
  * @author LukeS
  */
 public interface FolderRepository extends CrudRepository<Folder, Long> {
-    
+
     Folder findByFolderName(String folder);
 
-	List<Folder> findByProject(Project project); 
+    List<Folder> findByProject(Project project);
 }

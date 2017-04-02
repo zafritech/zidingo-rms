@@ -12,19 +12,19 @@ import javax.persistence.ManyToMany;
 @Entity(name = "TBL_ROLES")
 public class Role implements Serializable {
 
-	private static final long serialVersionUID = -8471742749314769250L;
+    private static final long serialVersionUID = -8471742749314769250L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long Id;
-    
+
     private String uuId;
-    
+
     private String roleName;
 
     @ManyToMany(mappedBy = "userRoles")
     private Set<User> users = new HashSet<User>();
-    
+
     @Override
     public String toString() {
         return "User Role{"
@@ -33,10 +33,11 @@ public class Role implements Serializable {
                 + '}';
     }
 
-    public Role() {}
-    
-    public Role(String name){
-        
+    public Role() {
+    }
+
+    public Role(String name) {
+
         this.uuId = UUID.randomUUID().toString();
         this.roleName = name;
     }
@@ -82,7 +83,7 @@ public class Role implements Serializable {
     public Set<User> getUsers() {
         return users;
     }
-    
+
     /**
      * @param users the users to set
      */

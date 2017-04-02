@@ -58,7 +58,7 @@ public class ApplicationController {
 
     @Autowired
     private SystemVariableRepository sysVarRepository;
-    
+
     public void setArtifactRepository(ArtifactRepository artifactRepository) {
 
         this.artifactRepository = artifactRepository;
@@ -88,7 +88,7 @@ public class ApplicationController {
     public String getProject(@PathVariable Long id, Model model) {
 
         Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
-        
+
         model.addAttribute("project", project);
         model.addAttribute("artifacts", artifactRepository.findByArtifactProject(project));
 
@@ -106,46 +106,46 @@ public class ApplicationController {
 
     @RequestMapping("/artifacts/metadata/{id}")
     public String getArtifactMetaData(@PathVariable Long id, Model model) {
-        
+
         Artifact artifact = artifactRepository.findOne(id);
         List<SystemVariable> sysIdents = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
         List<SystemVariable> reqIdents = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name());
         List<SystemVariable> sysNumDigits = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name());
         List<SystemVariable> reqNumDigits = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name());
-        
+
         if (sysIdents == null) {
-            
+
             artifactService.initializeArtifact(id, SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
             sysIdents = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
         }
-        
+
         if (reqIdents == null) {
-            
+
             artifactService.initializeArtifact(id, SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
             reqIdents = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name());
         }
-        
+
         if (sysNumDigits == null) {
-            
+
             artifactService.initializeArtifact(id, SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
             sysNumDigits = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name());
         }
-        
+
         if (reqNumDigits == null) {
-            
+
             artifactService.initializeArtifact(id, SystemVariableTypes.ITEM_UUID_TEMPLATE.name());
             reqNumDigits = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name());
         }
-        
+
         model.addAttribute("artifact", artifact);
         model.addAttribute("itemident", sysIdents.get(0).getVariableValue());
         model.addAttribute("requirementIds", reqIdents);
         model.addAttribute("templateDigits", sysNumDigits.get(0).getVariableValue());
         model.addAttribute("reqIdDigits", reqNumDigits.get(0).getVariableValue());
-        
+
         return "/views/artifacts/metadata";
     }
-    
+
     @PostMapping("/excel/import")
     public String importFromExcel(@RequestParam("file") MultipartFile file,
             @RequestParam("artifactId") Long id,

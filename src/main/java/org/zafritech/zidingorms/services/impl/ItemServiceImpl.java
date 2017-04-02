@@ -43,10 +43,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item saveItem(Item item) {
-        
+
         Item saved = itemRepository.save(item);
         updateArtifactLastUpdateTime(saved.getArtifact().getId());
-        
+
         return saved;
     }
 
@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
         List<SystemVariable> digitsList = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.ITEM_UUID_NUMERIC_DIGITS.name());
         String digits = digitsList.get(0).getVariableValue();
         String format = "%0" + digits + "d";
-        
+
         String regex = "(\\d+$)";
         Pattern pattern = Pattern.compile(regex);
 
@@ -175,7 +175,7 @@ public class ItemServiceImpl implements ItemService {
         List<SystemVariable> digitsList = sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableName(id, "DOCUMENT", SystemVariableTypes.REQUIREMENT_ID_NUMERIC_DIGITS.name());
         String digits = digitsList.get(0).getVariableValue();
         String format = "%0" + digits + "d";
-        
+
         String regex = "(\\d+$)";
         Pattern pattern = Pattern.compile(regex);
 
@@ -226,12 +226,12 @@ public class ItemServiceImpl implements ItemService {
 
         return sysVar.get(0).getVariableValue();
     }
-    
+
     private void updateArtifactLastUpdateTime(Long id) {
-        
+
         Artifact doc = artifactRepository.findOne(id);
-        
-        doc.setModifiedDate(new Timestamp(System.currentTimeMillis())); 
+
+        doc.setModifiedDate(new Timestamp(System.currentTimeMillis()));
         artifactRepository.save(doc);
     }
 }

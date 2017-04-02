@@ -2,23 +2,23 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorator="/layouts/main">
-    
+
     <head>
         <title>Application Users</title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
     <body>
-        
+
         <div layout:fragment="content">
-            
+
             <div class="col-lg-12">
                 <h1 class="page-header">
                     Registered Users <small>All Users</small>
-                    
+
                 </h1>
             </div>
-            
+
             <div class="col-lg-12" style="margin-bottom: 20px;">
                 <a href="/admin/users/new" class="btn btn-sm btn-success pull-left" style="margin-left: -15px;">
                     <i class="fa fa-fw fa-plus"></i> Add User
@@ -30,7 +30,7 @@
                     <button class="btn btn-sm btn-primary">Search</button>
                 </form>
             </div>
-            
+
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -79,6 +79,6 @@
                 </tbody>
             </table>
         </div>
-        
+
     </body>
 </html>

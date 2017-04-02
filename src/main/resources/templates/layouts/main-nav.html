@@ -19,7 +19,7 @@
                 </button>
                 <a class="navbar-brand" href="/">Zidingo RMS</a>
             </div>
-            
+
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
                 <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
@@ -126,7 +126,7 @@
                         <!-- <i class="fa fa-user">&nbsp;</i> -->
                         <span sec:authentication="name"> Guest</span><b class="caret"></b>
                     </a>
-                    
+
                     <ul class="dropdown-menu">
                         <li>
                             <a href="/profile"><i class="fa fa-fw fa-user"></i> Profile</a>
@@ -152,12 +152,12 @@
                             <i class="fa fa-fw fa-briefcase"></i> Projects
                             <i id="more-less" class="fa fa-fw fa-plus-square pull-right" style="margin: 4px -5px;"></i>
                         </a>
-                        
+
                         <!-- Projects List -->
                         <ul id="projectsList" class="collapse"></ul>
-                        
+
                     </li>
-                    
+
                     <li>
                         <a id="projectModulesHeader" href="javascript:;" data-toggle="collapse" data-target="#projectModules" style="background: #369; color: #fff;">
                             <i class="fa fa-fw fa-file-text-o"></i> Projects Modules
@@ -169,14 +169,14 @@
                         <ul id="projectTree" class="ztree"></ul>
                     </li>
                 </ul>
-                
-                
-                
+
+
+
             </div>
             <!-- /.navbar-collapse -->
 
         </div>
 
     </body>
-  
+
 </html>

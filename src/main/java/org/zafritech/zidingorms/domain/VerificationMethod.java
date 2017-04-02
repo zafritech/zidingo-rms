@@ -9,43 +9,43 @@ import javax.persistence.Id;
 @Entity(name = "TBL_VERIFICATION_METHODS")
 public class VerificationMethod implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long id;
-	
-	private String uuId;
-    
+
+    private String uuId;
+
     private String methodName;
-    
+
     private String methodDescription;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getUuId() {
-		return uuId;
-	}
+    public String getUuId() {
+        return uuId;
+    }
 
-	public void setUuId(String uuId) {
-		this.uuId = uuId;
-	}
+    public void setUuId(String uuId) {
+        this.uuId = uuId;
+    }
 
-	public String getMethodName() {
-		return methodName;
-	}
+    public String getMethodName() {
+        return methodName;
+    }
 
-	public void setMethodName(String methodName) {
-		this.methodName = methodName;
-	}
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
 
-	public String getMethodDescription() {
-		return methodDescription;
-	}
+    public String getMethodDescription() {
+        return methodDescription;
+    }
 
-	public void setMethodDescription(String methodDescription) {
-		this.methodDescription = methodDescription;
-	}
+    public void setMethodDescription(String methodDescription) {
+        this.methodDescription = methodDescription;
+    }
 }

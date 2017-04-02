@@ -1,49 +1,167 @@
-[{"name":"Input Documents", "open":true, "children":[
-    {"name":"Contract", "open":false, "children":[
-     	{"name":"General Conditions", "open":false, "children":[
-	        {"name":"Article 1"}, 
-	        {"name":"Article 2"},
-	        {"name":"Article 3"},
-	        {"name":"Article 4"},
-	        {"name":"Article 5"},
-	        {"name":"Article 6"}]},
-        {"name":"Appendices", "open":false, "children":[
-	        {"name":"Appendix A"}, 
-	        {"name":"Appendix B"},
-	        {"name":"Appendix C"},
-	        {"name":"Appendix D"},
-	        {"name":"Appendix E"},
-	        {"name":"Appendix F"}]}
-	        						]},
-    {"name":"Internal Sources", "open":false, "children":[
-        {"name":"Requirements List"}, 
-        {"name":"Development Manual"}]},
-    {"name":"Third Party Sources", "open":false, "children":[
-        {"name":"EN Standards"}, 
-        {"name":"Railway Safety Board"},
-        {"name":"Electricity Authority"}]}]},
-{"name":"Specifications", "open":false, "children":[
-    {"name":"System Specification"}, 
-    {"name":"V&V Specification"}]},
-{"name":"Architectural Design", "open":false, "children":[
-    {"name":"Architectural Description"},
-    {"name":"System Design Description"},
-    {"name":"System ICD"}]},
-{"name":"Detailed Design", "open":false, "children":[
-    {"name":"Electrical System", "open":false, "children":[
-        {"name":"Catenary SyRS"},
-        {"name":"Substations SyRS"},
-        {"name":"Earthing & Bonding SyRS"},
-        {"name":"ELP SyRS"}]},
-    {"name":"Communication System", "open":false, "children":[
-        {"name":"Comms ICD"},
-        {"name":"Comms SyRS"},
-        {"name":"Comms SDD"},
-        {"name":"Comms VRS"}]},
-    {"name":"Subsystem 2 Specification"},
-    {"name":"Subsystem 3 Specification"},
-    {"name":"Subsystem 4 Specification"},
-    {"name":"Subsystem 5 Specification"}]},
-{"name":"Integration Testing", "open":false, "children":[
-    {"name":"System Integration Tests"}]}
+[{
+        "name": "Input Documents",
+        "open": true,
+        "children": [
+            {
+                "name": "Contract",
+                "open": false,
+                "children": [
+                    {
+                        "name": "General Conditions",
+                        "open": false,
+                        "children": [
+                            {
+                                "name": "Article 1"
+                            }, 
+                            {
+                                "name": "Article 2"
+                            },
+                            {
+                                "name": "Article 3"
+                            },
+                            {
+                                "name": "Article 4"
+                            },
+                            {
+                                "name": "Article 5"
+                            },
+                            {
+                                "name": "Article 6"
+                            }]
+                    },
+                    {
+                        "name": "Appendices",
+                        "open": false,
+                        "children": [
+                            {
+                                "name": "Appendix A"
+                            }, 
+                            {
+                                "name": "Appendix B"
+                            },
+                            {
+                                "name": "Appendix C"
+                            },
+                            {
+                                "name": "Appendix D"
+                            },
+                            {
+                                "name": "Appendix E"
+                            },
+                            {
+                                "name": "Appendix F"
+                            }]
+                    }
+                ]
+            },
+            {
+                "name": "Internal Sources",
+                "open": false,
+                "children": [
+                    {
+                        "name": "Requirements List"
+                    }, 
+                    {
+                        "name": "Development Manual"
+                    }]
+            },
+            {
+                "name": "Third Party Sources",
+                "open": false,
+                "children": [
+                    {
+                        "name": "EN Standards"
+                    }, 
+                    {
+                        "name": "Railway Safety Board"
+                    },
+                    {
+                        "name": "Electricity Authority"
+                    }]
+            }]
+    },
+    {
+        "name": "Specifications",
+        "open": false,
+        "children": [
+            {
+                "name": "System Specification"
+            }, 
+            {
+                "name": "V&V Specification"
+            }]
+    },
+    {
+        "name": "Architectural Design",
+        "open": false,
+        "children": [
+            {
+                "name": "Architectural Description"
+            },
+            {
+                "name": "System Design Description"
+            },
+            {
+                "name": "System ICD"
+            }]
+    },
+    {
+        "name": "Detailed Design",
+        "open": false,
+        "children": [
+            {
+                "name": "Electrical System",
+                "open": false,
+                "children": [
+                    {
+                        "name": "Catenary SyRS"
+                    },
+                    {
+                        "name": "Substations SyRS"
+                    },
+                    {
+                        "name": "Earthing & Bonding SyRS"
+                    },
+                    {
+                        "name": "ELP SyRS"
+                    }]
+            },
+            {
+                "name": "Communication System",
+                "open": false,
+                "children": [
+                    {
+                        "name": "Comms ICD"
+                    },
+                    {
+                        "name": "Comms SyRS"
+                    },
+                    {
+                        "name": "Comms SDD"
+                    },
+                    {
+                        "name": "Comms VRS"
+                    }]
+            },
+            {
+                "name": "Subsystem 2 Specification"
+            },
+            {
+                "name": "Subsystem 3 Specification"
+            },
+            {
+                "name": "Subsystem 4 Specification"
+            },
+            {
+                "name": "Subsystem 5 Specification"
+            }]
+    },
+    {
+        "name": "Integration Testing",
+        "open": false,
+        "children": [
+            {
+                "name": "System Integration Tests"
+            }]
+    }
 ]

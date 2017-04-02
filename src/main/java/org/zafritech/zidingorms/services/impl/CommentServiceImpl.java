@@ -22,12 +22,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     ItemCommentRepository commentRepository;
-    
+
     @Override
     public ItemComment saveCommentDao(CommentDao commentDao) {
-        
+
         DaoToCommentConverter converter = new DaoToCommentConverter();
 
-        return commentRepository.save(converter.convert(commentDao)); 
+        return commentRepository.save(converter.convert(commentDao));
     }
 }

@@ -21,36 +21,36 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author LukeS
  */
 @Configuration
-@EnableGlobalMethodSecurity( securedEnabled = true )
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
     @Autowired
     private UserDetailsService userService;
-    
+
     @Autowired
     public void configureAuth(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder()); 
+        auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
     }
-    
+
     @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        
+    protected void configure(HttpSecurity http) throws Exception {
+
         http
-        	.csrf().disable()
-            .formLogin()
+                .csrf().disable()
+                .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/", true)
                 .permitAll()
-        .and()
-            .logout()
+                .and()
+                .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
-                .deleteCookies("remeber-me") 
+                .deleteCookies("remeber-me")
                 .permitAll()
-        .and()
-            .authorizeRequests()
+                .and()
+                .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .antMatchers("/static/**", "/login", "/logout").permitAll();

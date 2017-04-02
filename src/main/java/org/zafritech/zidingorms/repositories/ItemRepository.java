@@ -15,14 +15,14 @@ import org.zafritech.zidingorms.domain.Item;
  * @author LukeS
  */
 public interface ItemRepository extends CrudRepository<Item, Long> {
-    
-	Item findBySysId(String sysId);
-	
-	List<Item> findByArtifactId(Long id);
-	
-	Item findFirstByOrderBySysIdDesc();
-	
-	Item findFirstByIdentifierContainingOrderByIdentifierDesc(String identTemplate); 
-	
-	List<Item> findByArtifactIdOrderBySortIndexAsc(Long id);
+
+    Item findBySysId(String sysId);
+
+    List<Item> findByArtifactId(Long id);
+
+    Item findFirstByOrderBySysIdDesc();
+
+    Item findFirstByIdentifierContainingOrderByIdentifierDesc(String identTemplate);
+
+    List<Item> findByArtifactIdOrderBySortIndexAsc(Long id);
 }

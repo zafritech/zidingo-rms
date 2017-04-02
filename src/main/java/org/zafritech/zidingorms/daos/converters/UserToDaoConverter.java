@@ -17,13 +17,13 @@ public class UserToDaoConverter implements Converter<User, UserDao> {
 
     @Override
     public UserDao convert(User user) {
-        
+
         UserDao userDao = new UserDao();
-        
-        userDao.setId(user.getId()); 
+
+        userDao.setId(user.getId());
         userDao.setEmail(user.getEmail());
-        userDao.setPassword(user.getPassword()); 
-        
+        userDao.setPassword(user.getPassword());
+
         return userDao;
     }
 }

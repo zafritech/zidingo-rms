@@ -15,55 +15,56 @@ import javax.persistence.TemporalType;
 @Entity(name = "TBL_PROJECTS")
 public class Project implements Serializable {
 
-	private static final long serialVersionUID = -1267086640569786293L;
+    private static final long serialVersionUID = -1267086640569786293L;
 
-	@Id 
+    @Id
     @GeneratedValue
     private Long Id;
-    
+
     private String uuId;
-    
+
     private String projectName;
-    
+
     private String projectShortName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String projectDescription;
-    
+
     @ManyToOne
     private Company projectCompany;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
 
-    public Project() { }
+    public Project() {
+    }
 
-    public Project(String name, 
-                   String shortName, 
-                   Company company) { 
-        
+    public Project(String name,
+            String shortName,
+            Company company) {
+
         this.uuId = UUID.randomUUID().toString();
         this.projectName = name;
         this.projectShortName = shortName;
         this.projectCompany = company;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
-    
+
     }
-    
+
     @Override
     public String toString() {
-        
+
         return "Project {"
                 + "ID: " + getId()
                 + ", Project Name = '" + getProjectName() + '\''
                 + ", Project Type = '" + getProjectShortName() + '\''
                 + '}';
     }
-    
+
     /**
      * @return the Id
      */

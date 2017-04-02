@@ -13,5 +13,5 @@ import org.zafritech.zidingorms.domain.Contact;
  * @author LukeS
  */
 public interface ContactRepository extends CrudRepository<Contact, Long> {
-    
+
 }

@@ -14,28 +14,28 @@ import javax.persistence.TemporalType;
 @Entity(name = "REF_ARTIFACT_TYPES")
 public class ArtifactType implements Serializable {
 
-	private static final long serialVersionUID = 2681977956968103631L;
+    private static final long serialVersionUID = 2681977956968103631L;
 
-	@Id
+    @Id
     @GeneratedValue
     private Long id;
-    
+
     private String uuId;
-    
+
     @Column(nullable = false)
     private String artifactTypeName;
 
     private String artifactTypeLongName;
-    
+
     @Column(columnDefinition = "TEXT")
     private String artifactTypeDescription;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
-    
+
     @Override
     public String toString() {
         return "Artifact Type {"
@@ -49,15 +49,15 @@ public class ArtifactType implements Serializable {
     }
 
     public ArtifactType(String typeName) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.artifactTypeName = typeName;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
-    
+
     public ArtifactType(String typeName, String typeLongName, String typeDescription) {
-        
+
         this.uuId = UUID.randomUUID().toString();
         this.artifactTypeName = typeName;
         this.artifactTypeLongName = typeLongName;

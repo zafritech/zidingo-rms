@@ -10,7 +10,7 @@ package org.zafritech.zidingorms.commons;
  * @author LukeS
  */
 public class FolderTypes {
-    
+
     public static final String GENERIC = "GENERIC";
     public static final String PROJECT = "PROJECT";
     public static final String PACKAGE = "PACKAGE";

@@ -13,5 +13,5 @@ import org.zafritech.zidingorms.domain.Project;
  * @author LukeS
  */
 public interface ProjectRepository extends CrudRepository<Project, Long> {
-    
+
 }
