@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS Projects</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+    
+    <body>
+        
+        <div layout:fragment="content">
+            
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-2" style="margin-top: 180px;">
+                    
+                    <div class="text-center" style="color: #c0c0c0;">
+                        <i class="fa fa-gears fa-5x"></i>
+                    </div>
+                    <div class="text-center" style="color: #c0c0c0;">
+                        <h3>No projects or documents found.</h3>
+                        <br/>
+                        <h5>Create a new project and start adding artifacts.</h5>
+                    </div>
+                </div>
+            </div>
+   
+        </div>
+        
+    </body>
+    
+    <th:block layout:fragment="scripts"></th:block>
+    
+</html>

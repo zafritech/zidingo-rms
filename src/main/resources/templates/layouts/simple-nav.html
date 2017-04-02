@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/simple">
+
+    <body>
+
+        <div th:fragment="nav">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/login" class="navbar-brand">Zidingo RMS</a>
+            </div>
+            
+            <!-- Top Menu Items -->
+            <div  sec:authorize="isAuthenticated()" class="nav navbar-right top-nav">
+                <li><a href="/login?logout"><span sec:authentication="name">Guest</span></a></li>
+                <li><a href="/logout">Logout</a></li>
+            </div>
+            <div  sec:authorize="!isAuthenticated()" class="nav navbar-right top-nav">
+                <li><a href="/login/signup">Register</a></li>
+            </div>
+            <!-- ./Top Menu Items -->
+            
+        </div>
+
+    </body>
+  
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <body>
+
+        <div th:fragment="nav">
+
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Zidingo RMS</a>
+            </div>
+            
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-right top-nav">
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-cog"></i> <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/admin/dash"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="/admin/projects"><i class="fa fa-fw fa-bar-chart"></i> Projects</a>
+                        </li>
+                        <li>
+                            <a href="/admin/monitor"><i class="fa fa-fw fa-gears"></i> System</a>
+                        </li>
+                        <li>
+                            <a href="/admin/users"><i class="fa fa-fw fa-user"></i> Users</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <ul class="dropdown-menu message-dropdown">
+                        <li class="message-preview">
+                            <a href="/profile/inbox/1">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="/images/admin.jpg" alt="" />
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="/profile/inbox/2">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="/images/admin.jpg" alt="" />
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-preview">
+                            <a href="/profile/inbox/3">
+                                <div class="media">
+                                    <span class="pull-left">
+                                        <img class="media-object" src="/images/admin.jpg" alt="" />
+                                    </span>
+                                    <div class="media-body">
+                                        <h5 class="media-heading"><strong>John Smith</strong>
+                                        </h5>
+                                        <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                        <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="message-footer">
+                            <a href="#">Read All New Messages</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+                    <ul class="dropdown-menu alert-dropdown">
+                        <li>
+                            <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
+                        </li>
+                        <li>
+                            <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">View All</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <!-- <i class="fa fa-user">&nbsp;</i> -->
+                        <span sec:authentication="name"> Guest</span><b class="caret"></b>
+                    </a>
+                    
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/profile"><i class="fa fa-fw fa-user"></i> Profile</a>
+                        </li>
+                        <li>
+                            <a href="/profile/inbox"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>
+                        <li>
+                            <a href="/system"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="javascript:;" data-toggle="collapse" data-target="#projectsList" style="background: #369; color: #fff;">
+                            <i class="fa fa-fw fa-briefcase"></i> Projects
+                            <i id="more-less" class="fa fa-fw fa-plus-square pull-right" style="margin: 4px -5px;"></i>
+                        </a>
+                        
+                        <!-- Projects List -->
+                        <ul id="projectsList" class="collapse"></ul>
+                        
+                    </li>
+                    
+                    <li>
+                        <a id="projectModulesHeader" href="javascript:;" data-toggle="collapse" data-target="#projectModules" style="background: #369; color: #fff;">
+                            <i class="fa fa-fw fa-file-text-o"></i> Projects Modules
+                            <!--<i id="more-less-modules" class="fa fa-fw fa-minus-square pull-right" style="margin: 4px -5px; "></i>-->
+                        </a>
+                    </li>
+                    <!-- Project Folders Tree -->
+                    <li id="projectModules" style="width: 225px;">
+                        <ul id="projectTree" class="ztree"></ul>
+                    </li>
+                </ul>
+                
+                
+                
+            </div>
+            <!-- /.navbar-collapse -->
+
+        </div>
+
+    </body>
+  
+</html>

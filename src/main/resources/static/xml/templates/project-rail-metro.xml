@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+    <folder>
+        <id>1</id>        
+        <name>Zidingo RMS</name>
+        <type>PROJECT</type>
+		<parentId>0</parentId>
+	</folder>
+	<folder>
+		<id>2</id>
+		<name>Input Documents</name>
+		<type>DOCUMENT</type>
+		<parentId>1</parentId>
+	</folder>	
+	<folder>
+		<id>3</id>
+		<name>Specifications</name>
+		<type>DOCUMENT</type>
+		<parentId>1</parentId>
+	</folder>	
+	<folder>
+		<id>4</id>
+		<name>Architectural Design</name>
+		<type>DOCUMENT</type>
+		<parentId>1</parentId>
+	</folder>	
+	<folder>
+		<id>5</id>
+		<name>Detailed Design</name>
+		<type>DOCUMENT</type>
+		<parentId>1</parentId>
+	</folder>			
+	<folder>
+		<id>6</id>
+		<name>Contract</name>
+		<type>DOCUMENT</type>
+		<parentId>2</parentId>
+	</folder>
+	<folder>
+		<id>7</id>
+		<name>Internal Sources</name>
+		<type>DOCUMENT</type>
+		<parentId>2</parentId>
+	</folder>				
+	<folder>
+		<id>8</id>
+		<name>Third Party</name>
+		<type>DOCUMENT</type>
+		<parentId>2</parentId>
+	</folder>
+	<folder>
+		<id>9</id>
+		<name>System Specification</name>
+		<type>DOCUMENT</type>
+		<parentId>3</parentId>
+	</folder>
+	<folder>
+		<id>10</id>
+		<name>V and V Specification</name>
+		<type>DOCUMENT</type>
+		<parentId>3</parentId>
+	</folder>
+	<folder>
+		<id>11</id>
+		<name>Architectural Description</name>
+		<type>DOCUMENT</type>
+		<parentId>4</parentId>
+	</folder>
+	<folder>
+		<id>12</id>
+		<name>Design Description</name>
+		<type>DOCUMENT</type>
+		<parentId>4</parentId>
+	</folder>
+	<folder>
+		<id>13</id>
+		<name>System Main ICD</name>
+		<type>DOCUMENT</type>
+		<parentId>4</parentId>
+	</folder>	
+	<folder>
+		<id>14</id>
+		<name>Communication System</name>
+		<type>DOCUMENT</type>
+		<parentId>5</parentId>
+	</folder>
+	<folder>
+		<id>15</id>
+		<name>Electrical System</name>
+		<type>DOCUMENT</type>
+		<parentId>5</parentId>
+	</folder>
+	<folder>
+		<id>16</id>
+		<name>Signalling System</name>
+		<type>DOCUMENT</type>
+		<parentId>5</parentId>
+	</folder>
+	<folder>
+		<id>17</id>
+		<name>Subsystem #1</name>
+		<type>DOCUMENT</type>
+		<parentId>5</parentId>
+	</folder>
+	<folder>
+		<id>18</id>
+		<name>Subsystem #2</name>
+		<type>DOCUMENT</type>
+		<parentId>5</parentId>
+	</folder>
+	<folder>
+		<id>19</id>
+		<name>General Conditions</name>
+		<type>DOCUMENT</type>
+		<parentId>6</parentId>
+	</folder>					
+	<folder>
+		<id>20</id>
+		<name>Appendices</name>
+		<type>DOCUMENT</type>
+		<parentId>6</parentId>
+	</folder>
+	<folder>
+		<id>21</id>
+		<name>Requirements List</name>
+		<type>DOCUMENT</type>
+		<parentId>7</parentId>
+	</folder>	
+	<folder>
+		<id>22</id>
+		<name>Design Standard</name>
+		<type>DOCUMENT</type>
+		<parentId>7</parentId>
+	</folder>
+	<folder>
+		<id>23</id>
+		<name>EN Standards</name>
+		<type>DOCUMENT</type>
+		<parentId>8</parentId>
+	</folder>
+	<folder>
+		<id>24</id>
+		<name>Railway Safety Authority</name>
+		<type>DOCUMENT</type>
+		<parentId>8</parentId>
+	</folder>
+	<folder>
+		<id>25</id>
+		<name>Electricity Authority</name>
+		<type>DOCUMENT</type>
+		<parentId>8</parentId>
+	</folder>
+	<folder>
+		<id>26</id>
+		<name>Transport Authority</name>
+		<type>DOCUMENT</type>
+		<parentId>8</parentId>
+	</folder>
+	<folder>
+		<id>27</id>
+		<name>Other Standards</name>
+		<type>DOCUMENT</type>
+		<parentId>8</parentId>
+	</folder>
+	<folder>
+		<id>28</id>
+		<name>Integration</name>
+		<type>DOCUMENT</type>
+		<parentId>9</parentId>
+	</folder>
+	<folder>
+		<id>29</id>
+		<name>Item#1 - Item#2 Procedure</name>
+		<type>DOCUMENT</type>
+		<parentId>9</parentId>
+	</folder>
+	<folder>
+		<id>30</id>
+		<name>Dynamic Procedure</name>
+		<type>DOCUMENT</type>
+		<parentId>9</parentId>
+	</folder>
+</project>
