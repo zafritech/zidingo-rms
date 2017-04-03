@@ -1,5 +1,6 @@
 package org.zafritech.zidingorms.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class Role implements Serializable {
     private String roleName;
 
     @ManyToMany(mappedBy = "userRoles")
+    @JsonManagedReference
     private Set<User> users = new HashSet<User>();
 
     @Override

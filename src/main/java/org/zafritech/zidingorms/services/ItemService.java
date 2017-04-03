@@ -18,6 +18,8 @@ public interface ItemService {
     int moveUp(Long id);
 
     int moveDown(Long id);
+    
+    int incrementCommentCount(Long id);
 
     String getNextSystemIdentifier(Long id);
 

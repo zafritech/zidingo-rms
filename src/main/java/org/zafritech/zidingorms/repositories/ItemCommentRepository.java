@@ -5,6 +5,7 @@
  */
 package org.zafritech.zidingorms.repositories;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.zafritech.zidingorms.domain.ItemComment;
 
@@ -14,4 +15,5 @@ import org.zafritech.zidingorms.domain.ItemComment;
  */
 public interface ItemCommentRepository extends CrudRepository<ItemComment, Long> {
 
+    List<ItemComment>findByItemId(Long id);
 }

@@ -5,6 +5,7 @@
  */
 package org.zafritech.zidingorms.services;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.daos.CommentDao;
 import org.zafritech.zidingorms.domain.ItemComment;
@@ -17,4 +18,6 @@ import org.zafritech.zidingorms.domain.ItemComment;
 public interface CommentService {
 
     ItemComment saveCommentDao(CommentDao commentDao);
+    
+    List<ItemComment> findByItemId(Long id);
 }

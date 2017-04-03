@@ -477,3 +477,8 @@ ul.alert-dropdown {
     left: 4px;
 }
 
+
+/* Modal boxes and Bootbox */
+.btn-fixed-width-100 {
+    width: 100px !important;
+}

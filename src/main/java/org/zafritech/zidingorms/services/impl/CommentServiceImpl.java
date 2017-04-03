@@ -5,14 +5,17 @@
  */
 package org.zafritech.zidingorms.services.impl;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.daos.CommentDao;
+import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemComment;
 import org.zafritech.zidingorms.repositories.ItemCommentRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.services.CommentService;
 import org.zafritech.zidingorms.services.GeneralService;
+import org.zafritech.zidingorms.services.ItemService;
 
 /**
  *
@@ -23,6 +26,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private GeneralService generalService;
+
+    @Autowired
+    private ItemService itemService;
     
     @Autowired
     private ItemCommentRepository commentRepository;
@@ -33,10 +39,20 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ItemComment saveCommentDao(CommentDao commentDao) {
 
-        ItemComment comment = new ItemComment(itemRepository.findOne(commentDao.getItemId()), 
+        Item item = itemRepository.findOne(commentDao.getItemId());
+        ItemComment comment = new ItemComment(item, 
                                               commentDao.getComment(), 
                                               generalService.loggedInUser());
         
-        return commentRepository.save(comment);
+        ItemComment savedComment = commentRepository.save(comment);
+        itemService.incrementCommentCount(item.getId());
+        
+        return savedComment;
+    }
+
+    @Override
+    public List<ItemComment> findByItemId(Long id) {
+
+        return commentRepository.findByItemId(id);
     }
 }

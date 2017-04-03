@@ -84,7 +84,7 @@
                         <!-- Item Menu <ul> Container -->
                         <ul class="item-toolbar-ul">  
 
-                            <li class="dropdown item-toolbar-li" th:if="${item.itemClass} == 'REQUIREMENT'">
+                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
                                     <i class="fa fa-comments" style="color: #2ECC71;"></i> 
                                 </a>
@@ -115,7 +115,7 @@
                                         <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-link"></i> Item Links</a>
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-comments"></i> Item comment</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxAddComment(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-comments"></i> Add item comment</a>
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
                                         <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-tasks"></i> Item attributes</a>

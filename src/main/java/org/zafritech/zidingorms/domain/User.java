@@ -1,5 +1,6 @@
 package org.zafritech.zidingorms.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -51,6 +52,7 @@ public class User implements Serializable {
             inverseJoinColumns = {
                 @JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
+    @JsonBackReference
     private Set<Role> userRoles = new HashSet<Role>();
 
     @CreatedDate
@@ -73,6 +75,7 @@ public class User implements Serializable {
         this.uuId = UUID.randomUUID().toString();
         this.email = email;
         this.userName = email;
+        this.firstName = email.substring(0, 1).toUpperCase() + email.substring(1, email.indexOf('@')); 
         this.password = new BCryptPasswordEncoder().encode(password);
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
@@ -82,6 +85,7 @@ public class User implements Serializable {
         this.uuId = UUID.randomUUID().toString();
         this.email = email;
         this.userName = email;
+        this.firstName = email.substring(0, 1).toUpperCase() + email.substring(1, email.indexOf('@')); 
         this.password = new BCryptPasswordEncoder().encode(password);
         this.userRoles = roles;
         this.createdDate = new Timestamp(System.currentTimeMillis());

@@ -870,69 +870,153 @@ function BootboxItemComments(id) {
 
         type: "GET",
         contentType: "application/json",
+        url: "/api/itemcomments/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+
+        console.log(data);
+
+        var comments = '';
+        
+        $.each(data, function (key, index) {
+
+            comments = comments + '<div class="row" style="margin: 10px 0; border-top: 1px solid #c0c0c0; padding: 8px 0;">';
+            
+            // Author column
+            comments = comments + '<div class="col-sm-3" style="margin-left: -5px;">';
+            comments = comments + '<span><b>' + index.author.firstName + '</b></span>';
+            comments = comments + '</div>';
+            
+            // Comment text column
+            comments = comments + '<div class="col-sm-9" style="border-left: 1px solid #c0c0c0;">';
+            comments = comments + '<span>' + index.comment + '</span>';
+            comments = comments + '</div>';
+            
+            comments = comments + '</div>';
+        });
+                
+        var msg =   '<div class="row">' +
+                    '<div class="col-sm-12" style="padding: 16px;">' +
+                    '<span style="font-weight: bold;">' + data[0].item.itemValue + '</span>' +
+                    '</div>' +
+                    '<div class="col-sm-12">' +
+                    '<form action="/api/itemcomments/save" method="post">' +
+                    '<div class="row" style="margin-top: 10px;">' +
+                    '<div class="col-sm-12">' +
+                    '<div class="form-group">' +
+                    '<input type="hidden" name="itemId" id="itemId" value="' + data[0].item.id + '" />' +
+                    '<label for="commentValue">Comments:</label>' +
+                    comments +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '</div>';
+
+        bootbox.confirm({
+
+            message: msg,
+            title: data[0].item.sysId + " Comments",
+            buttons: {
+                cancel: {
+                    label: 'Close',
+                    className: 'btn-danger btn-fixed-width-100'
+                },
+                confirm: {
+                    label: "Comment",
+                    className: "btn-success btn-fixed-width-100"}
+            },
+            callback: function (comment) {
+
+                if (comment) {
+
+                    BootboxAddComment(data[0].item.id);
+                }
+            }
+        });
+    });
+}
+
+
+function BootboxAddComment(id) {
+ 
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
         url: "/api/item/" + id,
         dataType: "json",
         cache: false
     })
-            .done(function (data) {
+    .done(function (data) {
 
-                var msg = '<div class="row">' +
-                        '<div class="col-sm-12" style="padding: 15px;">' +
-                        '<span style="font-weight: bold;">' + data.itemValue + '</span>' +
-                        '</div>' +
-                        '<div class="col-sm-12">' +
-                        '<form action="/api/itemcomments/save" method="post">' +
-                        '<div class="row" style="margin-top: 10px;">' +
-                        '<div class="col-sm-12">' +
-                        '<div class="form-group">' +
-                        '<input type="hidden" name="itemId" id="itemId" value="' + data.id + '" />' +
-                        '<label for="commentValue">New comment:</label>' +
-                        '<textarea class="form-control" rows="5" cols="50" id="commentValue" name="commentValue"></textarea>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</form>' +
-                        '</div>' +
-                        '</div>';
+        console.log(data);
 
-                bootbox.confirm({
+        var msg =   '<div class="row">' +
+                    '<div class="col-sm-12" style="padding: 15px;">' +
+                    '<span style="font-weight: bold;">' + data.itemValue + '</span>' +
+                    '</div>' +
+                    '<div class="col-sm-12">' +
+                    '<form action="/api/itemcomments/save" method="post">' +
+                    '<div class="row" style="margin-top: 10px;">' +
+                    '<div class="col-sm-12">' +
+                    '<div class="form-group">' +
+                    '<input type="hidden" name="itemId" id="itemId" value="' + data.id + '" />' +
+                    '<label for="commentValue">New comment:</label>' +
+                    '<textarea class="form-control" rows="5" cols="50" id="commentValue" name="commentValue"></textarea>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '</div>';
+            
+        var item = data.sysId;
 
-                    message: msg,
-                    title: data.sysId + " Comments",
-                    buttons: {
-                        cancel: {
-                            label: 'Close',
-                            className: 'btn-danger'
-                        },
-                        confirm: {
-                            label: "Save!",
-                            className: "btn-success"}
-                    },
-                    callback: function (comment) {
+        bootbox.confirm({
 
-                        if (comment) {
+            message: msg,
+            title: "Add Comment to Item: [" + data.sysId + "]",
+            buttons: {
+                cancel: {
+                    label: 'Cancel',
+                    className: 'btn-danger btn-fixed-width-100'
+                },
+                confirm: {
+                    label: "Save",
+                    className: "btn-success btn-fixed-width-100"}
+            },
+            callback: function (comment) {
 
-                            var data = {};
-                            data['itemId'] = $("#itemId").val();
-                            data['comment'] = $("#commentValue").val();
+                if (comment) {
 
-                            $.ajax({
-                                type: "POST",
-                                contentType: "application/json",
-                                url: "/api/comments/new",
-                                data: JSON.stringify(data),
-                                dataType: "json",
-                                timeout: 60000,
-                                success: function (data) {
+                    var data = {};
+                    data['itemId'] = $("#itemId").val();
+                    data['comment'] = $("#commentValue").val();
 
-                                    console.log(data);
-                                }
-                            });
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json",
+                        url: "/api/comments/new",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        timeout: 60000,
+                        success: function (data) {
+
+                            showToastr('success', "Comment with ID: " + data + " created for: [" + item + "]");
+                            
+                            BootboxItemComments(data.itemId);
                         }
-                    }
-                });
-            });
+                    });
+                }
+            }
+        });
+    });
 }
+
 
 function showToastr(msgType, message) {
 

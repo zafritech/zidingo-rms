@@ -1,5 +1,6 @@
 package org.zafritech.zidingorms.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;

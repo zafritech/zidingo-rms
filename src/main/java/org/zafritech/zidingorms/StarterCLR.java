@@ -149,6 +149,22 @@ public class StarterCLR implements CommandLineRunner {
 
                     }
                 }));
+
+                add(new User("client@zafritech.org", "password", new HashSet<Role>() {
+                    {
+
+                        add(roleRepository.findByRoleName("ROLE_GUEST"));
+
+                    }
+                }));
+
+                add(new User("contractor@zafritech.org", "password", new HashSet<Role>() {
+                    {
+
+                        add(roleRepository.findByRoleName("ROLE_GUEST"));
+
+                    }
+                }));
             }
         });
 

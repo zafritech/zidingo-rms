@@ -76,6 +76,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public int incrementCommentCount(Long id) {
+        
+        Item item = itemRepository.findOne(id);
+        int commentCount = item.getCommentCount();
+        int newCount = commentCount + 1;
+        
+        item.setCommentCount(newCount);
+        itemRepository.save(item);
+        
+        return newCount;
+    }
+    
+    @Override
     public int moveUp(Long id) {
 
         Item currItem = itemRepository.findOne(id);
