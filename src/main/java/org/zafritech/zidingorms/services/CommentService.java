@@ -20,4 +20,6 @@ public interface CommentService {
     ItemComment saveCommentDao(CommentDao commentDao);
     
     List<ItemComment> findByItemId(Long id);
+    
+    List<ItemComment> findByItemIdOrderByCreationDateDesc(Long id);
 }

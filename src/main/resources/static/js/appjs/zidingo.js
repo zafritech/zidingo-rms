@@ -882,11 +882,14 @@ function BootboxItemComments(id) {
         
         $.each(data, function (key, index) {
 
+            var date = new Date(index.creationDate);
+            
             comments = comments + '<div class="row" style="margin: 10px 0; border-top: 1px solid #c0c0c0; padding: 8px 0;">';
             
             // Author column
-            comments = comments + '<div class="col-sm-3" style="margin-left: -5px;">';
-            comments = comments + '<span><b>' + index.author.firstName + '</b></span>';
+            comments = comments + '<div class="col-sm-3">';
+            comments = comments + '<span><b>' + index.author.firstName + '</b></span><br/>';
+            comments = comments + '<span>' + date.toISOString().substring(0, 10) + '</span>';
             comments = comments + '</div>';
             
             // Comment text column
@@ -975,6 +978,7 @@ function BootboxAddComment(id) {
                     '</div>';
             
         var item = data.sysId;
+        var itemId = data.id;
 
         bootbox.confirm({
 
@@ -1005,10 +1009,9 @@ function BootboxAddComment(id) {
                         dataType: "json",
                         timeout: 60000,
                         success: function (data) {
-
-                            showToastr('success', "Comment with ID: " + data + " created for: [" + item + "]");
                             
-                            BootboxItemComments(data.itemId);
+                            BootboxItemComments(itemId);
+                            showToastr('success', "Comment with ID: " + data + " created for: [" + item + "]");
                         }
                     });
                 }

@@ -55,4 +55,10 @@ public class CommentServiceImpl implements CommentService {
 
         return commentRepository.findByItemId(id);
     }
+
+    @Override
+    public List<ItemComment> findByItemIdOrderByCreationDateDesc(Long id) {
+
+        return commentRepository.findByItemIdOrderByCreationDateDesc(id);
+    }
 }

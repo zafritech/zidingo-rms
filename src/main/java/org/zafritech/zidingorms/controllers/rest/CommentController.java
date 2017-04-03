@@ -46,7 +46,7 @@ public class CommentController {
     @RequestMapping(value = "/api/itemcomments/{id}", method = RequestMethod.GET)
     public @ResponseBody List<ItemComment> getItemComments(@PathVariable(value = "id") Long id) {
         
-        List<ItemComment> comments = commentService.findByItemId(id);
+        List<ItemComment> comments = commentService.findByItemIdOrderByCreationDateDesc(id);
         
         return comments;
     }
