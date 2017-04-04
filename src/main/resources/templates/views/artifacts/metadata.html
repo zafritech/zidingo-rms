@@ -27,8 +27,7 @@
                 </div>
                 <div class="col-md-6" style="padding-right: 20px;">
                     <div class="pull-right" >
-                        <a href="#createItemModal" data-toggle="modal" data-ref-item-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i> Edit basic properties</a> |
-                        <a href="/artifacts/metadata/{id}"><i class="fa fa-fw fa-book"></i> Manage status</a> |
+                        <a href="javascript:void(0);" th:onclick="'javascript:ArtifactBasicMetadata(\'' + ${artifact.id} + '\');'"><i class="fa fa-fw fa-info-circle"></i> Edit basic properties</a> |
                         <a th:href="'/artifacts/' + ${artifact.id}" data-toggle="modal" data-item-id=""><i class="fa fa-fw fa-file-text"></i> Document content</a>
                     </div>
                 </div>
@@ -85,6 +84,32 @@
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
+                            <td>Status</td>
+                            <td th:text="${artifact.artifactStatus}">DRAFT</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <a class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#artifactStatusForm" th:onclick="'javascript:ArtifactStatusLoad(\'' + ${artifact.artifactStatus} + '\');'">Change Status</a>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="artifactStatusForm">
+                                    <form>
+                                        <div class="input-group input-group-sm" style="margin: 5px 0;">
+                                            <select class="form-control" id="artifactStatusSelect" name="artifactStatusSelect"></select>
+                                        </div>
+                                        <div class="btn-group btn-group-justified btn-group-sm" role="group">
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#identFormatForm" role="button">Cancel</button>
+                                            </div>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" id="createItemSaveBtn" class="btn btn-success btn-hover-green">Save</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>Project</td>
                             <td th:text="${artifact.artifactProject.projectName}">MEDIUM</td>
                             <td>&nbsp;</td>
@@ -99,7 +124,7 @@
                             <td th:text="${itemident} + ' - #####'">MEDIUM</td>
                             <td>
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-8">
                                         <a class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#identFormatForm">Edit Format</a>
                                     </div>
                                 </div>
@@ -126,7 +151,7 @@
                             <td th:text="${templateDigits} + ' digits (0 padded)'">Digits</td>
                             <td>
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-8">
                                         <a class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#numericLengthForm">Edit Length</a>
                                     </div>
                                 </div>
@@ -161,8 +186,8 @@
                             </td>
                             <td>
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <a href="#manageIdentFormatsModal" data-toggle="modal" class="btn btn-primary btn-sm btn-block">Edit List</a>
+                                    <div class="col-sm-8">
+                                        <a href="#manageIdentFormatsModal" data-toggle="modal" class="btn btn-primary btn-sm btn-block">Manage List</a>
                                     </div>
                                 </div>
                             </td>
@@ -172,7 +197,7 @@
                             <td th:text="${reqIdDigits} + ' digits (0 padded)'">Digits</td>
                             <td>
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-8">
                                         <a class="btn btn-primary btn-sm btn-block" data-toggle="collapse" href="#reqNumLengthForm">Edit Length</a>
                                     </div>
                                 </div>

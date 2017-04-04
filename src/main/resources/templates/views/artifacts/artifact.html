@@ -99,6 +99,9 @@
                                         <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="BELOW"><i class="fa fa-fw fa-level-down"></i> Add item below</a>
                                     </li>
                                     <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItemBelow(\'' + ${item.id} + '\',\'' + ${item.sortIndex} + '\');'"><i class="fa fa-fw fa-level-down"></i> Add item below [DEV]</a>
+                                    </li>
+                                    <li>
                                         <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="ABOVE"><i class="fa fa-fw fa-level-up"></i> Add item above</a>
                                     </li>
                                     <li>

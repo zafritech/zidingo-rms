@@ -7,11 +7,14 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.zafritech.zidingorms.commons.enums.ArtifactStatus;
 
 @Entity(name = "TBL_ARTIFACTS")
 public class Artifact implements Serializable {
@@ -41,13 +44,16 @@ public class Artifact implements Serializable {
 
     @ManyToOne
     private Folder artifactFolder;
+    
+    @Enumerated(EnumType.STRING)
+    private ArtifactStatus artifactStatus;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
-
+    
     public Artifact() {
     }
 
@@ -63,6 +69,7 @@ public class Artifact implements Serializable {
         this.artifactType = artifactType;
         this.artifactProject = artifactProject;
         this.artifactFolder = artifactFolder;
+        this.artifactStatus = ArtifactStatus.DRAFT;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
@@ -81,6 +88,7 @@ public class Artifact implements Serializable {
         this.artifactType = artifactType;
         this.artifactProject = artifactProject;
         this.artifactFolder = artifactFolder;
+        this.artifactStatus = ArtifactStatus.DRAFT;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
     }
@@ -210,6 +218,14 @@ public class Artifact implements Serializable {
      */
     public void setArtifactFolder(Folder artifactFolder) {
         this.artifactFolder = artifactFolder;
+    }
+
+    public ArtifactStatus getArtifactStatus() {
+        return artifactStatus;
+    }
+
+    public void setArtifactStatus(ArtifactStatus artifactStatus) {
+        this.artifactStatus = artifactStatus;
     }
 
     /**

@@ -1021,6 +1021,189 @@ function BootboxAddComment(id) {
 }
 
 
+function BootboxCreateItemBelow(id, index) {
+    
+    alert('Ref Item ID: ' + id + ', Pos: ' + index);
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/item/item-create-form.html',
+        success: function (data) { 
+            
+            var box = bootbox.dialog({
+                message: data,
+                title: "Create new item",
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    success: {
+                        label: "Save",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                }
+            });
+            
+            box.on("shown.bs.modal", function(e) { });
+            
+            box.modal('show');
+        }
+    });
+}
+
+
+function ArtifactBasicMetadata(id) {
+    
+    $.ajax({
+        url: '/api/artifact/' + id,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+
+            console.log(data);
+
+            var projectId = data.artifactProject.id;
+            var projectName = data.artifactProject.projectName;
+            var folderId = data.artifactFolder.id;
+            var longName = data.artifactLongName;
+            var name = data.artifactName;
+            var identifier = data.identifier;
+            var artifactTypeId = data.artifactType.id;
+            var artifactDescription = data.artifactDescription;
+
+            $.ajax({
+                type: 'GET',
+                url: '/modal/artifact/artifact-meta-form.html',
+                success: function(data) {
+
+                    var box = bootbox.dialog({
+                        message: data,
+                        title: "Document Basic Information",
+                        buttons: {
+                            cancel: {
+                                label: "Cancel",
+                                className: "btn-danger btn-fixed-width-100"
+                            },
+                            success: {
+                                label: "Save",
+                                className: "btn-success btn-fixed-width-100"
+                            }
+                        }
+                    });
+
+                    box.on("shown.bs.modal", function(e) {
+
+                        $(e.currentTarget).find('input[name="artifactId"]').val(id);
+                        $(e.currentTarget).find('input[name="projectId"]').val(projectId);
+                        $(e.currentTarget).find('input[name="artifactProjectId"]').val(projectName);
+                        $(e.currentTarget).find('input[name="identifier"]').val(identifier);
+                        $(e.currentTarget).find('input[name="artifactLongName"]').val(longName);
+                        $(e.currentTarget).find('input[name="artifactName"]').val(name);
+                        $(e.currentTarget).find('textarea[name="artifactDescription"]').val(artifactDescription);
+
+                        getArtifactTypes(artifactTypeId);
+                        getFoldersByProject(projectId, folderId);
+                    });
+
+                    box.modal('show');
+                }
+            });
+        }
+    });
+}
+
+
+function ArtifactStatusLoad(selectedId) {
+    
+    $.ajax({
+        url: '/api/artifacts/statuslist',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+
+            // Populate dropdown control
+            var select = document.getElementById('artifactStatusSelect');
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+                
+                var opt = document.createElement('option');
+
+                opt.value = index;
+                opt.innerHTML = index;
+                select.appendChild(opt);
+            });
+
+            select.value = selectedId;
+        }
+    });
+}
+
+
+function getArtifactTypes(selectedId) {
+
+    var url = '/api/artifact/types';
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            // Populate dropdown control
+            var select = document.getElementById('artifactTypeId');
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+
+                var opt = document.createElement('option');
+
+                opt.value = index.id;
+                opt.innerHTML = index.artifactTypeLongName;
+                select.appendChild(opt);
+            });
+
+            select.value = selectedId;
+        }
+    });
+}
+
+
+function getFoldersByProject(projId, selectedId) {
+    
+    var url = '/api/projectfolders/' + projId;
+    
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            console.log(data);
+            
+            // Populate dropdown control
+            var select = document.getElementById('artifactFolderId');
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+
+                if (index.parent !== null) {      // Skip project root folder
+                    
+                    var opt = document.createElement('option');
+
+                    opt.value = index.id;
+                    opt.innerHTML = index.folderName;
+                    select.appendChild(opt);
+                }
+            });
+
+            select.value = selectedId;
+        }
+    });
+}
+
+
 function showToastr(msgType, message) {
 
     toastr.options = {

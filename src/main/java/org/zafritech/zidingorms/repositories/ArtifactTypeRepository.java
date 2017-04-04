@@ -5,6 +5,7 @@
  */
 package org.zafritech.zidingorms.repositories;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.zafritech.zidingorms.domain.ArtifactType;
 
@@ -15,4 +16,7 @@ import org.zafritech.zidingorms.domain.ArtifactType;
 public interface ArtifactTypeRepository extends CrudRepository<ArtifactType, Long> {
 
     ArtifactType findByArtifactTypeName(String name);
+    
+    @Override
+    List<ArtifactType> findAll();
 }

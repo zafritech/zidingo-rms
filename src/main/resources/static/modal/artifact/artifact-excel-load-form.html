@@ -1,0 +1,10 @@
+<form id="importExcel" action="/excel/import" method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+        <label for="excelfile">Excel file</label>
+        <input type="file" class="form-control" id="file" name="file" placeholder="Select Excel file" />
+    </div>
+
+    <input type="hidden" name="artifactId" id="artifactId" th:value="${artifact.id}" />
+
+</form>

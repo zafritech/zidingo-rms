@@ -1,0 +1,67 @@
+<form id="createItem" action="/api/items/save" method="post">
+
+    <input type="hidden" name="artifactId" id="artifactId" value="" />
+    <input type="hidden" name="projectId" id="projectId" value="" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="artifactProjectId">Project:</label>
+                <input type="text" class="form-control" id="artifactProjectId" name="artifactProjectId" value="" disabled="disabled"/>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="artifactFolderId">Folder:</label>
+                <select class="form-control" id="artifactFolderId" name="artifactFolderId">
+                    <option>General Conditions</option>
+                    <option>Appendices</option>
+                    <option>Third Party Sources</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="artifactLongName">Document long name:</label>
+                <input type="text" class="form-control" id="artifactLongName" name="artifactLongName" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="artifactName">Document name:</label>
+                <input type="text" class="form-control" id="artifactName" name="artifactName" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="identifier">Document number:</label>
+                <input type="text" class="form-control" id="identifier" name="identifier" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="artifactTypeId">Document type:</label>
+                <select class="form-control" id="artifactTypeId" name="artifactTypeId">
+                    <option>System Requirement Specification</option>
+                    <option>Interface Control Document</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6">&nbsp;</div>
+    </div>
+
+    <div class="form-group">
+        <label for="artifactDescription">Description:</label>
+        <textarea class="form-control"  rows="5" cols="50" id="artifactDescription" name="artifactDescription"></textarea>
+    </div>
+
+</form>

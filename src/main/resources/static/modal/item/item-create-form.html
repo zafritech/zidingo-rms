@@ -1,0 +1,60 @@
+<form id="createItem" action="/api/items/save" method="post">
+
+    <input type="hidden" name="artifactId" id="artifactId" value="" />
+    <!--<input type="hidden" name="sysIdTemplate" id="sysIdTemplate" value="QEC-APPXC" />-->
+    <input type="hidden" name="createId" id="createId" value="" />
+    <input type="hidden" name="createSortIndex" id="createSortIndex" value="" />
+    <input type="hidden" name="createInsertBefore" id="createInsertBefore" value="" />
+    <input type="hidden" name="createInsertAfter" id="createInsertAfter" value="" />
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="createItemLevel">Item level:</label>
+                <select class="form-control" id="createItemLevel" name="createItemLevel"></select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="createItemClass">Item class:</label>
+                <select class="form-control" id="createItemClass" name="createItemClass" onchange="itemCreateClassChange();"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="createRequirementRow">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="createItemType">Requirement type:</label>
+                <select class="form-control" id="createItemType" name="createItemType"></select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="createIdentTemplate">Identifier prefix:</label>
+                <select class="form-control" id="createIdentTemplate" name="createIdentTemplate" onchange="itemCreateIdentTemplateChange();"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="createMediaType">Media type:</label>
+                <select class="form-control" id="createMediaType" name="createMediaType"></select>
+            </div>
+        </div>
+        <div class="col-sm-6" id="createIdentifierContainer">
+            <div class="form-group">
+                <label for="createIdentifier">Identifier:</label>
+                <input type="text" class="form-control" id="createIdentifier" name="createIdentifier" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="createItemValue">Item details:</label>
+        <textarea class="form-control"  rows="5" cols="50" id="createItemValue" name="createItemValue"></textarea>
+    </div>
+
+</form>
