@@ -5,12 +5,18 @@
  */
 package org.zafritech.zidingorms.controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -173,5 +179,28 @@ public class ApplicationController {
         }
 
         return "redirect:/artifacts/" + id;
+    }
+    
+    @RequestMapping("/excel/download/{id}")
+    public void exportExcelArtifact(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        
+        Artifact artifact = artifactRepository.findOne(id);
+        
+        DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+        String fileName = timeFormat.format(System.currentTimeMillis()) + "_" + artifact.getIdentifier() + "_Requirements.xlsx";
+        
+        XSSFWorkbook workbook = artifactService.DownloadExcel(id);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        workbook.write(baos); 
+        baos.close();
+        
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setContentLength(baos.size());
+        
+        ServletOutputStream fout = response.getOutputStream();
+        fout.write(baos.toByteArray());
+        fout.flush();
+        fout.close();
     }
 }

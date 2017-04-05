@@ -34,6 +34,8 @@
                     </div>
                     <div th:if="${!items.isEmpty()}" class="pull-right" >
                         <a th:href="@{'/artifacts/metadata/' + ${artifact.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a>
+                        <a th:href="@{'/pdf/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-pdf-o"></i> Download PDF</a>
+                        <a th:href="@{'/excel/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-excel-o"></i> Download Excel</a>
                     </div>
                 </div>
             </div>
@@ -86,13 +88,13 @@
 
                             <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
-                                    <i class="fa fa-comments" style="color: #2ECC71;"></i> 
+                                    <i class="fa fa-comments" style="color: #00aced; font-size: 22px;"></i> 
                                 </a>
                             </li>
 
-                            <li class="dropdown item-toolbar-li">
+                            <li class="dropdown item-toolbar-li" style="margin-right: -10px;">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-cog"></i> <b class="caret"></b>
+                                   <i class="fa fa-angle-double-right" style="color: #00aced; font-size: 18px;"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li>

@@ -19,6 +19,7 @@ import org.zafritech.zidingorms.domain.ArtifactType;
 import org.zafritech.zidingorms.domain.Company;
 import org.zafritech.zidingorms.domain.Folder;
 import org.zafritech.zidingorms.domain.ItemType;
+import org.zafritech.zidingorms.domain.LinkType;
 import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.domain.Role;
 import org.zafritech.zidingorms.domain.SystemVariable;
@@ -28,6 +29,7 @@ import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
 import org.zafritech.zidingorms.repositories.CompanyRepository;
 import org.zafritech.zidingorms.repositories.FolderRepository;
 import org.zafritech.zidingorms.repositories.ItemTypeRepository;
+import org.zafritech.zidingorms.repositories.LinkTypeRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
 import org.zafritech.zidingorms.repositories.RoleRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
@@ -69,14 +71,18 @@ public class StarterCLR implements CommandLineRunner {
     private ItemTypeRepository itemTypeRepository;
 
     @Autowired
+    private LinkTypeRepository linkTypeRepository;
+    
+    @Autowired
     private ProjectServiceImpl projectService;
 
     @Override
     public void run(String... strings) throws Exception {
-
+//
 //    	SeedRoles();
 //        SeedUsers();
 //        SeedItemTypes();
+//        SeedLinkTypes();
 //        SeedArtifactTypes();
 //        SeedProjects();
 //    	SeedSystemVariable();
@@ -90,7 +96,6 @@ public class StarterCLR implements CommandLineRunner {
         roleRepository.save(new Role("ROLE_USER"));
         roleRepository.save(new Role("ROLE_ACTUATOR"));
         roleRepository.save(new Role("ROLE_GUEST"));
-
     }
 
     @Transactional
@@ -186,24 +191,13 @@ public class StarterCLR implements CommandLineRunner {
         Project project2 = projectService.create("Zidingo Requirements Management System", "Zidingo RMS", company1);
 
         // Empty projects #########################
-//        projectService.create("Project Drummer II", "Project Drummer II", company1);
-//        projectService.create("Project Rooivalk AH III", "Project Rooivalk AH III", company2);
-//        projectService.create("Project Phoenix", "Project Phoenix", company1);
-//        projectService.create("Lukuluba Upgrade 2020", "Lukuluba Upgrade 2020", company2);
         // Seed Project #1
         Folder folder1 = folderRepository.save(new Folder(project1.getProjectShortName(), FolderTypes.PROJECT, project1));
         Folder input1 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder1, project1));
-//        Folder specn1 = folderRepository.save(new Folder("Specifications", FolderTypes.DOCUMENT, folder1, project1));
-//        Folder desig1 = folderRepository.save(new Folder("Architectural Design", FolderTypes.DOCUMENT, folder1, project1));
-//        Folder detal1 = folderRepository.save(new Folder("Detailed Specification", FolderTypes.DOCUMENT, folder1, project1));
 
         Folder contract1 = folderRepository.save(new Folder("Contract", FolderTypes.DOCUMENT, input1, project1));
-//        Folder internal1 = folderRepository.save(new Folder("Internal Sources", FolderTypes.DOCUMENT, input1, project1));
         Folder thirdpty1 = folderRepository.save(new Folder("Third Party Sources", FolderTypes.DOCUMENT, input1, project1));
 
-//        folderRepository.save(new Folder("Electrical System", FolderTypes.DOCUMENT, detal1, project1));
-//        folderRepository.save(new Folder("Communication System", FolderTypes.DOCUMENT, detal1, project1));
-//        folderRepository.save(new Folder("Subsystem #1", FolderTypes.DOCUMENT, detal1, project1));
         Folder gencon1 = folderRepository.save(new Folder("General Conditions", FolderTypes.DOCUMENT, contract1, project1));
         Folder appenx1 = folderRepository.save(new Folder("Appendices", FolderTypes.DOCUMENT, contract1, project1));
 
@@ -256,14 +250,6 @@ public class StarterCLR implements CommandLineRunner {
         artifactRepository.save(new Artifact("XC08100100-APP-F", "Appendix G", "Appendix G - Materials, Equipment and Facilities provided by QF", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, appenx1));
         artifactRepository.save(new Artifact("XC08100100-APP-F", "Appendix H", "Appendix H - Contract Execution Plan", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, appenx1));
 
-//        artifactRepository.save(new Artifact("Z822-SYS-RQL-1201", "Requirements Lists", artifactTypeRepository.findByArtifactTypeName("RLS"), project1, internal1));
-//        artifactRepository.save(new Artifact("ZFTC-GEN-STD-0002", "Design Standard", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, internal1));
-//        artifactRepository.save(new Artifact("Z822-SYS-SSS-2201", "System Specification", artifactTypeRepository.findByArtifactTypeName("SyRS"), project1, specn1));
-//        artifactRepository.save(new Artifact("Z822-SYS-VRS-2202", "Validation Test Spec", artifactTypeRepository.findByArtifactTypeName("VRS"), project1, specn1));
-//
-//        artifactRepository.save(new Artifact("Z822-SYS-SDD-2301", "Architectural Description", artifactTypeRepository.findByArtifactTypeName("SyDD"), project1, desig1));
-//        artifactRepository.save(new Artifact("Z822-SYS-SDD-2302", "Design Description", artifactTypeRepository.findByArtifactTypeName("SyDD"), project1, desig1));
-//        artifactRepository.save(new Artifact("Z822-SYS-ICD-2303", "System Main ICD", artifactTypeRepository.findByArtifactTypeName("ICD"), project1, desig1));
         // Seed Project #2 #########################
         Folder folder2 = folderRepository.save(new Folder(project2.getProjectShortName(), FolderTypes.PROJECT, project2));
         Folder input2 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder2, project2));
@@ -344,13 +330,40 @@ public class StarterCLR implements CommandLineRunner {
                 add(new ItemType("Story", "User Story", "A (user) story is a special kind of functional requirement, which uses one or more sentences in the everyday or business language of the end user that captures what the user (resp. a role) wants to achieve. User stories generally follow the following template: \"As a <role>, I want <goal/desire> so that <benefit>.\""));
                 add(new ItemType("Constraint", "Constraint Requirement", "onstraint Requirement describes real-world limits or boundaries around what we want to happen"));
                 add(new ItemType("Design", "Design Requirement", "Design requirements direct the design (internals of the system), by inclusion (build it this way), or exclusion (don't build it this way)."));
-
             }
         });
 
         itemTypeRepository.findAll().forEach(System.out::println);
     }
 
+    @Transactional
+    private void SeedLinkTypes() {
+        
+        linkTypeRepository.save(new HashSet<LinkType>() {
+            
+            {
+                add(new LinkType("Derived", "Derived From", "Captures the relationship between a requirement artifact and an architecture management item that represents a model of the requirement artifact. For example, a UML use case in an architecture management application can represent a requirement artifact. In architecture management applications, links of this type are shown as Derives From Architecture Element links."));
+                add(new LinkType("Affected", "Affected By", "Captures the relationship between a requirement artifact and a change management item that affects the implementation of the requirement artifact. For example, a defect in the Change and Configuration Management (CCM) application can affect the implementation of a requirement artifact. In the CCM application, links of this type are shown as Affects links."));
+                add(new LinkType("Implements", "Implements", "Captures the relationship between a requirement artifact and a change management item that describes the implementation of the requirement artifact. For example, a story in the CCM application can describe the implementation of a requirement artifact. In the CCM application, links of this type are shown as Implements links."));
+                add(new LinkType("Satisfies", "Satisfies or Is satisfied By", "Captures how the different levels of requirements are elaborated. For example: an approved vision statement in a vision document can be satisfied by one or more stakeholder requirements."));
+                add(new LinkType("Validates", "Validates", "Captures the relationship between a requirement artifact and a test artifact that validates the implementation of the requirement artifact. For example, a test plan in the Quality Management (QM) application can validate the implementation of a requirement artifact. In the QM application, links of this type are displayed as Validates links."));
+                add(new LinkType("Referenced", "Referenced By or References", "Tracks a relationship between requirement artifacts. These types of relationships occur when creating links between artifacts."));
+                add(new LinkType("Refines", "Refines", ""));
+                add(new LinkType("Tracks", "Tracks or Is Tracked By", "Captures the relationship between a requirement artifact and a change management item that tracks the implementation of the requirement artifact. For example, a task in the CCM application can track the implementation of a requirement artifact. In the CCM application, links of this type are shown as Tracks links."));
+                add(new LinkType("Refers", "Refers To", ""));
+                add(new LinkType("Embedded", "Embedded In", "Tracks a containment relationship between RM artifacts. These types of relationships occur when you complete operations such as inserting an artifact and inserting an image for a text artifact."));
+                add(new LinkType("Extracted", "Extracted From", "Captures when the content of a requirement artifact was created from the contents of another requirement artifact. This type of link is created during extraction-based operations; for example, when you create an artifact by saving an existing artifact as a new artifact."));
+                add(new LinkType("Illustrates", "Illustrates", "Illustrates the relationships between graphical and text artifacts."));
+                add(new LinkType("Links", "Links To", "Tracks a general relationship between requirement artifacts."));
+                add(new LinkType("Mitigates", "Mitigates", "Captures the relationship between requirements and risks. A requirement mitigates one or more risks, and a risk is mitigated by one or more requirements."));
+                add(new LinkType("Decomposition", "Is a Decomposition Of", "Captures part-whole relationships between requirement artifacts. Typically, these types of links represent artifact hierarchies."));
+                add(new LinkType("Constrained", "Is Constrained By", "Captures the relationship between requirement artifacts when one artifact limits or holds back the other artifact. For example, an artifact can be constrained by a requirement that it must conform to"));
+            }
+        });
+        
+        linkTypeRepository.findAll().forEach(System.out::println);
+    }
+            
     @Transactional
     private void SeedSystemVariable() {
 
@@ -374,5 +387,7 @@ public class StarterCLR implements CommandLineRunner {
             sysVarRepository.save(new SystemVariable(SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name(), reqIdTemplate + "-STAT", "DOCUMENT", artifact.getId()));
 
         }
+        
+        sysVarRepository.findAll().forEach(System.out::println);
     }
 }
