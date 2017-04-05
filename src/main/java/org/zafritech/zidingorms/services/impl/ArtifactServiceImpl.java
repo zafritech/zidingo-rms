@@ -285,20 +285,6 @@ public class ArtifactServiceImpl implements ArtifactService {
         workbook = addRequirementsToWorksheet(workbook, id);
         workbook = addCommentsToWorksheet(workbook, id);
         workbook = addLinksToWorksheet(workbook, id);
-        
-        try (FileOutputStream outputStream = new FileOutputStream("Requirements.xlsx")) {
-            
-            workbook.write(outputStream); 
-            return workbook;
-            
-        } catch (FileNotFoundException e) {
-            
-            e.printStackTrace(System.out);
-            
-        } catch (IOException e) {
-            
-            e.printStackTrace(System.out);
-        }
             
         return workbook;
     }
