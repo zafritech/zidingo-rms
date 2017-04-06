@@ -25,7 +25,7 @@ import org.zafritech.zidingorms.services.impl.CommentServiceImpl;
  * @author LukeS
  */
 @RestController
-public class CommentController {
+public class CommentRestController {
 
     private CommentService commentService;
 

@@ -1,9 +1,17 @@
 package org.zafritech.zidingorms.services.impl;
 
+import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
+import com.itextpdf.layout.element.Paragraph;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -287,6 +295,89 @@ public class ArtifactServiceImpl implements ArtifactService {
         workbook = addLinksToWorksheet(workbook, id);
             
         return workbook;
+    }
+    
+    @Override
+    public ByteArrayOutputStream DownloadPDF(Long id) {
+        
+        ByteArrayOutputStream  outputStream = new ByteArrayOutputStream();
+        PdfWriter writer = new PdfWriter(outputStream);
+        PdfDocument pdf = new PdfDocument(writer);
+        
+        
+        try (Document document = new Document(pdf)) 
+        {
+            
+            PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+            
+            Style normal = new Style();
+            normal.setFont(font).setFontSize(11);
+            
+            Style headeH1 = new Style();
+            headeH1.setFontSize(18);
+            headeH1.setBold();
+            
+            Style headeH2 = new Style();
+            headeH2.setFontSize(16);
+            headeH2.setBold();
+            
+            Style headeH3 = new Style();
+            headeH3.setFontSize(14);
+            headeH3.setBold();
+            
+            Style headeH4 = new Style();
+            headeH4.setFontSize(12);
+            headeH4.setBold();
+            
+            Style headeH5 = new Style();
+            headeH5.setFontSize(11);
+            headeH5.setBold();
+            headeH5.setItalic();
+            
+            List<Item> items = itemRepository.findByArtifactId(id);
+
+            for (Item item : items ) {
+                
+                if (item.getItemClass().equals("HEADER")) {
+                    
+                    switch (item.getItemLevel()) {
+
+                        case 1:
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH1)); 
+                            break;
+
+                        case 2: 
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH2)); 
+                            break;
+
+                        case 3: 
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH3)); 
+                            break;
+
+                        case 4: 
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH4)); 
+                            break;
+
+                        case 5: 
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH5)); 
+                            break;
+
+                        default:
+                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(normal));
+                    }
+                    
+                } else {
+                    
+                    document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(normal));
+                }
+            }
+            
+            return outputStream;
+            
+        } catch(Exception e) {
+            
+            return null;
+        }
     }
     
     // Excel 2003 or 2007

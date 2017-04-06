@@ -25,7 +25,7 @@ import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
  * @author LukeS
  */
 @RestController
-public class ArtifactController {
+public class ArtifactRestController {
     
     @Autowired
     private ArtifactRepository artifactRepository;

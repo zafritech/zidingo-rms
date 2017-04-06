@@ -76,7 +76,7 @@
                      th:attr="id=${item.sysId}" 
                      th:classappend="${item.itemClass == 'HEADER'} ? 'row item-header-' + ${item.itemLevel} : 'row item-level-' + ${item.itemLevel} + ' ' + ${#strings.toLowerCase(item.itemClass)}">
                     <div th:attr="id='value-container-'+${item.sysId}" th:class="${item.itemClass} == 'REQUIREMENT' ? 'col-xs-9 requirement-text' : 'col-xs-11'">
-                        <span th:attr="id='value-'+${item.sysId}"  th:text="${item.itemValue}">Item</span>
+                        <span th:attr="id='value-'+${item.sysId}"  th:utext="${#strings.replace(item.itemValue, newLineChar, '&lt;br /&gt;')}">Item</span>
                     </div>
                     <div th:attr="id='ident-container-'+${item.sysId}" th:if="${item.itemClass} == 'REQUIREMENT'" class="col-xs-2 requirement-identifier">
                         <span th:attr="id='ident-'+${item.sysId}" th:text="${item.identifier}">Identifier</span>

@@ -1,5 +1,6 @@
 package org.zafritech.zidingorms.services;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,4 +17,6 @@ public interface ArtifactService {
     Artifact importExcel(Long id, String filePath);
     
     XSSFWorkbook DownloadExcel (Long id)  throws FileNotFoundException, IOException;
+    
+    ByteArrayOutputStream DownloadPDF(Long id);
 }

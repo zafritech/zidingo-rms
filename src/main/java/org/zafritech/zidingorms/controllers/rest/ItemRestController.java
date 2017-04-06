@@ -26,7 +26,7 @@ import org.zafritech.zidingorms.services.impl.ItemServiceImpl;
 
 @SuppressWarnings("Convert2Diamond")
 @RestController
-public class ItemController {
+public class ItemRestController {
 
     private ItemService itemService;
 

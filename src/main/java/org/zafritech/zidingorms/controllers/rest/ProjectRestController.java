@@ -14,7 +14,7 @@ import org.zafritech.zidingorms.services.ProjectService;
 import org.zafritech.zidingorms.services.impl.ProjectServiceImpl;
 
 @RestController
-public class ProjectController {
+public class ProjectRestController {
 
     private ProjectService projectService;
 

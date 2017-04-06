@@ -22,7 +22,7 @@ import org.zafritech.zidingorms.services.FolderService;
  * @author LukeS
  */
 @RestController
-public class FolderController {
+public class FolderRestController {
     
     @Autowired
     private FolderService folderService;
