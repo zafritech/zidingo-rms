@@ -8,6 +8,7 @@ package org.zafritech.zidingorms.services.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zafritech.zidingorms.commons.enums.FolderType;
 import org.zafritech.zidingorms.domain.Folder;
 import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.repositories.FolderRepository;
@@ -33,5 +34,13 @@ public class FolderServiceImpl implements FolderService {
         Project project = projectRepository.findOne(id);
         
         return folderRepository.findByProject(project);
+    }
+    
+    @Override
+    public Folder getProjectFolder(Long id) {
+        
+        Project project = projectRepository.findOne(id);
+        
+        return folderRepository.findFirstByProjectAndFolderTypeOrderByFolderName(project, FolderType.PROJECT.name());
     }
 }

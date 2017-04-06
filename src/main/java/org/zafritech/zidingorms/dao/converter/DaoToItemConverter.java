@@ -1,11 +1,11 @@
-package org.zafritech.zidingorms.daos.converters;
+package org.zafritech.zidingorms.dao.converter;
 
 import java.sql.Timestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.zafritech.zidingorms.commons.enums.MediaType;
-import org.zafritech.zidingorms.daos.ItemDao;
+import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemType;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;

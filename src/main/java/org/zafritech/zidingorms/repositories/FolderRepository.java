@@ -20,4 +20,6 @@ public interface FolderRepository extends CrudRepository<Folder, Long> {
     Folder findByFolderName(String folder);
 
     List<Folder> findByProject(Project project);
+    
+    Folder findFirstByProjectAndFolderTypeOrderByFolderName(Project project, String type);
 }

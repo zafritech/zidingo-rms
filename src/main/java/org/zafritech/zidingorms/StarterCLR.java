@@ -78,7 +78,7 @@ public class StarterCLR implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-//
+
 //    	SeedRoles();
 //        SeedUsers();
 //        SeedItemTypes();
@@ -194,6 +194,7 @@ public class StarterCLR implements CommandLineRunner {
         // Seed Project #1
         Folder folder1 = folderRepository.save(new Folder(project1.getProjectShortName(), FolderTypes.PROJECT, project1));
         Folder input1 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder1, project1));
+        Folder output1 = folderRepository.save(new Folder("Verification & Validation", FolderTypes.DOCUMENT, folder1, project1));
 
         Folder contract1 = folderRepository.save(new Folder("Contract", FolderTypes.DOCUMENT, input1, project1));
         Folder thirdpty1 = folderRepository.save(new Folder("Third Party Sources", FolderTypes.DOCUMENT, input1, project1));
@@ -249,6 +250,8 @@ public class StarterCLR implements CommandLineRunner {
         artifactRepository.save(new Artifact("XC08100100-APP-F", "Appendix F", "Appendix F - Drawings", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, appenx1));
         artifactRepository.save(new Artifact("XC08100100-APP-F", "Appendix G", "Appendix G - Materials, Equipment and Facilities provided by QF", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, appenx1));
         artifactRepository.save(new Artifact("XC08100100-APP-F", "Appendix H", "Appendix H - Contract Execution Plan", artifactTypeRepository.findByArtifactTypeName("GEN"), project1, appenx1));
+        
+        artifactRepository.save(new Artifact("XC08100100-VVR-A", "V & V References", "Appendix B - Verification & Validation References", artifactTypeRepository.findByArtifactTypeName("VRS"), project1, output1));
 
         // Seed Project #2 #########################
         Folder folder2 = folderRepository.save(new Folder(project2.getProjectShortName(), FolderTypes.PROJECT, project2));
@@ -328,7 +331,7 @@ public class StarterCLR implements CommandLineRunner {
                 add(new ItemType("Usability", "Usability Requirement", "A usability requirement is a non-functional requirement describing the intended ease of use (ergonomical comfort) and learnability of the system."));
                 add(new ItemType("Legal", "Legal Requirement", "A legal requirement is a non-functional requirement that states a regulation that must be recognized by the system. Regulations could be laws, standards, specifications, etc."));
                 add(new ItemType("Story", "User Story", "A (user) story is a special kind of functional requirement, which uses one or more sentences in the everyday or business language of the end user that captures what the user (resp. a role) wants to achieve. User stories generally follow the following template: \"As a <role>, I want <goal/desire> so that <benefit>.\""));
-                add(new ItemType("Constraint", "Constraint Requirement", "onstraint Requirement describes real-world limits or boundaries around what we want to happen"));
+                add(new ItemType("Constraint", "Constraint Requirement", "Constraint Requirement describes real-world limits or boundaries around what we want to happen"));
                 add(new ItemType("Design", "Design Requirement", "Design requirements direct the design (internals of the system), by inclusion (build it this way), or exclusion (don't build it this way)."));
             }
         });

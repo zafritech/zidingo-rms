@@ -8,7 +8,7 @@ package org.zafritech.zidingorms.services.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.daos.CommentDao;
+import org.zafritech.zidingorms.dao.CommentDao;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemComment;
 import org.zafritech.zidingorms.repositories.ItemCommentRepository;

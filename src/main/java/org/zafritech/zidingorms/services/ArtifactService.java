@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.zafritech.zidingorms.daos.ItemDao;
+import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
 

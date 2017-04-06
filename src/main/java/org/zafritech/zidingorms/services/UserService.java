@@ -6,7 +6,7 @@
 package org.zafritech.zidingorms.services;
 
 import java.util.List;
-import org.zafritech.zidingorms.daos.UserDao;
+import org.zafritech.zidingorms.dao.UserDao;
 import org.zafritech.zidingorms.domain.User;
 
 /**

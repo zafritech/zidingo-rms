@@ -7,7 +7,7 @@ package org.zafritech.zidingorms.services;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.daos.CommentDao;
+import org.zafritech.zidingorms.dao.CommentDao;
 import org.zafritech.zidingorms.domain.ItemComment;
 
 /**

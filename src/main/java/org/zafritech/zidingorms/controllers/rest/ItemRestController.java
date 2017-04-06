@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.MediaType;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
-import org.zafritech.zidingorms.daos.ItemDao;
+import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemType;
 import org.zafritech.zidingorms.domain.SystemVariable;

@@ -28,14 +28,41 @@
                 <div class="col-md-6" style="padding-right: 20px;">
                     <div th:if="${artifacts.isEmpty()}" class="pull-right" >
                         <a th:href="@{'/projects/metadata/' + ${project.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a> |
-                        <a href="#createItemModal" data-toggle="modal" data-ref-artifact-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i> Create Item</a> |
-                        <a href="#editItemModal" data-toggle="modal" data-artifact-id=""><i class="fa fa-fw fa-sartifactap"></i> Apply Template</a> |
-                        <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-file-excel-o"></i> Import Excel</a>
+                        <a href="#editItemModal" data-toggle="modal" data-artifact-id=""><i class="fa fa-fw fa-sitemap"></i> Apply Template</a> |
+                        <a href="#createItemModal" data-toggle="modal" data-ref-artifact-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i>Add Document</a>
                     </div>
                     <div th:if="${!artifacts.isEmpty()}" class="pull-right" >
-                        <a th:href="@{'/projects/metadata/' + ${project.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a>
+                        <a th:href="@{'/projects/metadata/' + ${project.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a> |
+                        <a th:href="@{'/projects/createfolder/' + ${project.id}}"><i class="fa fa-fw fa-folder"></i> Add Folder</a>
                     </div>
                 </div>
+            </div>
+            <div th:if="${folder != null}">
+                
+                <div class="row" style="border-top: 1px solid #c0c0c0; margin-top: 10px; padding-top: 15px; font-size: 18px;">
+                    <div class="col-sm-8">
+                        <i class="fa fa-folder-open" style="color: #f0ad4e"></i> <span th:text="${folder.folderName}">Folder</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class=" pull-right" style=" font-size: 14px;">
+                            <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-file-text"></i> Add Document</a> |
+                            <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-folder"></i> Add Subfolder</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${!artifacts.isEmpty()}" style="padding: 15px 20px;">
+                    
+                    <div th:each="artifact : ${artifacts}">
+                        <div style="padding-bottom: 10px;">
+                            <a th:href="${'/artifacts/' + artifact.id}">
+                                <i class="fa fa-file-text" style="color: #00aced"></i> <span th:text="${artifact.artifactLongName}">Artifact Name</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                </div>
+                
             </div>
 
             <div th:if="${artifacts.isEmpty()}">
@@ -67,7 +94,8 @@
                 </div>
 
             </div>
-
+            
+            
             <div th:if="${!artifacts.isEmpty()}" class="panel-body">
 
                 <!--Artifacts list-->

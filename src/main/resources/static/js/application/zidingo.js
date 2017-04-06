@@ -70,6 +70,8 @@ function loadProjectTree(id) {
         dataType: "json",
         success: function (data) {
 
+            console.log(data);
+            
             if (!$.trim(data)) {
 
                 $.fn.zTree.destroy("projectTree");
@@ -106,12 +108,17 @@ function loadProjectTree(id) {
 function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 
     var treeObj = $.fn.zTree.getZTreeObj("projectTree");
+    var projectId = localStorage.getItem('currentProjectId');
 
     if (treeNode.isParent) {
 
         if (treeNode.pId === 0) {
 
-            window.location.replace('/projects/' + treeNode.id);
+            window.location.replace('/projects/' + treeNode.linkId);
+            
+        } else {
+            
+            window.location.replace('/projects/' + projectId + '/' + treeNode.id);
         }
 
         localStorage.setItem('currentFolderId', treeNode.id);

@@ -15,6 +15,7 @@ import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.FolderRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
+import org.zafritech.zidingorms.services.FolderService;
 
 /**
  *
@@ -32,6 +33,9 @@ public class ProjectController {
     @Autowired
     private ArtifactRepository artifactRepository;
     
+    @Autowired
+    private FolderService folderService;
+    
     @RequestMapping("/projects")
     public String projects(Model model) {
 
@@ -45,11 +49,25 @@ public class ProjectController {
     @RequestMapping("/projects/{id}")
     public String getProject(@PathVariable Long id, Model model) {
 
-        Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
+//        Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
+        Project project = projectRepository.findOne(id);
 
         model.addAttribute("project", project);
         model.addAttribute("artifacts", artifactRepository.findByArtifactProject(project));
+        model.addAttribute("folder", folderRepository.findOne(folderService.getProjectFolder(id).getId())); 
 
+        return "/views/projects/project";
+    }
+    
+    @RequestMapping("/projects/{id}/{folderId}")
+    public String getProjectFolder(@PathVariable Long id, @PathVariable Long folderId, Model model) {
+        
+        Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
+
+        model.addAttribute("project", project);
+        model.addAttribute("artifacts", artifactRepository.findByArtifactFolder(folderRepository.findOne(folderId)));
+        model.addAttribute("folder", folderRepository.findOne(folderId));
+        
         return "/views/projects/project";
     }
 }

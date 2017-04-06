@@ -2,7 +2,7 @@ package org.zafritech.zidingorms.services;
 
 import java.util.List;
 
-import org.zafritech.zidingorms.daos.ProjectTreeDao;
+import org.zafritech.zidingorms.dao.ProjectTreeDao;
 import org.zafritech.zidingorms.domain.Project;
 
 public interface ProjectService {

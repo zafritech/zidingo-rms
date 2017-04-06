@@ -7,7 +7,7 @@ package org.zafritech.zidingorms.controllers.rest;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zafritech.zidingorms.daos.CommentDao;
+import org.zafritech.zidingorms.dao.CommentDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;

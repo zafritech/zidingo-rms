@@ -15,4 +15,6 @@ import org.zafritech.zidingorms.domain.Folder;
 public interface FolderService {
     
     List<Folder> getByProjectId(Long id);
+    
+    Folder getProjectFolder(Long id);
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.zafritech.zidingorms.daos;
+package org.zafritech.zidingorms.dao;
 
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;

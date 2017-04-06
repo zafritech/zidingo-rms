@@ -1,4 +1,4 @@
-package org.zafritech.zidingorms.daos;
+package org.zafritech.zidingorms.dao;
 
 public class ProjectTreeDao {
 

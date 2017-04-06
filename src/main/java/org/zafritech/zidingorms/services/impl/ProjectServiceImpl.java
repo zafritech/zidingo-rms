@@ -14,7 +14,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.daos.ProjectTreeDao;
+import org.zafritech.zidingorms.commons.enums.FolderType;
+import org.zafritech.zidingorms.dao.ProjectTreeDao;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Company;
 import org.zafritech.zidingorms.domain.Folder;
@@ -74,12 +75,26 @@ public class ProjectServiceImpl implements ProjectService {
 
         for (Folder folder : folders) {
 
-            projectTree.add(new ProjectTreeDao(folder.getId(),
-                    (folder.getParent() == null) ? 0L : folder.getParent().getId(),
-                    folder.getFolderName(),
-                    (folder.getParent() == null),
-                    true,
-                    false));
+            if (folder.getFolderType().equals(FolderType.PROJECT.name())) {
+            
+                projectTree.add(new ProjectTreeDao(folder.getId(),
+                        (folder.getParent() == null) ? 0L : folder.getParent().getId(),
+                        folder.getFolderName(),
+                        (folder.getParent() == null),
+                        true,
+                        true,
+                        project.getId()));
+                
+            } else {
+            
+                projectTree.add(new ProjectTreeDao(folder.getId(),
+                        (folder.getParent() == null) ? 0L : folder.getParent().getId(),
+                        folder.getFolderName(),
+                        (folder.getParent() == null),
+                        true,
+                        true));
+            
+            }
 
         }
 

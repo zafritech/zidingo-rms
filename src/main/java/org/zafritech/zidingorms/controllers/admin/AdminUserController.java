@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.zafritech.zidingorms.daos.UserDao;
+import org.zafritech.zidingorms.dao.UserDao;
 import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.RoleRepository;
 import org.zafritech.zidingorms.services.UserService;

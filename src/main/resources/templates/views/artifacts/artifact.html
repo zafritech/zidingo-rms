@@ -86,9 +86,15 @@
                         <!-- Item Menu <ul> Container -->
                         <ul class="item-toolbar-ul">  
 
-                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
+                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0" style="margin-right: -8px;">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
-                                    <i class="fa fa-comments" style="color: #00aced; font-size: 22px;"></i> 
+                                    <i class="fa fa-comments" style="color: #00aced; font-size: 18px;"></i> 
+                                </a>
+                            </li>
+
+                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0" style="margin-right: -8px;">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
+                                    <i class="fa fa-link" style="color: red; font-size: 16px;"></i> 
                                 </a>
                             </li>
 

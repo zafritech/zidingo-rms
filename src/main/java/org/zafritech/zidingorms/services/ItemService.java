@@ -1,7 +1,7 @@
 package org.zafritech.zidingorms.services;
 
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.daos.ItemDao;
+import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
 
 @Service

@@ -1,8 +1,8 @@
-package org.zafritech.zidingorms.daos.converters;
+package org.zafritech.zidingorms.dao.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
-import org.zafritech.zidingorms.daos.ItemDao;
+import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
 
 public class ItemToDaoConverter implements Converter<Item, ItemDao> {

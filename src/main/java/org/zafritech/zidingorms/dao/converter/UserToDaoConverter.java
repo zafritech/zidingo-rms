@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.zafritech.zidingorms.daos.converters;
+package org.zafritech.zidingorms.dao.converter;
 
 import org.springframework.core.convert.converter.Converter;
-import org.zafritech.zidingorms.daos.UserDao;
+import org.zafritech.zidingorms.dao.UserDao;
 import org.zafritech.zidingorms.domain.User;
 
 /**
