@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
@@ -219,6 +220,26 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    
+    @Override
+    public List<Item> findRequirements(Long id) {
+     
+        List<Item> requirements = new ArrayList();
+        
+        List<Item> items = itemRepository.findByArtifactIdOrderBySortIndexAsc(id);
+        
+        for (Item item : items) {
+            
+            if (item.getItemClass().equals(ItemClass.REQUIREMENT.name())) {
+                
+                requirements.add(item);
+            }
+        }
+        
+        return requirements;
+    }
+    
+    
     private void refreshSortIndeces(Long artifactId, int index) {
 
         List<Item> items = itemRepository.findByArtifactIdOrderBySortIndexAsc(artifactId);

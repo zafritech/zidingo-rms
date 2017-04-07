@@ -86,21 +86,21 @@
                         <!-- Item Menu <ul> Container -->
                         <ul class="item-toolbar-ul">  
 
-                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0" style="margin-right: -8px;">
+                            <li th:attr="id=${'comment-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
-                                    <i class="fa fa-comments" style="color: #00aced; font-size: 18px;"></i> 
+                                    <i class="fa fa-comments icon-comment"></i> 
                                 </a>
                             </li>
 
-                            <li class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0" style="margin-right: -8px;">
-                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
-                                    <i class="fa fa-link" style="color: red; font-size: 16px;"></i> 
+                            <li th:attr="id=${'link-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.LinkCount} > 0">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayLinks(\'' + ${item.id} + '\');'">
+                                    <i class="fa fa-link icon-link"></i> 
                                 </a>
                             </li>
 
-                            <li class="dropdown item-toolbar-li" style="margin-right: -10px;">
+                            <li th:attr="id=${'menu-icon-' + item.sysId}" class="dropdown item-toolbar-li">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                   <i class="fa fa-angle-double-right" style="color: #00aced; font-size: 18px;"></i>
+                                   <i class="fa fa-bars" style="color: #00aced; font-size: 18px;"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li>
@@ -123,7 +123,7 @@
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'" class="divider"></li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
-                                        <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-link"></i> Item Links</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateLink(\'' + ${item.id} + '\',\'' + ${item.identifier} + '\',\'' + ${artifact.artifactProject.id} + '\');'"><i class="fa fa-fw fa-link"></i> Create item link</a>
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
                                         <a href="javascript:void(0);" th:onclick="'javascript:BootboxAddComment(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-comments"></i> Add item comment</a>
@@ -200,7 +200,6 @@
                             <form id="createItem" action="/api/items/save" method="post">
 
                                 <input type="hidden" name="artifactId" id="artifactId" value="" />
-                                <!--<input type="hidden" name="sysIdTemplate" id="sysIdTemplate" value="QEC-APPXC" />-->
                                 <input type="hidden" name="createId" id="createId" value="" />
                                 <input type="hidden" name="createSortIndex" id="createSortIndex" value="" />
                                 <input type="hidden" name="createInsertBefore" id="createInsertBefore" value="" />

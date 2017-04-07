@@ -1,0 +1,32 @@
+<form id="createItem" action="/api/items/save" method="post">
+
+    <input type="hidden" name="artifactId" id="artifactId" value="" />
+    <input type="hidden" name="itemId" id="itemId" value="" />
+    <input type="hidden" name="srcSysId" id="srcSysId" value="" />
+    <input type="hidden" name="dstSysId" id="dstSysId" value="" />
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="dstArtifactId">Source/destination document:</label>
+                <select class="form-control" id="dstArtifactId" name="dstArtifactId" onchange="onItemCreateLinkSrcDestChange();"></select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="linkTypeId">Link type:</label>
+                <select class="form-control" id="linkTypeId" name="linkTypeId"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="dstItemId">Source/destination item:</label>
+                <select class="form-control" id="dstItemId" name="dstItemId"></select>
+            </div>
+        </div>
+    </div>
+
+</form>

@@ -5,16 +5,13 @@
  */
 package org.zafritech.zidingorms.repositories;
 
-import java.util.List;
 import org.springframework.data.repository.CrudRepository;
-import org.zafritech.zidingorms.domain.LinkType;
+import org.zafritech.zidingorms.domain.Link;
 
 /**
  *
  * @author LukeS
  */
-public interface LinkTypeRepository extends CrudRepository<LinkType, Long> {
+public interface LinkRepository extends CrudRepository<Link, Long> {
     
-    @Override
-    List<LinkType> findAll();
 }

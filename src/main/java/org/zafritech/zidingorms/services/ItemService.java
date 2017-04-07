@@ -1,5 +1,6 @@
 package org.zafritech.zidingorms.services;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
@@ -24,4 +25,6 @@ public interface ItemService {
     String getNextSystemIdentifier(Long id);
 
     String getNextRequirementIdentifier(Long id, String template);
+    
+    List<Item> findRequirements(Long id); 
 }

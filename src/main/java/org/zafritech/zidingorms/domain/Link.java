@@ -23,19 +23,23 @@ public class Link implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "srcItemId")
-    private Item sourceItem;
+    private Item srcItem;
+    
+    @ManyToOne
+    @JoinColumn(name = "srcArtifactId")
+    private Artifact srcArtifact;
     
     @ManyToOne
     @JoinColumn(name = "dstItemId")
-    private Item destinationItem;
+    private Item dstItem;
+    
+    @ManyToOne
+    @JoinColumn(name = "dstArtifactId")
+    private Artifact dstArtifact;
     
     @ManyToOne
     @JoinColumn(name = "linkTypeId")
     private LinkType linkType;
-    
-    @ManyToOne
-    @JoinColumn(name = "linkGroupId")
-    private LinkGroup linkGroup;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -44,21 +48,29 @@ public class Link implements Serializable {
         
     }
 
-    public Link(Item sourceItem, Item destinationItem, LinkType linkType) {
+    public Link(Item srcItem, 
+                Item dstItem, 
+                LinkType linkType) {
         
         this.uuId = UUID.randomUUID().toString();
-        this.sourceItem = sourceItem;
-        this.destinationItem = destinationItem;
+        this.srcItem = srcItem;
+        this.dstItem = dstItem;
         this.linkType = linkType;
+        this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
-    public Link(Item sourceItem, Item destinationItem, LinkType linkType, LinkGroup linkGroup) {
+    public Link(Item srcItem, 
+                Artifact srcArtifact, 
+                Item dstItem, 
+                Artifact dstArtifact, 
+                LinkType linkType) {
         
         this.uuId = UUID.randomUUID().toString();
-        this.sourceItem = sourceItem;
-        this.destinationItem = destinationItem;
+        this.srcItem = srcItem;
+        this.srcArtifact = srcArtifact;
+        this.dstItem = dstItem;
+        this.dstArtifact = dstArtifact;
         this.linkType = linkType;
-        this.linkGroup = linkGroup;
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
@@ -74,20 +86,36 @@ public class Link implements Serializable {
         this.uuId = uuId;
     }
 
-    public Item getSourceItem() {
-        return sourceItem;
+    public Item getSrcItem() {
+        return srcItem;
     }
 
-    public void setSourceItem(Item sourceItem) {
-        this.sourceItem = sourceItem;
+    public void setSrcItem(Item srcItem) {
+        this.srcItem = srcItem;
     }
 
-    public Item getDestinationItem() {
-        return destinationItem;
+    public Artifact getSrcArtifact() {
+        return srcArtifact;
     }
 
-    public void setDestinationItem(Item destinationItem) {
-        this.destinationItem = destinationItem;
+    public void setSrcArtifact(Artifact srcArtifact) {
+        this.srcArtifact = srcArtifact;
+    }
+
+    public Item getDstItem() {
+        return dstItem;
+    }
+
+    public void setDstItem(Item dstItem) {
+        this.dstItem = dstItem;
+    }
+
+    public Artifact getDstArtifact() {
+        return dstArtifact;
+    }
+
+    public void setDstArtifact(Artifact dstArtifact) {
+        this.dstArtifact = dstArtifact;
     }
 
     public LinkType getLinkType() {
@@ -96,14 +124,6 @@ public class Link implements Serializable {
 
     public void setLinkType(LinkType linkType) {
         this.linkType = linkType;
-    }
-
-    public LinkGroup getLinkGroup() {
-        return linkGroup;
-    }
-
-    public void setLinkGroup(LinkGroup linkGroup) {
-        this.linkGroup = linkGroup;
     }
 
     public Date getCreationDate() {

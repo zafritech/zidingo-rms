@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.zafritech.zidingorms.commons.enums.ArtifactStatus;
+import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.ArtifactType;
+import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
+import org.zafritech.zidingorms.services.ItemService;
 
 /**
  *
@@ -32,6 +35,9 @@ public class ArtifactRestController {
     
     @Autowired
     private ArtifactTypeRepository artifactTypeRepository;
+    
+    @Autowired
+    private ItemService itemService;
     
     @RequestMapping(value = "/api/artifacts/statuslist", method = RequestMethod.GET)
     public List<ArtifactStatus> getArtifactStatuses() {
@@ -52,6 +58,14 @@ public class ArtifactRestController {
 
         List<ArtifactType> artifactTypes = artifactTypeRepository.findAll();
         
-       return new ResponseEntity<List<ArtifactType>>(artifactTypes, HttpStatus.OK);
+        return new ResponseEntity<List<ArtifactType>>(artifactTypes, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/artifact/requirements/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<Item>> getArtifactRequirements(@PathVariable(value = "id") Long id) {
+
+        List<Item> requirements = itemService.findRequirements(id);
+        
+        return new ResponseEntity<List<Item>>(requirements, HttpStatus.OK);
     }
 }

@@ -50,6 +50,8 @@ public class Item implements Serializable {
     @JoinColumn(name = "artifactId")
     private Artifact artifact;
 
+    private int linkCount;
+    
     private int commentCount;
 
     private int itemLevel;
@@ -218,6 +220,14 @@ public class Item implements Serializable {
 
     public void setArtifact(Artifact parentArtifact) {
         this.artifact = parentArtifact;
+    }
+
+    public int getLinkCount() {
+        return linkCount;
+    }
+
+    public void setLinkCount(int linkCount) {
+        this.linkCount = linkCount;
     }
 
     public int getCommentCount() {

@@ -30,6 +30,8 @@ public class LinkType implements Serializable {
     
     private boolean enabled;
     
+    private boolean defaultType;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
@@ -44,6 +46,7 @@ public class LinkType implements Serializable {
         this.linkTypeLongName = linkTypeLongName;
         this.linkTypeDescription = null;
         this.enabled = true;
+        this.defaultType = false;
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
@@ -54,6 +57,18 @@ public class LinkType implements Serializable {
         this.linkTypeLongName = linkTypeLongName;
         this.linkTypeDescription = linkTypeDescription;
         this.enabled = true;
+        this.defaultType = false;
+        this.creationDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    public LinkType(String linkTypeName, String linkTypeLongName, String linkTypeDescription, boolean defaulType) {
+        
+        this.uuId = UUID.randomUUID().toString();
+        this.linkTypeName = linkTypeName;
+        this.linkTypeLongName = linkTypeLongName;
+        this.linkTypeDescription = linkTypeDescription;
+        this.enabled = true;
+        this.defaultType = defaulType;
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
@@ -99,6 +114,14 @@ public class LinkType implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isDefaultType() {
+        return defaultType;
+    }
+
+    public void setDefaultType(boolean defaultType) {
+        this.defaultType = defaultType;
     }
 
     public Date getCreationDate() {
