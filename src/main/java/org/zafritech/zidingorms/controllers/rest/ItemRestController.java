@@ -57,7 +57,7 @@ public class ItemRestController {
     @RequestMapping(value = "/api/items/itemtypes", method = RequestMethod.GET)
     public List<ItemType> getItemTypes() {
 
-        return itemTypeRepository.findAll();
+        return itemTypeRepository.findAllByOrderByItemTypeLongName();
     }
 
     @RequestMapping(value = "/api/items/classes", method = RequestMethod.GET)

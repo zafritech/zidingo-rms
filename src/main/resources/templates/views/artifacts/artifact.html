@@ -87,7 +87,7 @@
                         <ul class="item-toolbar-ul">  
 
                             <li th:attr="id=${'comment-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
-                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxItemComments(\'' + ${item.id} + '\');'">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayComments(\'' + ${item.id} + '\');'">
                                     <i class="fa fa-comments icon-comment"></i> 
                                 </a>
                             </li>
@@ -254,7 +254,7 @@
                                     <label for="createItemValue">Item details:</label>
                                     <textarea class="form-control"  rows="5" cols="50" id="createItemValue" name="createItemValue"></textarea>
                                 </div>
-
+                                                                
                             </form>
 
                         </div>
@@ -338,11 +338,11 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div id="itemDetalsGroup" class="form-group">
                                     <label for="editItemValue">Item details:</label>
                                     <textarea class="form-control"  rows="5" cols="50" id="editItemValue" name="editItemValue"></textarea>
                                 </div>
-
+                                
                             </form>
 
                         </div>

@@ -57,7 +57,7 @@ public class LinkRestController {
     @RequestMapping(value = "/api/link/linktypes", method = RequestMethod.GET)
     public ResponseEntity<List<LinkType>> getLinkTypes() {
         
-        List<LinkType> linkType = linkTypeRepository.findAll();
+        List<LinkType> linkType = linkTypeRepository.findAllByOrderByLinkTypeName();
         
         return new ResponseEntity<List<LinkType>>(linkType, HttpStatus.OK);
     }
@@ -68,5 +68,21 @@ public class LinkRestController {
         Link link = linkService.saveNewDao(linkDao);
 
         return new ResponseEntity<Link>(link, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/link/links/{id}", method = RequestMethod.GET)
+    public ResponseEntity<List<Link>> getLinks(@PathVariable(value = "id") Long id) {
+        
+        List<Link> link = linkService.findItemLinks(id);
+        
+        return new ResponseEntity<List<Link>>(link, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/link/incominglinks/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Long> getIncomigLinksCount(@PathVariable(value = "id") Long id) {
+        
+        Long linkCount = linkService.getIncomingItemLinksCount(id);
+        
+        return new ResponseEntity<Long>(linkCount, HttpStatus.OK);
     }
 }

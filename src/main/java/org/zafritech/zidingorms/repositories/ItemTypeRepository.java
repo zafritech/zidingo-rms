@@ -16,8 +16,10 @@ import org.zafritech.zidingorms.domain.ItemType;
  */
 public interface ItemTypeRepository extends CrudRepository<ItemType, Long> {
 
-    ItemType findByItemTypeName(String name);
-
     @Override
     List<ItemType> findAll();
+
+    ItemType findByItemTypeName(String name);
+    
+    List<ItemType> findAllByOrderByItemTypeLongName();
 }

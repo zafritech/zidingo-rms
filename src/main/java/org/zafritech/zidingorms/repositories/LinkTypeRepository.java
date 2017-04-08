@@ -17,4 +17,6 @@ public interface LinkTypeRepository extends CrudRepository<LinkType, Long> {
     
     @Override
     List<LinkType> findAll();
+    
+    List<LinkType> findAllByOrderByLinkTypeName();
 }

@@ -13,7 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity(name = "TBL_LINKS")
-public class Link implements Serializable {
+public class Link implements Serializable, Comparable {
 
     @Id
     @GeneratedValue
@@ -133,4 +133,20 @@ public class Link implements Serializable {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
+
+    @Override
+    public int compareTo(Object link) {
+
+        Long compareLink = ((Link)link).getId();
+        
+        return (int)(this.id - compareLink);
+    }
+
+    @Override
+    public String toString() {
+        
+        return "Link {" + "id=" + id + ", srcItem=" + srcItem.getId() + ", dstItem=" + dstItem.getId() + ", creationDate=" + creationDate + '}';
+    }
+    
+    
 }

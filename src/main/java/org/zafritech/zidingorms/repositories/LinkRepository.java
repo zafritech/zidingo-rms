@@ -5,7 +5,9 @@
  */
 package org.zafritech.zidingorms.repositories;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.Link;
 
 /**
@@ -14,4 +16,7 @@ import org.zafritech.zidingorms.domain.Link;
  */
 public interface LinkRepository extends CrudRepository<Link, Long> {
     
+    List<Link> findBySrcItem(Item item);
+    
+    List<Link> findByDstItem(Item item);
 }

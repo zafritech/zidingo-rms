@@ -69,8 +69,6 @@ function loadProjectTree(id) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-
-            console.log(data);
             
             if (!$.trim(data)) {
 
@@ -231,7 +229,7 @@ $(document).ready(function () {
                 $(e.currentTarget).find('input[name="editIdentifier"]').val(data.identifier);
                 $(e.currentTarget).find('textarea[name="editItemValue"]').val(data.itemValue);
                 $(e.currentTarget).find('input[name="editSortIndex"]').val(data.sortIndex);
-
+                
                 if (isEmpty(data.identifier)) {
 
                     document.getElementById('editItemType').disabled = true;
@@ -253,6 +251,30 @@ $(document).ready(function () {
                     $('#editRequirementRow').show();
                     $('#editIdentField').show();
                 }
+
+                $.ajax({
+                    url: '/api/link/incominglinks/' + itemId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        
+                        console.log(data);
+                        
+                        if (data > 0) {
+                            
+                            var warningMsg  =   '<div id="linkedItemsWarning" style="padding: 8px 0; color: red; text-align: center; font-weight: bold;">' +
+                                                '<span>WARNING: This item has ' + data + ' incoming link(s).<br/>Modification of the item could impact the linking item(s).</span>' +
+                                                '</div>';
+                                        
+                            $('#linkedItemsWarning').remove();
+                            $(warningMsg).insertBefore($('#itemDetalsGroup'));
+                            
+                        } else {
+                            
+                            $('#linkedItemsWarning').remove();
+                        }
+                    }
+                });
             },
             error: function (data) {
                 var selectItemClass = document.getElementById('editItemClass');
@@ -324,8 +346,6 @@ $(document).ready(function () {
             timeout: 60000,
             success: function (responseText) {
 
-                console.log(responseText);
-
                 var data = {};
 
                 data['artifactId'] = document.getElementById('artifactId').value;
@@ -346,8 +366,6 @@ $(document).ready(function () {
                     dataType: "json",
                     timeout: 60000,
                     success: function (data) {
-
-                        console.log(data);
 
                         var refElementId = '';
                         var newItemElement = '';
@@ -373,12 +391,11 @@ $(document).ready(function () {
                         var regex3 = new RegExp(refSortIdx, "g");
 
                         var menuElement = $(document.getElementById('menu-container-' + refElementId)).clone().html();
-                        console.log(menuElement);
 
                         menuElement = menuElement.replace(regex1, data.id);
                         menuElement = menuElement.replace(regex2, data.sysId);
+                        
                         var menuElementHTML = menuElement.replace(regex3, data.sortIndex);
-                        console.log(menuElementHTML);
 
                         if (data['itemClass'] === "REQUIREMENT") {
 
@@ -423,8 +440,6 @@ $(document).ready(function () {
                         showToastr('success', 'Item successfully created!');
                     },
                     error: function (e) {
-
-                        console.log(e);
 
                         $('#createItemModal').modal('hide');
                         showToastr('error', 'There was an error creating an item!');
@@ -529,8 +544,6 @@ $(document).ready(function () {
             dataType: "json",
             success: function (data) {
 
-                console.log(data);
-
                 var container = document.getElementById('format-container');
                 var formats = '';
 
@@ -585,7 +598,9 @@ $(document).ready(function () {
 
 
     function getItemClasses(selectedValue, action) {
+        
         var url = '/api/items/classes';
+        
         $.ajax({
             url: url,
             type: "GET",
@@ -692,8 +707,6 @@ $(document).ready(function () {
 
         $(select).val(itemLevel);
     }
-
-
 
     // Show loading spinner on import popup closing
     $('#importExcelModal').on('hidden.bs.modal', function () {
@@ -871,7 +884,7 @@ function isEmpty(str) {
 }
 
 
-function BootboxItemComments(id) {
+function BootboxDisplayComments(id) {
 
     $.ajax({
 
@@ -882,8 +895,6 @@ function BootboxItemComments(id) {
         cache: false
     })
     .done(function (data) {
-
-        console.log(data);
 
         var comments = '';
         
@@ -929,6 +940,7 @@ function BootboxItemComments(id) {
         bootbox.confirm({
 
             message: msg,
+            size: 'large',
             title: data[0].item.sysId + " Comments",
             buttons: {
                 cancel: {
@@ -962,8 +974,6 @@ function BootboxAddComment(id) {
         cache: false
     })
     .done(function (data) {
-
-        console.log(data);
 
         var msg =   '<div class="row">' +
                     '<div class="col-sm-12" style="padding: 15px;">' +
@@ -1017,7 +1027,25 @@ function BootboxAddComment(id) {
                         timeout: 60000,
                         success: function (data) {
                             
-                            BootboxItemComments(itemId);
+                            if (!$('#comment-icon-' + item).length > 0) {
+                                    
+                                var elem = '<li class="dropdown item-toolbar-li" id="comment-icon-' + item + '">' +
+                                           '<a href="javascript:void(0);" onclick="javascript:BootboxItemComments(\'' + itemId + '\');">' +
+                                           '<i class="fa fa-comments icon-comment"></i>' +
+                                           '</a>' +
+                                           '</li>';
+
+                                if ($('#link-icon-' + item).length > 0) {
+
+                                    $(elem).insertBefore($('#link-icon-' + item));
+
+                                } else {
+
+                                    $(elem).insertBefore($('#menu-icon-' + item));
+                                }
+                            }
+
+                            BootboxDisplayComments(itemId);
                             showToastr('success', "Comment with ID: " + data + " created for: [" + item + "]");
                         }
                     });
@@ -1060,6 +1088,258 @@ function BootboxCreateItemBelow(id, index) {
 }
 
 
+function BootboxCreateLink(id, ident, projectId) {
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/link/link-create-form.html',
+        success: function (data) { 
+                       
+            var box = bootbox.confirm({
+                message: data,
+                title: "Create new Link for Item: [" + ident + "]",
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Save",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    if (result) {
+                        
+                        var data = {};
+        
+                        data['srcArtifactId'] = $("#artifactId").val();
+                        data['dstArtifactId'] = $("#dstArtifactId").val();
+                        data['linkTypeId'] = $("#linkTypeId").val();
+                        data['srcItemId'] = id;
+                        data['dstItemId'] = $("#dstItemId").val();
+                        
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/link/new",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function (data) {
+                                                              
+                                var srcIdent = data.srcItem.id;
+                                var srcIdent = data.srcItem.identifier;
+                                var dstIdent = data.dstItem.identifier;
+                                
+                                if (!$('#link-icon-' + data.srcItem.sysId).length > 0) {
+                                    
+                                    var elem = '<li class="dropdown item-toolbar-li" id="link-icon-' + data.srcItem.sysId + '">' +
+                                               '<a href="javascript:void(0);" onclick="javascript:BootboxDisplayLinks(\'' + data.srcItem.id + '\');">' +
+                                               '<i class="fa fa-link icon-link"></i>' +
+                                               '</a>' +
+                                               '</li>';
+                                       
+                                    $(elem).insertBefore($('#menu-icon-' + data.srcItem.sysId));
+                                }
+   
+                                BootboxDisplayLinks(id);
+                                showToastr('success', "Link " + srcIdent + " <---> " + dstIdent + " created.");
+                            }
+                        });
+                    }
+                }
+            });
+            
+            box.on("shown.bs.modal", function(e) { 
+                
+                loadLinkArtifacts(projectId);
+                loadLinkTypes();
+            
+            });
+            
+            box.modal('show');
+        }
+    });
+}
+
+
+function loadLinkArtifacts(id) {
+    
+    $.ajax({
+        url: '/api/link/artifacts/' + id,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            // Populate dropdown control
+            var select = document.getElementById('dstArtifactId');
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+                
+                var opt = document.createElement('option');
+
+                opt.value = index.id;
+                opt.innerHTML = index.artifactName;
+                select.appendChild(opt);
+            });
+        }
+    });
+}
+
+
+function loadLinkTypes() {
+    
+    $.ajax({
+        url: '/api/link/linktypes',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+
+            // Populate dropdown control
+            var select = document.getElementById('linkTypeId');
+            var selectedId = 0;
+            
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+                
+                var opt = document.createElement('option');
+                opt.value = index.id;
+                opt.innerHTML = index.linkTypeName;
+                select.appendChild(opt);
+                
+                if (index.defaultType === true) {
+                    
+                    selectedId = index.id;
+                }
+            });
+
+            select.value = selectedId;
+        }
+    });
+}
+
+
+function onItemCreateLinkSrcDestChange() {
+    
+    $.ajax({
+        
+        url: '/api/artifact/requirements/' + document.getElementById('dstArtifactId').value,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+       
+            // Populate dropdown control
+            var select = document.getElementById('dstItemId');
+            $(select).empty();
+            
+            $.each(data, function (key, index) {
+                
+                var opt = document.createElement('option');
+
+                opt.value = index.id;
+                opt.innerHTML = index.identifier +  " - " + index.itemValue.substring(0, 60) + " ...";
+                select.appendChild(opt);
+            });
+        }
+    });
+}
+
+
+function BootboxDisplayLinks(id) {
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+
+        var id = data.id;
+        var ident = data.identifier;
+        var value = data.identifier + ": " + data.itemValue;
+
+        $.ajax({
+            type: "GET",
+            url: '/modal/link/link-display-form.html',
+            success: function (data) { 
+
+                var box = bootbox.dialog({
+                    message: data,
+                    size: 'large',
+                    title: "Links for Item: [" + ident + "]",
+                    buttons: {
+                        cancel: {
+                            
+                            label: "Close",
+                            className: "btn-danger btn-fixed-width-100"
+                        },
+                        success: {
+                            
+                            label: "Print",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    }
+                });
+
+                box.on("shown.bs.modal", function(e) { 
+                    
+                    $.ajax({
+
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/api/link/links/" + id,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) {
+                        
+                        var links = '';
+                        var linkClass = '';
+                        var linkIdent = '';
+                        var linkValue = '';
+                        
+                        $.each(data, function (key, index) {
+                           
+                           if (index.srcItem.id === id) {
+                               
+                               linkClass = '<i class="fa fa-fw fa-caret-square-o-right pull-right" style="color: #2ECC71;">';
+                               linkIdent = index.dstArtifact.identifier + '<br/>' + index.dstItem.identifier;
+                               linkValue = index.dstItem.itemValue;
+                               
+                           } else {
+                               
+                               linkClass = '<i class="fa fa-fw fa-caret-square-o-left pull-right" style="color: red;">';
+                               linkIdent = index.srcArtifact.identifier + '<br/>' + index.srcItem.identifier;
+                               linkValue = index.srcItem.itemValue;
+                           }
+                            
+                           links = links +  '<div class="row" style="margin-top: 5px; border-top: 1px solid #E3E3E3; padding: 4px;">' +
+                                            '<div class="col-sm-3" style="border-right: 1px solid #E3E3E3;">' + linkIdent + '</div>' +
+                                            '<div class="col-sm-8">' + linkValue + '</div>' +
+                                            '<div class="col-sm-1">' + linkClass + '</i></div>' +
+                                            '</div>';
+                        });
+                        
+                        $(e.currentTarget).find('#itemValue').text(value);
+                        $(links).insertAfter('#itemLinks');
+                        
+                    });
+                });
+
+                box.modal('show');
+            }
+        });
+    });
+}
+
+
 function ArtifactBasicMetadata(id) {
     
     $.ajax({
@@ -1067,8 +1347,6 @@ function ArtifactBasicMetadata(id) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-
-            console.log(data);
 
             var projectId = data.artifactProject.id;
             var projectName = data.artifactProject.projectName;
@@ -1186,8 +1464,6 @@ function getFoldersByProject(projId, selectedId) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            
-            console.log(data);
             
             // Populate dropdown control
             var select = document.getElementById('artifactFolderId');

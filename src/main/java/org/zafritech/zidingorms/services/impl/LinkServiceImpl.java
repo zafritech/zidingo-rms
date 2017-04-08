@@ -5,6 +5,9 @@
  */
 package org.zafritech.zidingorms.services.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.dao.LinkDao;
@@ -60,5 +63,35 @@ public class LinkServiceImpl implements LinkService {
         int newLinkCount = item.getLinkCount() + 1;
         item.setLinkCount(newLinkCount);
         itemRepository.save(item);
+    }
+
+    @Override
+    public List<Link> findItemLinks(Long id) {
+
+        ArrayList<Link> arrayList = new ArrayList<Link>();
+        List<Link> srcLinks = linkRepository.findBySrcItem(itemRepository.findOne(id));
+        List<Link> dstLinks = linkRepository.findByDstItem(itemRepository.findOne(id));
+        
+        for (Link link : srcLinks) {
+            
+            arrayList.add(link);
+        }
+        
+        for (Link link : dstLinks) {
+            
+            arrayList.add(link);
+        }
+        
+        Collections.sort(arrayList);
+
+        return arrayList; 
+    }
+
+    @Override
+    public Long getIncomingItemLinksCount(Long id) {
+        
+        List<Link> dstLinks = linkRepository.findByDstItem(itemRepository.findOne(id));
+        
+        return new Long(dstLinks.size());
     }
 }
