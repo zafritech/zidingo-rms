@@ -1056,38 +1056,6 @@ function BootboxAddComment(id) {
 }
 
 
-function BootboxCreateItemBelow(id, index) {
-    
-    alert('Ref Item ID: ' + id + ', Pos: ' + index);
-    
-    $.ajax({
-        type: "GET",
-        url: '/modal/item/item-create-form.html',
-        success: function (data) { 
-            
-            var box = bootbox.dialog({
-                message: data,
-                title: "Create new item",
-                buttons: {
-                    cancel: {
-                        label: "Cancel",
-                        className: "btn-danger btn-fixed-width-100"
-                    },
-                    success: {
-                        label: "Save",
-                        className: "btn-success btn-fixed-width-100"
-                    }
-                }
-            });
-            
-            box.on("shown.bs.modal", function(e) { });
-            
-            box.modal('show');
-        }
-    });
-}
-
-
 function BootboxCreateLink(id, ident, projectId) {
     
     $.ajax({
