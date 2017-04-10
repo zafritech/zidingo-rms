@@ -15,9 +15,13 @@ import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.ItemHistory;
+import org.zafritech.zidingorms.domain.Link;
 import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
+import org.zafritech.zidingorms.repositories.ItemHistoryRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
+import org.zafritech.zidingorms.repositories.LinkRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.services.ItemService;
 
@@ -28,6 +32,9 @@ public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
 
     @Autowired
+    private ItemHistoryRepository itemHistoryRepository;
+    
+    @Autowired
     private ArtifactRepository artifactRepository;
 
     @Autowired
@@ -36,15 +43,19 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private SystemVariableRepository sysVarRepository;
 
+    @Autowired
+    private LinkRepository linkRepository;
+    
     @Override
     public Item findById(Long id) {
 
         return itemRepository.findOne(id);
     }
-
+   
+    
     @Override
     public Item saveItem(Item item) {
-
+        
         Item saved = itemRepository.save(item);
         updateArtifactLastUpdateTime(saved.getArtifact().getId());
 
@@ -74,6 +85,47 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return null;
+    }
+ 
+    @Override
+    public void updateItemHistory(Item item) {
+        
+        System.out.println("\n\rOld item for history: " + item);
+        
+        ItemHistory history = new ItemHistory(item, item.getSysId(), item.getItemValue(), item.getItemVersion());
+        
+        itemHistoryRepository.save(history);
+    }
+    
+    @Override
+    public void updateLinksChanged(Item item) {
+        
+        List<Link> links = linkRepository.findByDstItem(item);
+        
+        if (links != null) {
+            
+            for (Link link : links) {
+                
+                Item srcItem = itemRepository.findOne(link.getSrcItem().getId());
+                
+                srcItem.setLinkChanged(true);
+                itemRepository.save(srcItem);
+                
+                link.setDstItemChanged(true);
+                link.setDstHistoryValue(item.getItemValue()); 
+                linkRepository.save(link);
+            }
+        }
+    }
+    
+    @Override
+    public void resetLinkChanged(Item item, Link link) {
+        
+        item.setLinkChanged(false);
+        itemRepository.save(item);
+        
+        link.setDstItemChanged(false);
+        linkRepository.save(link);
     }
 
     @Override

@@ -3,11 +3,14 @@ package org.zafritech.zidingorms.services.impl;
 import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
+import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.property.AreaBreakType;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -303,15 +306,24 @@ public class ArtifactServiceImpl implements ArtifactService {
         ByteArrayOutputStream  outputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(outputStream);
         PdfDocument pdf = new PdfDocument(writer);
+        PageSize pagesize = PageSize.A4;
         
+        Artifact artifact = artifactRepository.findOne(id);
         
-        try (Document document = new Document(pdf)) 
+        try (Document document = new Document(pdf, pagesize)) 
         {
+            
+            document.setMargins(70, 50, 70, 50);
             
             PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
             
             Style normal = new Style();
             normal.setFont(font).setFontSize(11);
+            
+            Style docTitle = new Style();
+            docTitle.setFontSize(20);
+            docTitle.setBold();
+            docTitle.setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.CENTER);
             
             Style headeH1 = new Style();
             headeH1.setFontSize(18);
@@ -335,7 +347,10 @@ public class ArtifactServiceImpl implements ArtifactService {
             headeH5.setItalic();
             
             List<Item> items = itemRepository.findByArtifactId(id);
-
+            
+            document.add(new Paragraph(artifact.getArtifactLongName()).setFont(font).addStyle(docTitle));
+            document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            
             for (Item item : items ) {
                 
                 if (item.getItemClass().equals("HEADER")) {

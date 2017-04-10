@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.Link;
 
 @Service
 public interface ItemService {
@@ -15,6 +16,12 @@ public interface ItemService {
     Item saveDao(ItemDao itemDao);
 
     Item saveNewDao(ItemDao itemDao);
+    
+    void updateItemHistory(Item item);
+    
+    void updateLinksChanged(Item item);
+    
+    void resetLinkChanged(Item item, Link link);
 
     int moveUp(Long id);
 

@@ -19,6 +19,7 @@ import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemType;
 import org.zafritech.zidingorms.domain.SystemVariable;
+import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.ItemTypeRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.services.ItemService;
@@ -35,6 +36,9 @@ public class ItemRestController {
 
     @Autowired
     public ItemTypeRepository itemTypeRepository;
+
+    @Autowired
+    public ItemRepository itemRepository;
 
     @Autowired
     public void setItemService(ItemServiceImpl itemService) {
@@ -101,8 +105,24 @@ public class ItemRestController {
     @RequestMapping(value = "/api/items/save", method = RequestMethod.POST)
     public ResponseEntity<Item> saveItem(@RequestBody ItemDao itemDao) {
 
-        Item item = itemService.saveDao(itemDao);
+        if (itemDao.getId() != null) {
+            
+            Item oldItem = itemRepository.findOne(itemDao.getId());
+            
+            // Update Links, and Version only when itemValue text has changed
+            if (!oldItem.getItemValue().equals(itemDao.getItemValue())) {
 
+                itemService.updateLinksChanged(oldItem);
+                itemService.updateItemHistory(oldItem);
+                itemDao.setItemVersion(oldItem.getItemVersion() + 1);
+            }
+        
+        }
+         
+        Item item = itemService.saveDao(itemDao);
+        
+        System.out.println("\n\rSaved Item: " + item);
+            
         return new ResponseEntity<Item>(item, HttpStatus.OK);
     }
 

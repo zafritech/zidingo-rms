@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -43,6 +44,11 @@ public class Link implements Serializable, Comparable {
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
+    
+    private boolean dstItemChanged;
+    
+    @Column(columnDefinition = "TEXT")
+    private String dstHistoryValue;
 
     public Link() {
         
@@ -57,6 +63,7 @@ public class Link implements Serializable, Comparable {
         this.dstItem = dstItem;
         this.linkType = linkType;
         this.creationDate = new Timestamp(System.currentTimeMillis());
+        this.dstItemChanged = false;
     }
 
     public Link(Item srcItem, 
@@ -72,6 +79,7 @@ public class Link implements Serializable, Comparable {
         this.dstArtifact = dstArtifact;
         this.linkType = linkType;
         this.creationDate = new Timestamp(System.currentTimeMillis());
+        this.dstItemChanged = false;
     }
 
     public Long getId() {
@@ -132,6 +140,22 @@ public class Link implements Serializable, Comparable {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public boolean isDstItemChanged() {
+        return dstItemChanged;
+    }
+
+    public void setDstItemChanged(boolean dstItemChanged) {
+        this.dstItemChanged = dstItemChanged;
+    }
+
+    public String getDstHistoryValue() {
+        return dstHistoryValue;
+    }
+
+    public void setDstHistoryValue(String dstHistoryValue) {
+        this.dstHistoryValue = dstHistoryValue;
     }
 
     @Override

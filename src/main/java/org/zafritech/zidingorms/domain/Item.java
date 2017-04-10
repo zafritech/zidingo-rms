@@ -51,6 +51,8 @@ public class Item implements Serializable {
     private Artifact artifact;
 
     private int linkCount;
+
+    private boolean linkChanged;
     
     private int commentCount;
 
@@ -228,6 +230,14 @@ public class Item implements Serializable {
 
     public void setLinkCount(int linkCount) {
         this.linkCount = linkCount;
+    }
+
+    public boolean isLinkChanged() {
+        return linkChanged;
+    }
+
+    public void setLinkChanged(boolean linkChanged) {
+        this.linkChanged = linkChanged;
     }
 
     public int getCommentCount() {

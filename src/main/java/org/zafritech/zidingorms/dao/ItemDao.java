@@ -34,6 +34,8 @@ public class ItemDao {
 
     private int sortIndex;
 
+    private int itemVersion;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
@@ -129,6 +131,14 @@ public class ItemDao {
 
     public void setSortIndex(int sortIndex) {
         this.sortIndex = sortIndex;
+    }
+
+    public int getItemVersion() {
+        return itemVersion;
+    }
+
+    public void setItemVersion(int itemVersion) {
+        this.itemVersion = itemVersion;
     }
 
     public Date getCreationDate() {

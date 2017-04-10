@@ -5,10 +5,6 @@
  */
 package org.zafritech.zidingorms.dao;
 
-import org.zafritech.zidingorms.domain.Artifact;
-import org.zafritech.zidingorms.domain.Item;
-import org.zafritech.zidingorms.domain.LinkType;
-
 /**
  *
  * @author LukeS
@@ -70,5 +66,4 @@ public class LinkDao {
     public void setLinkTypeId(Long linkTypeId) {
         this.linkTypeId = linkTypeId;
     }
-
 }

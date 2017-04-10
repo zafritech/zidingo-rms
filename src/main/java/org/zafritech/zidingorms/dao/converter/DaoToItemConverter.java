@@ -39,6 +39,7 @@ public class DaoToItemConverter implements Converter<ItemDao, Item> {
             item.setItemValue(itemDao.getItemValue());
             item.setItemClass(itemDao.getItemClass());
             item.setItemLevel(itemDao.getItemLevel());
+            item.setItemVersion(itemDao.getItemVersion());
             item.setArtifact(artifactRepository.findOne(itemDao.getArtifactId()));
             item.setModifiedDate(new Timestamp(System.currentTimeMillis()));
 

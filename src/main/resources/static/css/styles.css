@@ -422,7 +422,48 @@ ul.alert-dropdown {
 
 .icon-link {
     
+    color: #00B83F;
+}
+
+.icon-link-changed {
+    
     color: red;
+}
+
+.link-display-container {
+    
+    margin-top: 5px; 
+    border-top: 1px solid #E3E3E3; 
+    padding: 4px;
+}
+
+.link-display-ident {
+    
+    border-right: 1px solid #E3E3E3;
+}
+
+.link-display-ident-changed {
+    
+    border-right: 1px solid #E3E3E3;
+    color: red;
+}
+
+.link-display-value {
+    
+    border-right: 1px solid #E3E3E3;
+}
+
+.link-display-value-changed {
+    
+    text-decoration: line-through;
+    color: red;
+    margin-bottom: 10px;
+}
+
+.link-display-value-new {
+    
+    border-right: 1px solid #E3E3E3;
+    color: #2ECC71;
 }
 
 .choices-multiselect-list-1 > select,

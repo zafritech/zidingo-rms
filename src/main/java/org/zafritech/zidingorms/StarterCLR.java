@@ -258,34 +258,38 @@ public class StarterCLR implements CommandLineRunner {
         Folder folder2 = folderRepository.save(new Folder(project2.getProjectShortName(), FolderTypes.PROJECT, project2));
         Folder input2 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder2, project2));
         Folder specn2 = folderRepository.save(new Folder("Specifications", FolderTypes.DOCUMENT, folder2, project2));
-        Folder desig2 = folderRepository.save(new Folder("Architectural Design", FolderTypes.DOCUMENT, folder2, project2));
-        Folder detal2 = folderRepository.save(new Folder("Detailed Specification", FolderTypes.DOCUMENT, folder2, project2));
+        Folder desig2 = folderRepository.save(new Folder("Design", FolderTypes.DOCUMENT, folder2, project2));
+//        Folder detal2 = folderRepository.save(new Folder("Detailed Specification", FolderTypes.DOCUMENT, folder2, project2));
 
-        Folder contract2 = folderRepository.save(new Folder("Contract", FolderTypes.DOCUMENT, input2, project2));
-        Folder internal2 = folderRepository.save(new Folder("Internal Sources", FolderTypes.DOCUMENT, input2, project2));
-        Folder thirdpty2 = folderRepository.save(new Folder("Third Party Sources", FolderTypes.DOCUMENT, input2, project2));
+//        Folder contract2 = folderRepository.save(new Folder("Contract", FolderTypes.DOCUMENT, input2, project2));
+//        Folder internal2 = folderRepository.save(new Folder("Internal Sources", FolderTypes.DOCUMENT, input2, project2));
+//        Folder thirdpty2 = folderRepository.save(new Folder("Third Party Sources", FolderTypes.DOCUMENT, input2, project2));
 
-        folderRepository.save(new Folder("System Specification", FolderTypes.DOCUMENT, specn2, project2));
-        folderRepository.save(new Folder("Validation Test Spec", FolderTypes.DOCUMENT, specn2, project2));
+//        folderRepository.save(new Folder("System Specification", FolderTypes.DOCUMENT, specn2, project2));
+//        folderRepository.save(new Folder("Validation Test Spec", FolderTypes.DOCUMENT, specn2, project2));
 
-        folderRepository.save(new Folder("Architectural Description", FolderTypes.DOCUMENT, desig2, project2));
-        folderRepository.save(new Folder("Design Description", FolderTypes.DOCUMENT, desig2, project2));
-        folderRepository.save(new Folder("System Main ICD", FolderTypes.DOCUMENT, desig2, project2));
+//        folderRepository.save(new Folder("Architectural Description", FolderTypes.DOCUMENT, desig2, project2));
+//        folderRepository.save(new Folder("Design Description", FolderTypes.DOCUMENT, desig2, project2));
+//        folderRepository.save(new Folder("System Main ICD", FolderTypes.DOCUMENT, desig2, project2));
+//
+//        folderRepository.save(new Folder("Electrical System", FolderTypes.DOCUMENT, detal2, project2));
+//        folderRepository.save(new Folder("Communication System", FolderTypes.DOCUMENT, detal2, project2));
+//        folderRepository.save(new Folder("Subsystem #1", FolderTypes.DOCUMENT, detal2, project2));
+//
+//        folderRepository.save(new Folder("General Conditions", FolderTypes.DOCUMENT, contract2, project2));
+//        folderRepository.save(new Folder("Appendices", FolderTypes.DOCUMENT, contract2, project2));
+//
+//        folderRepository.save(new Folder("Requirements Lists", FolderTypes.DOCUMENT, internal2, project2));
+//        folderRepository.save(new Folder("Design Standard", FolderTypes.DOCUMENT, internal2, project2));
+//
+//        folderRepository.save(new Folder("EN Standards", FolderTypes.DOCUMENT, thirdpty2, project2));
+//        folderRepository.save(new Folder("Railway Safety Board", FolderTypes.DOCUMENT, thirdpty2, project2));
+//        folderRepository.save(new Folder("Electricity Authority", FolderTypes.DOCUMENT, thirdpty2, project2));
+//        folderRepository.save(new Folder("Depart. of Transport", FolderTypes.DOCUMENT, thirdpty2, project2));
 
-        folderRepository.save(new Folder("Electrical System", FolderTypes.DOCUMENT, detal2, project2));
-        folderRepository.save(new Folder("Communication System", FolderTypes.DOCUMENT, detal2, project2));
-        folderRepository.save(new Folder("Subsystem #1", FolderTypes.DOCUMENT, detal2, project2));
-
-        folderRepository.save(new Folder("General Conditions", FolderTypes.DOCUMENT, contract2, project2));
-        folderRepository.save(new Folder("Appendices", FolderTypes.DOCUMENT, contract2, project2));
-
-        folderRepository.save(new Folder("Requirements Lists", FolderTypes.DOCUMENT, internal2, project2));
-        folderRepository.save(new Folder("Design Standard", FolderTypes.DOCUMENT, internal2, project2));
-
-        folderRepository.save(new Folder("EN Standards", FolderTypes.DOCUMENT, thirdpty2, project2));
-        folderRepository.save(new Folder("Railway Safety Board", FolderTypes.DOCUMENT, thirdpty2, project2));
-        folderRepository.save(new Folder("Electricity Authority", FolderTypes.DOCUMENT, thirdpty2, project2));
-        folderRepository.save(new Folder("Depart. of Transport", FolderTypes.DOCUMENT, thirdpty2, project2));
+        artifactRepository.save(new Artifact("ZID-RLS-1700", "Requirements List", "Zidingo RMS Requirements List", artifactTypeRepository.findByArtifactTypeName("RLS"), project2, input2));
+        artifactRepository.save(new Artifact("ZID-SRS-1701", "Zidingo SRS", "Zidingo RMS Software Requirements Specification", artifactTypeRepository.findByArtifactTypeName("SRS"), project2, specn2));
+        artifactRepository.save(new Artifact("ZID-SDD-1702", "Zidingo SDD", "Zidingo RMS Software Design Description", artifactTypeRepository.findByArtifactTypeName("SDD"), project2, desig2));
 
         companyRepository.findAll().forEach(System.out::println);
         projectRepository.findAll().forEach(System.out::println);

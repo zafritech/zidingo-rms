@@ -1268,30 +1268,56 @@ function BootboxDisplayLinks(id) {
                     })
                     .done(function (data) {
                         
+                        console.log(data);
+                
                         var links = '';
-                        var linkClass = '';
+                        var linkIdentClass = 'link-display-ident';
+                        var linkValueClass = 'link-display-value';
+                        var linkOldValueClass = 'link-display-value';
+                        var linkNewValueClass = 'link-display-value-new';
+                        var linkIconClass = '';
                         var linkIdent = '';
                         var linkValue = '';
+                        var linkValuesElement = '';
                         
                         $.each(data, function (key, index) {
                            
                            if (index.srcItem.id === id) {
+
+                                linkValue = index.dstItem.itemValue;
+                                
+                                if (index.dstItemChanged === true) {
+
+                                    linkIdentClass = 'link-display-ident-changed';
+                                    linkOldValueClass = 'link-display-value-changed';
+                                    
+                                    var oldValue = (index.dstHistoryValue !== null) ? index.dstHistoryValue.replace('/\n/g', '<br/>') : '';
+                                    
+                                    linkValuesElement =  '<div class="' + linkOldValueClass + '">' + oldValue + '</div>' +
+                                                         '<div class="' + linkNewValueClass + '">' + linkValue.replace(/\n/g, '<br/>') + '</div>';
+                                                 
+                                } else {
+                                    
+                                    linkValueClass = 'link-display-value';
+                                    linkValuesElement =  '<div class="' + linkValueClass + '">' + linkValue + '</div>';
+                                }
                                
-                               linkClass = '<i class="fa fa-fw fa-caret-square-o-right pull-right" style="color: #2ECC71;">';
+                               linkIconClass = '<i class="fa fa-fw fa-caret-square-o-right pull-right" style="color: #2ECC71;">';
                                linkIdent = index.dstArtifact.identifier + '<br/>' + index.dstItem.identifier;
-                               linkValue = index.dstItem.itemValue;
                                
                            } else {
                                
-                               linkClass = '<i class="fa fa-fw fa-caret-square-o-left pull-right" style="color: red;">';
+                               linkIconClass = '<i class="fa fa-fw fa-caret-square-o-left pull-right" style="color: red;">';
                                linkIdent = index.srcArtifact.identifier + '<br/>' + index.srcItem.identifier;
                                linkValue = index.srcItem.itemValue;
+                               
+                               linkValuesElement =  '<div>' + linkValue + '</div>';
                            }
                             
-                           links = links +  '<div class="row" style="margin-top: 5px; border-top: 1px solid #E3E3E3; padding: 4px;">' +
-                                            '<div class="col-sm-3" style="border-right: 1px solid #E3E3E3;">' + linkIdent + '</div>' +
-                                            '<div class="col-sm-8">' + linkValue + '</div>' +
-                                            '<div class="col-sm-1">' + linkClass + '</i></div>' +
+                           links = links +  '<div class="row link-display-container">' +
+                                            '<div class="col-sm-3 ' + linkIdentClass + '">' + linkIdent + '</div>' +
+                                            '<div class="col-sm-8">' + linkValuesElement + '</div>' +
+                                            '<div class="col-sm-1">' + linkIconClass + '</i></div>' +
                                             '</div>';
                         });
                         

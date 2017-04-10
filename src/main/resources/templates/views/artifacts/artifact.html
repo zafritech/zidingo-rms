@@ -94,7 +94,7 @@
 
                             <li th:attr="id=${'link-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.LinkCount} > 0">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayLinks(\'' + ${item.id} + '\');'">
-                                    <i class="fa fa-link icon-link"></i> 
+                                    <i th:classappend="${item.linkChanged} ? 'fa fa-link icon-link-changed' : 'fa fa-link icon-link'"></i> 
                                 </a>
                             </li>
 
