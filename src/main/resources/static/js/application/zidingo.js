@@ -380,6 +380,7 @@ $(document).ready(function () {
                         } else if (!isEmpty(document.getElementById('createInsertAfter').value)) {
 
                             refElementId = document.getElementById('createInsertAfter').value;
+                            
                         } else {
 
                             location.reload();
@@ -997,7 +998,8 @@ function BootboxEditItem(id) {
 
                         $(e.currentTarget).find('select[name="editMediaType"]').append('<option value="' + index + '">' + index + '</option>');
                     });
-                            
+                    
+                    // Selected values for dropdowns
                     $(e.currentTarget).find('select[name="editItemLevel"]').prop('value', itemDao.item.itemLevel);
                     $(e.currentTarget).find('select[name="editItemClass"]').prop('value', itemDao.item.itemClass);
                     $(e.currentTarget).find('select[name="editMediaType"]').prop('value', itemDao.item.mediaType);
@@ -1071,38 +1073,236 @@ function BootboxEditItem(id) {
 
 function BootboxCreateItem(id, pos) {
     
-    var newSortIndex = '';
+    var newSortIndex = 0;
     
     $.ajax({
 
         type: "GET",
         contentType: "application/json",
-        url: "/api/item/" + id,
+        url: "/api/item/create/" + id,
         dataType: "json",
         cache: false
     })
     .done(function (data) { 
            
-        if (pos === "ABOVE") {
-            
-            newSortIndex = data.sortIndex;
-    
-        } else {
-            
-            newSortIndex = data.sortIndex + 1;
-        }
+        var refItem = data;
 
-        console.log(data);  
-        console.log(newSortIndex);
+        if (pos === "ABOVE") { newSortIndex = refItem.item.sortIndex; } 
+        else { newSortIndex = refItem.item.sortIndex + 1; }
+
+        $.ajax({
+            type: "GET",
+            url: '/modal/item/item-create-form.html',
+            success: function (data) {
+
+                console.log(refItem);
+                
+                var box = bootbox.confirm({
+                    
+                    message: data,
+                    title: "Create new Item",
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-danger btn-fixed-width-100"
+                        },
+                        confirm: {
+                            label: "Save",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) { 
+                        
+                        if (result) {
+                            
+                            var data = {};
+                            
+                            data['artifactId'] = document.getElementById('createArtifactId').value;
+                            data['itemClass'] = document.getElementById('createItemClass').value;
+                            data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('createIdentifier').value : '';
+                            data['itemType'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('createItemType').value : '';
+                            data['itemLevel'] = document.getElementById('createItemLevel').value;
+                            data['itemValue'] = document.getElementById('createItemValue').value;
+                            data['sortIndex'] = document.getElementById('createSortIndex').value;
+
+                            console.log(data);
+                            
+                            $.ajax({
+                                type: "POST",
+                                contentType: "application/json",
+                                url: "/api/items/new",
+                                data: JSON.stringify(data),
+                                dataType: "json",
+                                timeout: 60000,
+                                success: function (data) {
+
+                                    var refItemId = id;
+                                    var refSortIdx = refItem.item.sortIndex;
+                                    var refElementId = refItem.item.sysId;
+
+                                    // First item in the document (no other items have been created)
+                                    if (refElementId === null) {
+
+                                        location.reload();
+                                        return true;
+                                    }
+                                    
+                                    var newItemElement = '';
+                                    
+                                    var regex1 = new RegExp(refItemId, "g");
+                                    var regex2 = new RegExp(refElementId, "g");
+                                    var regex3 = new RegExp(refSortIdx, "g");
+
+                                    var menuElement = $(document.getElementById('menu-container-' + refElementId)).clone().html();
+
+                                    menuElement = menuElement.replace(regex1, data.id);
+                                    menuElement = menuElement.replace(regex2, data.sysId);
+
+                                    var menuElementHTML = menuElement.replace(regex3, data.sortIndex);
+                                    
+                                    if (data['itemClass'] === "REQUIREMENT") {
+
+                                        newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
+                                                '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
+                                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                '</div>' +
+                                                '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
+                                                '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
+                                                '</div>' +
+                                                '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                                menuElementHTML +
+                                                '</div>';
+
+                                    } else {
+
+                                        var itemClass = (data.itemClass === "HEADER") ? 'item-header-' + data.itemLevel : 'item-level-' + data.itemLevel;
+
+                                        newItemElement = '<div id="' + data.sysId + '" class="row ' + itemClass + '">' +
+                                                '<div id="value-container-' + data.sysId + '" class="col-xs-11">' +
+                                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                '</div>' +
+                                                '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                                menuElementHTML +
+                                                '</div>';
+                                    }
+                                    
+                                    if (pos === "ABOVE") {
+
+                                        $(newItemElement).insertBefore('#' + refElementId);
+
+                                    } else if (pos === "BELOW") {
+
+                                        $(newItemElement).insertAfter('#' + refElementId);
+                                    }
+
+                                    $(data.sysId).show();
+
+                                    showToastr('success', 'Item successfully created!');
+                                }
+                            });
+                            
+                        } else {
+                            
+                            showToastr('error', 'There was an error creating an item!');
+                        }
+                    }
+                });
+                
+                box.on("shown.bs.modal", function(e) {
+                   
+                    $(e.currentTarget).find('input[name="createArtifactId"]').prop('value', refItem.item.artifact.id);
+                    $(e.currentTarget).find('input[name="createSortIndex"]').prop('value', newSortIndex);
+
+                    // Empty all SELECT controls
+                    $(e.currentTarget).find('select[name="createItemLevel"]').empty();
+                    $(e.currentTarget).find('select[name="createItemClass"]').empty();
+                    $(e.currentTarget).find('select[name="createItemType"]').empty();
+                    $(e.currentTarget).find('select[name="createIdentTemplate"]').empty();
+                    $(e.currentTarget).find('select[name="createMediaType"]').empty();
+                    
+                    // Clear INPUT and TEXTAREA controls
+                    $(e.currentTarget).find('input[name="createIdentifier"]').val('');
+                    $(e.currentTarget).find('textarea[name="createItemValue"]').val('');
+                    
+                    // Populate Item Levels SELECT
+                    $.each(refItem.itemLevels, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemLevel"]').append('<option value="' + index + '">Level ' + index + '</option>');
+                    });
+                    
+                    // Populate Item Classes SELECT
+                    $.each(refItem.itemClasses, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemClass"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                    
+                    // Populate Requirement Types SELECT
+                    $.each(refItem.itemTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemType"]').append('<option value="' + index.itemTypeName + '">' + index.itemTypeLongName + '</option>');
+                    });
+                    
+                    // Populate Requirement Ident Templates SELECT
+                    $.each(refItem.identPrefices, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createIdentTemplate"]').append('<option value="' + index.variableValue + '">' + index.variableValue + '</option>');
+                    });
+                    
+                    // Populate Media Types SELECT
+                    $.each(refItem.mediaTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createMediaType"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                    
+                    // Default selected values for dropdowns
+                    $(e.currentTarget).find('select[name="createItemLevel"]').prop('value', 1);
+                    $(e.currentTarget).find('select[name="createItemClass"]').prop('value', "REQUIREMENT");
+                    $(e.currentTarget).find('select[name="createItemType"]').prop('value', "Functional");
+                    $(e.currentTarget).find('select[name="createMediaType"]').prop('value', "TEXT");
+                          
+                    itemCreateIdentTemplateChange();
+                });
+                
+                box.modal('show');
+            }
+        });
     });
     
 
 }
 
 
+function itemCreateIdentTemplateChange() {
+    
+    var itemClass = document.getElementById('createItemClass');
+    
+    if (itemClass.value === "REQUIREMENT") {
+
+        document.getElementById('createIdentifier').disabled = false;
+        document.getElementById('createItemType').disabled = false;
+        document.getElementById('createIdentTemplate').disabled = false;
+        
+        $('#createRequirementRow').show();
+        $('#createIdentField').show();
+        
+        itemCreateIdentTemplateChange();
+
+    } else {
+
+        document.getElementById('createIdentifier').disabled = true;
+        document.getElementById('createItemType').disabled = true;
+        document.getElementById('createIdentTemplate').disabled = true;
+        
+        $('#createRequirementRow').hide();
+        $('#createIdentField').hide();
+    }
+}
+
+
+
 function itemEditClassChange() {
 
-    var itemClass = document.getElementById('ItemClass');
+    var itemClass = document.getElementById('editItemClass');
     
     if (itemClass.value === "REQUIREMENT") {
 
@@ -1124,6 +1324,29 @@ function itemEditClassChange() {
         $('#editRequirementRow').hide();
         $('#editIdentField').hide();
     }
+}
+
+
+
+function itemCreateIdentTemplateChange() {
+    
+    var data = {
+        
+        id: document.getElementById('createArtifactId').value, 
+        template: document.getElementById('createIdentTemplate').value
+    };
+    
+    $.ajax({
+        type: "GET",
+        url: "/api/items/nextidentifier",
+        data: data,
+        dataType: "text",
+        timeout: 60000,
+        success: function (responseText) {
+
+            document.getElementById('createIdentifier').value = responseText;
+        }
+    });
 }
 
 
@@ -1154,7 +1377,6 @@ function itemEditIdentTemplateChange() {
         document.getElementById('editIdentifier').value = identTemplate + '-' + editIdentifierNumericValue;
     }
 }
-
 
 function isEmpty(str) {
 

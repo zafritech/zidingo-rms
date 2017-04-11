@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
+import org.zafritech.zidingorms.dao.ItemCreateDao;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.ItemEditDao;
+import org.zafritech.zidingorms.dao.converter.DaoToCreateConverter;
 import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
 import org.zafritech.zidingorms.dao.converter.ItemToEditDaoConverter;
 import org.zafritech.zidingorms.domain.Artifact;
@@ -52,6 +54,14 @@ public class ItemServiceImpl implements ItemService {
     public Item findById(Long id) {
 
         return itemRepository.findOne(id);
+    }
+    
+    @Override
+    public ItemCreateDao findByIdForCreate(Long id) {
+        
+        DaoToCreateConverter createConverter = new DaoToCreateConverter();
+        
+        return createConverter.convert(itemRepository.findOne(id));
     }
     
     @Override
@@ -98,8 +108,6 @@ public class ItemServiceImpl implements ItemService {
  
     @Override
     public void updateItemHistory(Item item) {
-        
-        System.out.println("\n\rOld item for history: " + item);
         
         ItemHistory history = new ItemHistory(item, item.getSysId(), item.getItemValue(), item.getItemVersion());
         
@@ -259,13 +267,16 @@ public class ItemServiceImpl implements ItemService {
 
         for (Item item : items) {
 
-            Matcher matcher = pattern.matcher(item.getIdentifier());
+            if (item.getIdentifier() != null) {
+                
+                Matcher matcher = pattern.matcher(item.getIdentifier());
 
-            if (matcher.find()) {
+                if (matcher.find()) {
 
-                String listItem = String.format(format, Integer.parseInt(matcher.group(1)));
+                    String listItem = String.format(format, Integer.parseInt(matcher.group(1)));
 
-                list.add(listItem);
+                    list.add(listItem);
+                }
             }
         }
 

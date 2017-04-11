@@ -14,9 +14,11 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
+import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.AreaBreakType;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
@@ -31,7 +33,6 @@ import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.pdf.Header;
 import org.zafritech.zidingorms.pdf.PageXofY;
-import org.zafritech.zidingorms.pdf.TableHeader;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.services.PdfService;
@@ -88,6 +89,8 @@ public class PdfServiceImpl implements PdfService {
             document.add(new Paragraph(artifact.getArtifactType().getArtifactTypeLongName()).addStyle(styles.get("Subtitle")));
             document.add(new Paragraph(artifact.getIdentifier()).addStyle(styles.get("Normal")));
             
+            addEmptyLine(document, 45);
+            
             document.setTextAlignment(TextAlignment.LEFT);
             document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
             
@@ -121,6 +124,14 @@ public class PdfServiceImpl implements PdfService {
                         default:
                             document.add(new Paragraph(item.getItemValue()).addStyle(styles.get("Normal")));
                     }
+                   
+                } else if (item.getItemClass().equals("REQUIREMENT")) {
+                    
+                    Table reqTable = new Table(new float[]{1, 4}).setBorder(Border.NO_BORDER);
+                    reqTable.addCell(item.getIdentifier()).setBorder(Border.NO_BORDER);
+                    reqTable.addCell(item.getItemValue()).setBorder(Border.NO_BORDER);
+                    document.add(reqTable);
+                    addEmptyLine(document, 1);
                     
                 } else {
                     

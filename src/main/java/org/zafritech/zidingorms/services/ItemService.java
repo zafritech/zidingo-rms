@@ -2,6 +2,7 @@ package org.zafritech.zidingorms.services;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.zafritech.zidingorms.dao.ItemCreateDao;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.ItemEditDao;
 import org.zafritech.zidingorms.domain.Item;
@@ -11,6 +12,8 @@ import org.zafritech.zidingorms.domain.Link;
 public interface ItemService {
 
     Item findById(Long id);
+    
+    ItemCreateDao findByIdForCreate(Long id);
     
     ItemEditDao findByIdForEdit(Long id);
 

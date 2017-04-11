@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.MediaType;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
+import org.zafritech.zidingorms.dao.ItemCreateDao;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.ItemEditDao;
 import org.zafritech.zidingorms.domain.Item;
@@ -51,6 +52,21 @@ public class ItemRestController {
     public Item getItem(@PathVariable(value = "id") Long id) {
 
         return itemService.findById(id);
+    }
+
+    @RequestMapping(value = "/api/item/create/{id}", method = RequestMethod.GET)
+    public ItemCreateDao getRefItemForCreate(@PathVariable(value = "id") Long id) {
+
+        ItemCreateDao createDao = itemService.findByIdForCreate(id);
+        
+        createDao.setItemTypes(itemTypeRepository.findAllByOrderByItemTypeLongName());
+        createDao.setIdentPrefices(sysVarRepository
+                                        .findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(
+                                        createDao.getItem().getArtifact().getId(), 
+                                        "DOCUMENT", 
+                                        SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name()));
+                
+        return createDao;
     }
 
     @RequestMapping(value = "/api/item/edit/{id}", method = RequestMethod.GET)
@@ -137,8 +153,6 @@ public class ItemRestController {
         }
          
         Item item = itemService.saveDao(itemDao);
-        
-        System.out.println("\n\rSaved Item: " + item);
             
         return new ResponseEntity<Item>(item, HttpStatus.OK);
     }

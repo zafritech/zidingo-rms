@@ -104,19 +104,16 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li>
-                                        <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="BELOW"><i class="fa fa-fw fa-level-down"></i> Add item below</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down fa-rotate-90"></i> Add item below</a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down"></i> Add item below [DEV]</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'ABOVE\');'"><i class="fa fa-fw fa-level-up fa-rotate-270"></i> Add item above</a>
                                     </li>
                                     <li>
-                                        <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="ABOVE"><i class="fa fa-fw fa-level-up"></i> Add item above</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemUp(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-up"></i> Move item up</a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemUp(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-chevron-circle-up"></i> Move item up</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemDown(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-chevron-circle-down"></i> Move item down</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemDown(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-down"></i> Move item down</a>
                                     </li>
                                     <li>
                                         <a href="javascript:void(0);" th:onclick="'javascript:BootboxEditItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-pencil"></i> Edit item</a>
@@ -179,95 +176,6 @@
                                 </div>
                                 <div class="btn-group" role="group">
                                     <button type="button" id="importFromFile" class="btn btn-success btn-hover-green" onclick="document.getElementById('importExcel').submit();" data-dismiss="modal" role="button">Import</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Create New Requirement modal ############################################ -->
-            <div class="modal fade" id="createItemModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                            <h3 class="modal-title" id="lineModalLabel">Create New Item</h3>
-                        </div>
-                        <div class="modal-body">
-
-                            <!-- content goes here -->
-                            <form id="createItem" action="/api/items/save" method="post">
-
-                                <input type="hidden" name="artifactId" id="artifactId" value="" />
-                                <input type="hidden" name="createId" id="createId" value="" />
-                                <input type="hidden" name="createSortIndex" id="createSortIndex" value="" />
-                                <input type="hidden" name="createInsertBefore" id="createInsertBefore" value="" />
-                                <input type="hidden" name="createInsertAfter" id="createInsertAfter" value="" />
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createItemLevel">Item level:</label>
-                                            <select class="form-control" id="createItemLevel" name="createItemLevel"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createItemClass">Item class:</label>
-                                            <select class="form-control" id="createItemClass" name="createItemClass" onchange="itemCreateClassChange();"></select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row" id="createRequirementRow">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createItemType">Requirement type:</label>
-                                            <select class="form-control" id="createItemType" name="createItemType"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createIdentTemplate">Identifier prefix:</label>
-                                            <select class="form-control" id="createIdentTemplate" name="createIdentTemplate" onchange="itemCreateIdentTemplateChange();"></select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createMediaType">Media type:</label>
-                                            <select class="form-control" id="createMediaType" name="createMediaType"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6" id="createIdentifierContainer">
-                                        <div class="form-group">
-                                            <label for="createIdentifier">Identifier:</label>
-                                            <input type="text" class="form-control" id="createIdentifier" name="createIdentifier" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="createItemValue">Item details:</label>
-                                    <textarea class="form-control"  rows="5" cols="50" id="createItemValue" name="createItemValue"></textarea>
-                                </div>
-                                                                
-                            </form>
-
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-                                </div>
-                                <div class="btn-group btn-delete hidden" role="group">
-                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="createItemSaveBtn" class="btn btn-success btn-hover-green" role="button">Save</button>
                                 </div>
                             </div>
                         </div>
