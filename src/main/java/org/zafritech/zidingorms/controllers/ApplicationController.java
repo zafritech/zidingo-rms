@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.services.ArtifactService;
+import org.zafritech.zidingorms.services.PdfService;
 
 /**
  *
@@ -42,6 +43,9 @@ public class ApplicationController {
 
     @Autowired
     private ArtifactService artifactService;
+
+    @Autowired
+    private PdfService pdfService;
 
     public void setArtifactRepository(ArtifactRepository artifactRepository) {
 
@@ -109,7 +113,8 @@ public class ApplicationController {
         DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
         String fileName = timeFormat.format(System.currentTimeMillis()) + "_" + artifact.getIdentifier() + "_Requirements.pdf";
         
-        ByteArrayOutputStream document = artifactService.DownloadPDF(id);
+//        ByteArrayOutputStream document = artifactService.DownloadPDF(id);
+        ByteArrayOutputStream document = pdfService.DownloadPDF(id);
         document.close();
         
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");

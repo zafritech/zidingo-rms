@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.dao.ItemDao;
+import org.zafritech.zidingorms.dao.ItemEditDao;
 import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
+import org.zafritech.zidingorms.dao.converter.ItemToEditDaoConverter;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemHistory;
@@ -51,7 +53,14 @@ public class ItemServiceImpl implements ItemService {
 
         return itemRepository.findOne(id);
     }
-   
+    
+    @Override
+    public ItemEditDao findByIdForEdit(Long id) {
+        
+        ItemToEditDaoConverter editConverter = new ItemToEditDaoConverter();
+        
+        return editConverter.convert(itemRepository.findOne(id));
+    }
     
     @Override
     public Item saveItem(Item item) {

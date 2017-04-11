@@ -776,54 +776,6 @@ function itemCreateIdentTemplateChange() {
 }
 
 
-function itemEditIdentTemplateChange() {
-
-    var str = document.getElementById('editIdentifier').value;
-
-    if (isEmpty(str)) {
-
-        $.ajax({
-            type: "GET",
-            url: "/api/items/nextidentifier",
-            data: {id: document.getElementById('artifactId').value, template: document.getElementById('editIdentTemplate').value},
-            dataType: "text",
-            timeout: 60000,
-            success: function (responseText) {
-
-                document.getElementById('editIdentifier').value = responseText;
-            }
-        });
-
-    } else {
-
-        var identTemplate = document.getElementById('editIdentTemplate').value;
-        var editIdentifierNumericValue = str.substr(str.lastIndexOf("-") + 1);
-
-        document.getElementById('editIdentifier').value = identTemplate + '-' + editIdentifierNumericValue;
-    }
-}
-
-
-function itemEditClassChange() {
-
-    var itemClass = document.getElementById('editItemClass');
-    if (itemClass.value === "REQUIREMENT") {
-
-        document.getElementById('editIdentifier').disabled = false;
-        document.getElementById('editItemType').disabled = false;
-        $('#editRequirementRow').show();
-        $('#editIdentField').show();
-
-    } else {
-
-        document.getElementById('editIdentifier').disabled = true;
-        document.getElementById('editItemType').disabled = true;
-        $('#editRequirementRow').hide();
-        $('#editIdentField').hide();
-    }
-}
-
-
 function moveItemUp(id) {
 
     $.ajax({
@@ -875,6 +827,332 @@ function moveItemDown(id) {
             showToastr('error', 'Error: failed to move item [' + id + '] down!');
         }
     });
+}
+
+
+function BootboxEditItem(id) {
+    
+    var itemDao = '';
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/edit/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        itemDao = data;
+
+        $.ajax({
+            type: "GET",
+            url: '/modal/item/item-edit-form.html',
+            success: function (data) {
+
+                console.log(itemDao);
+                
+                var box = bootbox.confirm({
+                    
+                    message: data,
+                    title: "Edit Item: [ " + itemDao.item.sysId + " ]",
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-danger btn-fixed-width-100"
+                        },
+                        confirm: {
+                            label: "Save",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) {
+                        
+                        if (result) {
+                            
+                            var data = {};
+
+                            data['id'] = document.getElementById('editId').value;
+                            data['artifactId'] = document.getElementById('artifactId').value;
+                            data['sysId'] = document.getElementById('editSysId').value;
+                            data['itemClass'] = document.getElementById('editItemClass').value;
+                            data['itemType'] = document.getElementById('editItemType').value;
+                            data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('editIdentifier').value : '';
+                            data['itemLevel'] = document.getElementById('editItemLevel').value;
+                            data['itemValue'] = document.getElementById('editItemValue').value;
+
+                            console.log(data);
+
+                            $.ajax({
+
+                                type: "POST",
+                                contentType: "application/json",
+                                url: "/api/items/save",
+                                data: JSON.stringify(data),
+                                dataType: "json",
+                                timeout: 60000,
+                                success: function (data) {
+
+                                    if (data.itemClass === "HEADER") {
+
+                                        document.getElementById(data.sysId).className = 'row item-header-' + data.itemLevel;
+
+                                    } else if (data.itemClass === "REQUIREMENT") {
+
+                                        var reqElementId = document.getElementById('ident-' + data.sysId);
+
+                                        // Not a requirement yet (converted from prose)
+                                        if (!document.getElementById(reqElementId)) {
+
+                                            var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
+                                                    '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
+                                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                    '</div>' +
+                                                    '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
+                                                    '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
+                                                    '</div>' +
+                                                    '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                                    document.getElementById('menu-container-' + data.sysId).innerHTML +
+                                                    '</div>' +
+                                                    '</div>';
+
+                                            var currentItemElement = document.getElementById(data.sysId);
+
+                                            $(currentItemElement).replaceWith(newItemElement);
+                                        }
+
+                                    // Is PROSE or other itemClass
+                                    } else {
+
+                                        var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + ' ' + data.itemClass + '">' +
+                                                '<div id="value-container-' + data.sysId + '" class="col-xs-11 ' + data.itemClass.toLowerCase() + '">' +
+                                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                '</div>' +
+                                                '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
+                                                document.getElementById('menu-container-' + data.sysId).innerHTML +
+                                                '</div>' +
+                                                '</div>';
+
+                                        var currentItemElement = document.getElementById(data.sysId);
+
+                                        $(currentItemElement).replaceWith(newItemElement);
+                                    }
+
+                                    showToastr('success', '[' + data.sysId + '] modfied!');
+                                },
+                                error: function () {
+
+                                    $('#editItemModal').modal('hide');
+                                    showToastr('error', 'An error occured updating item [' + data.sysId + ']!');
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                box.on("shown.bs.modal", function(e) { 
+  
+                    $(e.currentTarget).find('input[name="editArtifactId"]').prop('value', itemDao.item.artifact.id);
+                    $(e.currentTarget).find('input[name="editId"]').prop('value', itemDao.item.id);
+                    $(e.currentTarget).find('input[name="editSysId"]').prop('value', itemDao.item.sysId);
+    
+                    // Empty all SELECT controls
+                    $(e.currentTarget).find('select[name="editItemLevel"]').empty();
+                    $(e.currentTarget).find('select[name="editItemClass"]').empty();
+                    $(e.currentTarget).find('select[name="editItemType"]').empty();
+                    $(e.currentTarget).find('select[name="editIdentTemplate"]').empty();
+                    $(e.currentTarget).find('select[name="editMediaType"]').empty();
+                    
+                    // Clear INPUT and TEXTAREA controls
+                    $(e.currentTarget).find('input[name="editIdentifier"]').val('');
+                    $(e.currentTarget).find('textarea[name="editItemValue"]').val('');
+                    
+                    // Populate Item Levels SELECT
+                    $.each(itemDao.itemLevels, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="editItemLevel"]').append('<option value="' + index + '">Level ' + index + '</option>');
+                    });
+                    
+                    // Populate Item Classes SELECT
+                    $.each(itemDao.itemClasses, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="editItemClass"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                    
+                    // Populate Requirement Types SELECT
+                    $.each(itemDao.itemTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="editItemType"]').append('<option value="' + index.itemTypeName + '">' + index.itemTypeLongName + '</option>');
+                    });
+                    
+                    // Populate Requirement Ident Templates SELECT
+                    $.each(itemDao.identPrefices, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="editIdentTemplate"]').append('<option value="' + index.variableValue + '">' + index.variableValue + '</option>');
+                    });
+                    
+                    // Populate Media Types SELECT
+                    $.each(itemDao.mediaTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="editMediaType"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                            
+                    $(e.currentTarget).find('select[name="editItemLevel"]').prop('value', itemDao.item.itemLevel);
+                    $(e.currentTarget).find('select[name="editItemClass"]').prop('value', itemDao.item.itemClass);
+                    $(e.currentTarget).find('select[name="editMediaType"]').prop('value', itemDao.item.mediaType);
+                    $(e.currentTarget).find('textarea[name="editItemValue"]').val(itemDao.item.itemValue);
+
+                    if (isEmpty(itemDao.item.identifier)) {
+
+                        $(e.currentTarget).find('select[name="editItemType"]').prop('disabled', true);
+                        $(e.currentTarget).find('select[name="editIdentTemplate"]').prop('disabled', true);
+                        $(e.currentTarget).find('input[name="editIdentifier"]').prop('disabled', true);
+
+                    } else {   // Is a requirement
+
+                        var s = itemDao.item.identifier;
+                        var indentTemplValue = s.substring(0, s.lastIndexOf('-'));
+                        console.log(indentTemplValue);
+
+                        $(e.currentTarget).find('select[name="editItemType"]').prop('value', itemDao.item.itemType.itemTypeName);
+                        $(e.currentTarget).find('select[name="editIdentTemplate"]').prop('value', indentTemplValue);
+                        $(e.currentTarget).find('input[name="editIdentifier"]').val(itemDao.item.identifier);
+                    
+                        $(e.currentTarget).find('select[name="editItemType"]').prop('disabled', false);
+                        $(e.currentTarget).find('select[name="editIdentTemplate"]').prop('disabled', false);
+                        $(e.currentTarget).find('input[name="editIdentifier"]').prop('disabled', false);
+                    }
+                    
+                    if (itemDao.item.itemClass !== "REQUIREMENT") {
+
+                        $(e.currentTarget).find('div[id="editRequirementRow"]').hide();
+                        $(e.currentTarget).find('div[id="editIdentField"]').hide();
+
+                    } else {
+
+                        $(e.currentTarget).find('div[id="editRequirementRow"]').show();
+                        $(e.currentTarget).find('div[id="editIdentField"]').show();
+                    }
+                    
+                    $.ajax({
+                        
+                        url: '/api/link/incominglinks/' + itemDao.item.id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function (data) {
+
+                            console.log(data);
+
+                            if (data > 0) {
+
+                                var warningMsg  =   '<div id="linkedItemsWarning" style="padding: 8px 0; color: red; text-align: center; font-weight: bold;">' +
+                                                    '<span>WARNING: This item has ' + data + ' incoming link(s).<br/>Modification of the item could impact the linking item(s).</span>' +
+                                                    '</div>';
+
+                                $('#linkedItemsWarning').remove();
+                                $(warningMsg).insertBefore($('#itemDetalsGroup'));
+
+                            } else {
+
+                                $('#linkedItemsWarning').remove();
+                            }
+                        }
+                    });
+                });
+
+                box.modal('show');
+            }
+        });
+    });
+}
+
+
+
+function BootboxCreateItem(id, pos) {
+    
+    var newSortIndex = '';
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) { 
+           
+        if (pos === "ABOVE") {
+            
+            newSortIndex = data.sortIndex;
+    
+        } else {
+            
+            newSortIndex = data.sortIndex + 1;
+        }
+
+        console.log(data);  
+        console.log(newSortIndex);
+    });
+    
+
+}
+
+
+function itemEditClassChange() {
+
+    var itemClass = document.getElementById('ItemClass');
+    
+    if (itemClass.value === "REQUIREMENT") {
+
+        document.getElementById('editIdentifier').disabled = false;
+        document.getElementById('editItemType').disabled = false;
+        document.getElementById('editIdentTemplate').disabled = false;
+        
+        $('#editRequirementRow').show();
+        $('#editIdentField').show();
+        
+        itemEditIdentTemplateChange();
+
+    } else {
+
+        document.getElementById('editIdentifier').disabled = true;
+        document.getElementById('editItemType').disabled = true;
+        document.getElementById('editIdentTemplate').disabled = true;
+        
+        $('#editRequirementRow').hide();
+        $('#editIdentField').hide();
+    }
+}
+
+
+
+function itemEditIdentTemplateChange() {
+    
+    var str = document.getElementById('editIdentifier').value;
+
+    if (isEmpty(str)) {
+
+        $.ajax({
+            type: "GET",
+            url: "/api/items/nextidentifier",
+            data: {id: document.getElementById('artifactId').value, template: document.getElementById('editIdentTemplate').value},
+            dataType: "text",
+            timeout: 60000,
+            success: function (responseText) {
+
+                document.getElementById('editIdentifier').value = responseText;
+            }
+        });
+
+    } else {
+
+        var identTemplate = document.getElementById('editIdentTemplate').value;
+        var editIdentifierNumericValue = str.substr(str.lastIndexOf("-") + 1);
+
+        document.getElementById('editIdentifier').value = identTemplate + '-' + editIdentifierNumericValue;
+    }
 }
 
 

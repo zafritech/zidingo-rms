@@ -17,6 +17,4 @@ public interface ArtifactService {
     Artifact importExcel(Long id, String filePath);
     
     XSSFWorkbook DownloadExcel (Long id)  throws FileNotFoundException, IOException;
-    
-    ByteArrayOutputStream DownloadPDF(Long id);
 }

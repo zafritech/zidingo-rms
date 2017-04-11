@@ -1,9 +1,8 @@
 <form id="editItem" action="/api/items/save" method="post">
 
-    <input type="hidden" name="artifactId" id="artifactId" value="" />
+    <input type="hidden" name="artifactId" id="editArtifactId" value="" />
     <input type="hidden" name="editId" id="editId" value="" />
     <input type="hidden" name="editSysId" id="editSysId" value="" />
-    <input type="hidden" name="editSortIndex" id="editSortIndex" value="" />
 
     <div class="row">
         <div class="col-sm-6">
@@ -50,7 +49,7 @@
         </div>
     </div>
 
-    <div class="form-group">
+    <div id="itemDetalsGroup"  class="form-group">
         <label for="editItemValue">Item details:</label>
         <textarea class="form-control"  rows="5" cols="50" id="editItemValue" name="editItemValue"></textarea>
     </div>

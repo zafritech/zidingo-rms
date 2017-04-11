@@ -28,14 +28,14 @@
                 <div class="col-md-6" style="padding-right: 20px;">
                     <div th:if="${items.isEmpty()}" class="pull-right" >
                         <a th:href="@{'/artifacts/metadata/' + ${artifact.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a> |
-                        <a href="#createItemModal" data-toggle="modal" data-ref-item-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i> Create Item</a> |
+                        <a href="#createItemitemDetalsGroup" data-toggle="modal" data-ref-item-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i> Create Item</a> |
                         <a href="#editItemModal" data-toggle="modal" data-item-id=""><i class="fa fa-fw fa-sitemap"></i> Apply Template</a> |
                         <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-file-excel-o"></i> Import Excel</a>
                     </div>
                     <div th:if="${!items.isEmpty()}" class="pull-right" >
-                        <a th:href="@{'/artifacts/metadata/' + ${artifact.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a>
-                        <a th:href="@{'/pdf/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-pdf-o"></i> Download PDF</a>
-                        <a th:href="@{'/excel/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-excel-o"></i> Download Excel</a>
+                        <a th:href="@{'/artifacts/metadata/' + ${artifact.id}}"><i class="fa fa-fw fa-list" style="color: #00aced"></i> Metadata</a>
+                        <a th:href="@{'/pdf/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-pdf-o" style="color: lightcoral"></i> PDF</a>
+                        <a th:href="@{'/excel/download/' + ${artifact.id}}"><i class="fa fa-fw fa-file-excel-o" style="color: #4cae4c"></i> Excel</a>
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                     <div th:attr="id='menu-container-'+${item.sysId}" class="btn-group pull-right normal-text">
 
                         <!-- Item Menu <ul> Container -->
-                        <ul class="item-toolbar-ul">  
+                        <ul class="item-toolbar-ul dropup">  
 
                             <li th:attr="id=${'comment-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayComments(\'' + ${item.id} + '\');'">
@@ -107,6 +107,9 @@
                                         <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="BELOW"><i class="fa fa-fw fa-level-down"></i> Add item below</a>
                                     </li>
                                     <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down"></i> Add item below [DEV]</a>
+                                    </li>
+                                    <li>
                                         <a href="#createItemModal" data-toggle="modal" th:attr="data-ref-item-idx=${item.sortIndex}, data-ref-item-sys-id=${item.sysId}, data-ref-item-id=${item.id}" data-ref-pos="ABOVE"><i class="fa fa-fw fa-level-up"></i> Add item above</a>
                                     </li>
                                     <li>
@@ -116,7 +119,7 @@
                                         <a href="javascript:void(0);" th:onclick="'javascript:moveItemDown(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-chevron-circle-down"></i> Move item down</a>
                                     </li>
                                     <li>
-                                        <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-pencil"></i> Edit item</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxEditItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-pencil"></i> Edit item</a>
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'" class="divider"></li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
@@ -265,94 +268,6 @@
                                 </div>
                                 <div class="btn-group" role="group">
                                     <button type="button" id="createItemSaveBtn" class="btn btn-success btn-hover-green" role="button">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Edit Requirement modal ##################################################################################################### -->
-            <div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                            <h3 class="modal-title" id="lineModalLabel">Edit Item</h3>
-                        </div>
-                        <div class="modal-body">
-
-                            <!-- content goes here -->
-                            <form id="editItem" action="/api/items/save" method="post">
-
-                                <input type="hidden" name="artifactId" id="artifactId" value="" />
-                                <input type="hidden" name="editId" id="editId" value="" />
-                                <input type="hidden" name="editSysId" id="editSysId" value="" />
-                                <input type="hidden" name="editSortIndex" id="editSortIndex" value="" />
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="editItemLevel">Item level:</label>
-                                            <select class="form-control" id="editItemLevel" name="editItemLevel"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="editItemClass">Item class:</label>
-                                            <select class="form-control" id="editItemClass" name="editItemClass" onchange="itemEditClassChange();"></select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row" id="editRequirementRow">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="editItemType">Requirement type:</label>
-                                            <select class="form-control" id="editItemType" name="editItemType"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createIdentTemplate">Identifier prefix:</label>
-                                            <select class="form-control" id="editIdentTemplate" name="editIdentTemplate" onchange="itemEditIdentTemplateChange();"></select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="createMediaType">Media type:</label>
-                                            <select class="form-control" id="editMediaType" name="editMediaType"></select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6" id="editIdentField">
-                                        <div class="form-group">
-                                            <label for="editIdentifier">Identifier:</label>
-                                            <input type="text" class="form-control" id="editIdentifier" name="editIdentifier" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="itemDetalsGroup" class="form-group">
-                                    <label for="editItemValue">Item details:</label>
-                                    <textarea class="form-control"  rows="5" cols="50" id="editItemValue" name="editItemValue"></textarea>
-                                </div>
-                                
-                            </form>
-
-                        </div>
-                        <div class="modal-footer">
-                            <div class="btn-group btn-group-justified" role="group" aria-label="group button">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"  role="button">Cancel</button>
-                                </div>
-                                <div class="btn-group btn-delete hidden" role="group">
-                                    <button type="button" id="delImage" class="btn btn-default btn-hover-red" data-dismiss="modal"  role="button">Delete</button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="editItemSaveBtn" class="btn btn-success btn-hover-green" role="button">Save</button>
                                 </div>
                             </div>
                         </div>

@@ -11,6 +11,7 @@ import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.property.AreaBreakType;
+import com.itextpdf.layout.property.TextAlignment;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -300,100 +301,6 @@ public class ArtifactServiceImpl implements ArtifactService {
         return workbook;
     }
     
-    @Override
-    public ByteArrayOutputStream DownloadPDF(Long id) {
-        
-        ByteArrayOutputStream  outputStream = new ByteArrayOutputStream();
-        PdfWriter writer = new PdfWriter(outputStream);
-        PdfDocument pdf = new PdfDocument(writer);
-        PageSize pagesize = PageSize.A4;
-        
-        Artifact artifact = artifactRepository.findOne(id);
-        
-        try (Document document = new Document(pdf, pagesize)) 
-        {
-            
-            document.setMargins(70, 50, 70, 50);
-            
-            PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-            
-            Style normal = new Style();
-            normal.setFont(font).setFontSize(11);
-            
-            Style docTitle = new Style();
-            docTitle.setFontSize(20);
-            docTitle.setBold();
-            docTitle.setHorizontalAlignment(com.itextpdf.layout.property.HorizontalAlignment.CENTER);
-            
-            Style headeH1 = new Style();
-            headeH1.setFontSize(18);
-            headeH1.setBold();
-            
-            Style headeH2 = new Style();
-            headeH2.setFontSize(16);
-            headeH2.setBold();
-            
-            Style headeH3 = new Style();
-            headeH3.setFontSize(14);
-            headeH3.setBold();
-            
-            Style headeH4 = new Style();
-            headeH4.setFontSize(12);
-            headeH4.setBold();
-            
-            Style headeH5 = new Style();
-            headeH5.setFontSize(11);
-            headeH5.setBold();
-            headeH5.setItalic();
-            
-            List<Item> items = itemRepository.findByArtifactId(id);
-            
-            document.add(new Paragraph(artifact.getArtifactLongName()).setFont(font).addStyle(docTitle));
-            document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-            
-            for (Item item : items ) {
-                
-                if (item.getItemClass().equals("HEADER")) {
-                    
-                    switch (item.getItemLevel()) {
-
-                        case 1:
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH1)); 
-                            break;
-
-                        case 2: 
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH2)); 
-                            break;
-
-                        case 3: 
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH3)); 
-                            break;
-
-                        case 4: 
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH4)); 
-                            break;
-
-                        case 5: 
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(headeH5)); 
-                            break;
-
-                        default:
-                            document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(normal));
-                    }
-                    
-                } else {
-                    
-                    document.add(new Paragraph(item.getItemValue()).setFont(font).addStyle(normal));
-                }
-            }
-            
-            return outputStream;
-            
-        } catch(Exception e) {
-            
-            return null;
-        }
-    }
     
     // Excel 2003 or 2007
     private Workbook getWorkbook(FileInputStream inputStream, String excelFilePath) throws IOException {

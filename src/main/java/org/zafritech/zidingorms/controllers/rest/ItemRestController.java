@@ -16,6 +16,7 @@ import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.MediaType;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.dao.ItemDao;
+import org.zafritech.zidingorms.dao.ItemEditDao;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemType;
 import org.zafritech.zidingorms.domain.SystemVariable;
@@ -50,6 +51,22 @@ public class ItemRestController {
     public Item getItem(@PathVariable(value = "id") Long id) {
 
         return itemService.findById(id);
+    }
+
+    @RequestMapping(value = "/api/item/edit/{id}", method = RequestMethod.GET)
+    public ItemEditDao getItemForEdit(@PathVariable(value = "id") Long id) {
+
+        ItemEditDao editDao = itemService.findByIdForEdit(id);
+        
+        editDao.setItemTypes(itemTypeRepository.findAllByOrderByItemTypeLongName());
+        editDao.setIdentPrefices(sysVarRepository
+                                 .findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(
+                                         editDao.getItem().getArtifact().getId(), 
+                                         "DOCUMENT", 
+                                         SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name())
+                                );
+                
+        return editDao;
     }
 
     @RequestMapping(value = "/api/items/identifiers/{id}", method = RequestMethod.GET)
