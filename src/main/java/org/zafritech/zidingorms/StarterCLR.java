@@ -259,33 +259,6 @@ public class StarterCLR implements CommandLineRunner {
         Folder input2 = folderRepository.save(new Folder("Input Documents", FolderTypes.DOCUMENT, folder2, project2));
         Folder specn2 = folderRepository.save(new Folder("Specifications", FolderTypes.DOCUMENT, folder2, project2));
         Folder desig2 = folderRepository.save(new Folder("Design", FolderTypes.DOCUMENT, folder2, project2));
-//        Folder detal2 = folderRepository.save(new Folder("Detailed Specification", FolderTypes.DOCUMENT, folder2, project2));
-
-//        Folder contract2 = folderRepository.save(new Folder("Contract", FolderTypes.DOCUMENT, input2, project2));
-//        Folder internal2 = folderRepository.save(new Folder("Internal Sources", FolderTypes.DOCUMENT, input2, project2));
-//        Folder thirdpty2 = folderRepository.save(new Folder("Third Party Sources", FolderTypes.DOCUMENT, input2, project2));
-
-//        folderRepository.save(new Folder("System Specification", FolderTypes.DOCUMENT, specn2, project2));
-//        folderRepository.save(new Folder("Validation Test Spec", FolderTypes.DOCUMENT, specn2, project2));
-
-//        folderRepository.save(new Folder("Architectural Description", FolderTypes.DOCUMENT, desig2, project2));
-//        folderRepository.save(new Folder("Design Description", FolderTypes.DOCUMENT, desig2, project2));
-//        folderRepository.save(new Folder("System Main ICD", FolderTypes.DOCUMENT, desig2, project2));
-//
-//        folderRepository.save(new Folder("Electrical System", FolderTypes.DOCUMENT, detal2, project2));
-//        folderRepository.save(new Folder("Communication System", FolderTypes.DOCUMENT, detal2, project2));
-//        folderRepository.save(new Folder("Subsystem #1", FolderTypes.DOCUMENT, detal2, project2));
-//
-//        folderRepository.save(new Folder("General Conditions", FolderTypes.DOCUMENT, contract2, project2));
-//        folderRepository.save(new Folder("Appendices", FolderTypes.DOCUMENT, contract2, project2));
-//
-//        folderRepository.save(new Folder("Requirements Lists", FolderTypes.DOCUMENT, internal2, project2));
-//        folderRepository.save(new Folder("Design Standard", FolderTypes.DOCUMENT, internal2, project2));
-//
-//        folderRepository.save(new Folder("EN Standards", FolderTypes.DOCUMENT, thirdpty2, project2));
-//        folderRepository.save(new Folder("Railway Safety Board", FolderTypes.DOCUMENT, thirdpty2, project2));
-//        folderRepository.save(new Folder("Electricity Authority", FolderTypes.DOCUMENT, thirdpty2, project2));
-//        folderRepository.save(new Folder("Depart. of Transport", FolderTypes.DOCUMENT, thirdpty2, project2));
 
         artifactRepository.save(new Artifact("ZID-RLS-1700", "Requirements List", "Zidingo RMS Requirements List", artifactTypeRepository.findByArtifactTypeName("RLS"), project2, input2));
         artifactRepository.save(new Artifact("ZID-SRS-1701", "Zidingo SRS", "Zidingo RMS Software Requirements Specification", artifactTypeRepository.findByArtifactTypeName("SRS"), project2, specn2));
@@ -326,18 +299,29 @@ public class StarterCLR implements CommandLineRunner {
         itemTypeRepository.save(new HashSet<ItemType>() {
             {
 
-                add(new ItemType("Unclassified", "Unclassified Requirement", "Requirements not classified."));
-                add(new ItemType("Prose", "Prose Textual", "Prose textual information for clarification and context setting for a set of requirements."));
-                add(new ItemType("Functional", "Functional Requirement", "A functional requirement describes a function of the system, i.e. what the system must do resp. a service the system provides to its users."));
-                add(new ItemType("Performance", "Performance Requirement", "A performance requirement is a non-functional requirement that describes the amount of useful work accomplished by the system compared to the time and resources used."));
-                add(new ItemType("Scalability", "Scalability Requirement", "A scalability requirement is a non-functional requirement that describes the ability of the system to handle growing amounts of work in a graceful manner or its ability to be enlarged to accommodate that growth."));
-                add(new ItemType("Security", "Security Requirement", "A security requirement is a non-functional requirement that describes the stipulated degree of the systems protection against danger, damage, misuse, unauthorized access, data loss and crime."));
-                add(new ItemType("Maintainability", "Maintainability Requirement", "A maintainability requirement is a non-functional requirement that describes the ease with which the system can be maintained in order to isolate defects or their cause, correct defects or their cause, meet new requirements, make future maintenance easier, or cope with a changed environment."));
-                add(new ItemType("Usability", "Usability Requirement", "A usability requirement is a non-functional requirement describing the intended ease of use (ergonomical comfort) and learnability of the system."));
-                add(new ItemType("Legal", "Legal Requirement", "A legal requirement is a non-functional requirement that states a regulation that must be recognized by the system. Regulations could be laws, standards, specifications, etc."));
-                add(new ItemType("Story", "User Story", "A (user) story is a special kind of functional requirement, which uses one or more sentences in the everyday or business language of the end user that captures what the user (resp. a role) wants to achieve. User stories generally follow the following template: \"As a <role>, I want <goal/desire> so that <benefit>.\""));
-                add(new ItemType("Constraint", "Constraint Requirement", "Constraint Requirement describes real-world limits or boundaries around what we want to happen"));
-                add(new ItemType("Design", "Design Requirement", "Design requirements direct the design (internals of the system), by inclusion (build it this way), or exclusion (don't build it this way)."));
+                add(new ItemType("State/Mode", "STMD", "States/Modes Requirement", ""));
+                add(new ItemType("Functional", "FCNL", "Functional Requirement", "A functional requirement describes a function of the system, i.e. what the system must do resp. a service the system provides to its users."));
+                add(new ItemType("Performance", "PERF", "Performance Requirement", "A performance requirement is a non-functional requirement that describes the amount of useful work accomplished by the system compared to the time and resources used."));
+                add(new ItemType("Constraint", "CONS", "Constraint Requirement", "Constraint Requirement describes real-world limits or boundaries around what we want to happen"));
+                add(new ItemType("Design", "DSGN", "Design Requirement", "Design requirements direct the design (internals of the system), by inclusion (build it this way), or exclusion (don't build it this way)."));
+                add(new ItemType("Scalability", "SCAL", "Scalability Requirement", "A scalability requirement is a non-functional requirement that describes the ability of the system to handle growing amounts of work in a graceful manner or its ability to be enlarged to accommodate that growth."));
+                add(new ItemType("Security", "SCRT", "Security Requirement", "A security requirement is a non-functional requirement that describes the stipulated degree of the systems protection against danger, damage, misuse, unauthorized access, data loss and crime."));
+                add(new ItemType("Maintainability", "MANT", "Maintainability Requirement", "A maintainability requirement is a non-functional requirement that describes the ease with which the system can be maintained in order to isolate defects or their cause, correct defects or their cause, meet new requirements, make future maintenance easier, or cope with a changed environment."));
+                add(new ItemType("Interface", "INRF", "External Interface Requirement", ""));
+                add(new ItemType("Environment", "ENVR", "Environment Requirement", ""));
+                add(new ItemType("Resource", "RESC", "Resource Requirement", ""));
+                add(new ItemType("Physical", "PHYL", "Physical Requirement", ""));
+                add(new ItemType("Usability", "USBL", "Usability Requirement", "A usability requirement is a non-functional requirement describing the intended ease of use (ergonomical comfort) and learnability of the system."));
+                add(new ItemType("Legal", "LEGL", "Legal Requirement", "A legal requirement is a non-functional requirement that states a regulation that must be recognized by the system. Regulations could be laws, standards, specifications, etc."));
+                add(new ItemType("Story", "STRY", "User Story", "A (user) story is a special kind of functional requirement, which uses one or more sentences in the everyday or business language of the end user that captures what the user (resp. a role) wants to achieve. User stories generally follow the following template: \"As a <role>, I want <goal/desire> so that <benefit>.\""));
+                add(new ItemType("Unclassified", "UNCL", "Unclassified Requirement", "Requirements not classified."));
+                add(new ItemType("None", "NONE", "Not a Requirement", "Prose textual information for clarification and context setting for a set of requirements."));
+                add(new ItemType("Other Quality", "OTHR", "Other Quality Requirement", ""));
+                add(new ItemType("Operational", "OPER", "Operational Requirement", ""));
+                add(new ItemType("Adaptability", "ADPT", "Adaptability Requirement", ""));
+                add(new ItemType("Logistical", "LOGS", "Logistical Requirement", ""));
+                add(new ItemType("Policy", "POLY", "Policy and Regulations", ""));
+                add(new ItemType("Cost/Schedule", "COST", "Cost and Schedule Constraint", ""));
             }
         });
 

@@ -85,6 +85,14 @@ public class ItemRestController {
         return editDao;
     }
 
+    @RequestMapping(value = "/api/item/delete/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Long> getDeleteItem(@PathVariable(value = "id") Long id) {
+
+        Long deletedId = itemService.deleteItem(id);
+        
+        return new ResponseEntity<Long>(deletedId, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/api/items/identifiers/{id}", method = RequestMethod.GET)
     public List<SystemVariable> getIdentifierTemplatesTypes(@PathVariable(value = "id") Long id) {
 

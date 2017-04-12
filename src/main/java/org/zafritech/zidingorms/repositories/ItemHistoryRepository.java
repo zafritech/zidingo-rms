@@ -5,6 +5,7 @@
  */
 package org.zafritech.zidingorms.repositories;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.zafritech.zidingorms.domain.ItemHistory;
 
@@ -14,4 +15,5 @@ import org.zafritech.zidingorms.domain.ItemHistory;
  */
 public interface ItemHistoryRepository extends CrudRepository<ItemHistory, Long> {
     
+    List<ItemHistory> findAllByItemId(Long id);
 }

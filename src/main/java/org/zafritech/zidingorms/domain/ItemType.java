@@ -26,6 +26,8 @@ public class ItemType implements Serializable {
 
     private String itemTypeLongName;
 
+    private String itemTypeCode;
+
     @Column(columnDefinition = "TEXT")
     private String itemTypeDescription;
 
@@ -59,6 +61,21 @@ public class ItemType implements Serializable {
         this.uuId = UUID.randomUUID().toString();
         this.itemTypeName = itemTypeName;
         this.itemTypeLongName = itemTypeLongName;
+        this.itemTypeCode = itemTypeName.substring(0, 3); 
+        this.itemTypeDescription = itemTypeDescription;
+        this.creationDate = new Timestamp(System.currentTimeMillis());
+        this.modifiedDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    public ItemType(String itemTypeName,
+                    String itemTypeCode, 
+                    String itemTypeLongName, 
+                    String itemTypeDescription) {
+
+        this.uuId = UUID.randomUUID().toString();
+        this.itemTypeName = itemTypeName;
+        this.itemTypeLongName = itemTypeLongName;
+        this.itemTypeCode = itemTypeCode;
         this.itemTypeDescription = itemTypeDescription;
         this.creationDate = new Timestamp(System.currentTimeMillis());
         this.modifiedDate = new Timestamp(System.currentTimeMillis());
@@ -111,6 +128,14 @@ public class ItemType implements Serializable {
      */
     public void setItemTypeLongName(String ItemTypeLongName) {
         this.itemTypeLongName = ItemTypeLongName;
+    }
+
+    public String getItemTypeCode() {
+        return itemTypeCode;
+    }
+
+    public void setItemTypeCode(String itemTypeCode) {
+        this.itemTypeCode = itemTypeCode;
     }
 
     /**

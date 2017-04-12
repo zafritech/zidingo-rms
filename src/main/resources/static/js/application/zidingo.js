@@ -1094,8 +1094,6 @@ function BootboxCreateItem(id, pos) {
             type: "GET",
             url: '/modal/item/item-create-form.html',
             success: function (data) {
-
-                console.log(refItem);
                 
                 var box = bootbox.confirm({
                     
@@ -1200,10 +1198,6 @@ function BootboxCreateItem(id, pos) {
                                     showToastr('success', 'Item successfully created!');
                                 }
                             });
-                            
-                        } else {
-                            
-                            showToastr('error', 'There was an error creating an item!');
                         }
                     }
                 });
@@ -1267,9 +1261,113 @@ function BootboxCreateItem(id, pos) {
             }
         });
     });
-    
-
 }
+
+
+
+function BootboxDeleteItem(id) {
+ 
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        var itemToDelete = data;
+
+        $.ajax({
+            type: "GET",
+            url: '/modal/item/item-delete-form.html',
+            success: function (data) {
+
+                console.log(itemToDelete);
+                
+                var box = bootbox.confirm({
+                    
+                    message: data,
+                    title: "Delete Item [ " + itemToDelete.sysId + " ]",
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-danger btn-fixed-width-100"
+                        },
+                        confirm: {
+                            label: "Delete",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) {
+                        
+                        if (result) {
+                            
+                           $.ajax({
+                                type: "GET",
+                                contentType: "application/json",
+                                url: "/api/item/delete/" + id,
+                                timeout: 60000,
+                                success: function (data) {
+                                    
+                                    $('#' + itemToDelete.sysId).remove();
+                                    showToastr('success', 'Item '+ itemToDelete.sysId +' deleted!');
+                                }
+                            });
+                        }
+                    }
+                }); 
+                
+                box.on("shown.bs.modal", function(e) {
+                    
+                    $.ajax({
+
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/api/link/links/" + id,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) {
+
+                        var cantDelete = false;
+                       
+                        console.log(data);
+                        
+                        $.each(data, function (key, index) {
+                            
+                            if (parseInt(index.dstItem.id) === parseInt(id)) {
+                                
+                                cantDelete = true;
+                            }
+                        });
+
+                        $(e.currentTarget).find('input[name="itemId"]').prop('value', id);
+                        $(e.currentTarget).find('input[name="cantDelete"]').prop('value', cantDelete);
+                        $(e.currentTarget).find('#itemValue').text(itemToDelete.itemValue);
+                        
+                        if (cantDelete) {
+                            
+                            var warningMsg  =   '<div id="linkedItemsWarning" style="padding: 8px 0; color: red; text-align: center;">' +
+                                                '<span><strong>WARNING:</strong> This item has incoming link(s).<br/>' +
+                                                'Deletion is <strong>NOT ALLOWED</strong> before unlinking the linking item(s).</span>' +
+                                                '</div>';
+
+                            $('#linkedItemsWarning').remove();
+                            $("[data-bb-handler=confirm]").remove();
+                            $(warningMsg).insertAfter($('#itemValueGroup'));
+                        }
+                    });
+                    
+                });
+                
+                box.modal('show');
+            }
+        });
+    });
+}
+
 
 
 function itemCreateIdentTemplateChange() {
@@ -1738,7 +1836,7 @@ function BootboxDisplayLinks(id) {
             url: '/modal/link/link-display-form.html',
             success: function (data) { 
 
-                var box = bootbox.dialog({
+                var box = bootbox.confirm({
                     message: data,
                     size: 'large',
                     title: "Links for Item: [" + ident + "]",
@@ -1748,10 +1846,18 @@ function BootboxDisplayLinks(id) {
                             label: "Close",
                             className: "btn-danger btn-fixed-width-100"
                         },
-                        success: {
+                        confirm: {
                             
-                            label: "Print",
+                            label: "Manage",
                             className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) {
+                    
+                        if (result) {
+                            
+//                            window.location.replace('/items/links/' +id);  // No browser history
+                            window.location.href = '/items/links/' +id;
                         }
                     }
                 });

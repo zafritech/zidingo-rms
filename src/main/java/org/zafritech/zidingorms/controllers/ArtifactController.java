@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.domain.Artifact;
+import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.Link;
 import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.services.ArtifactService;
+import org.zafritech.zidingorms.services.LinkService;
 
 /**
  *
@@ -37,6 +40,9 @@ public class ArtifactController {
     
     @Autowired
     private SystemVariableRepository sysVarRepository;
+    
+    @Autowired
+    private LinkService linkService;
     
     public void setArtifactRepository(ArtifactRepository artifactRepository) {
 
@@ -103,5 +109,18 @@ public class ArtifactController {
         model.addAttribute("reqIdDigits", reqNumDigits.get(0).getVariableValue());
 
         return "/views/artifacts/metadata";
+    }
+    
+    @RequestMapping("/items/links/{id}")
+    public String manageItemLinks(@PathVariable Long id, Model model) {
+
+        Item item = itemRepository.findOne(id); 
+        List<Link> links = linkService.findItemLinks(id);
+       
+        model.addAttribute("item", item);
+        model.addAttribute("links", links);
+        model.addAttribute("newLineChar", "\n");
+
+        return "/views/item/links";
     }
 }

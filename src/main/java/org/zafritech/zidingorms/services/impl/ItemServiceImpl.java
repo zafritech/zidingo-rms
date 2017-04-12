@@ -106,6 +106,34 @@ public class ItemServiceImpl implements ItemService {
         return null;
     }
  
+    @Override 
+    public Long deleteItem(Long id) {
+        
+        // Delete outgoing links first
+        List<Link> links = linkRepository.findBySrcItem(itemRepository.findOne(id));
+        
+        for (Link link : links) {
+            
+            linkRepository.delete(link.getId()); 
+            
+            Item item = itemRepository.findOne(link.getDstItem().getId());
+            item.setLinkCount(item.getLinkCount() - 1);  // Adjust linkCount down on destination item.
+        }
+        
+        // Clear item history
+        List<ItemHistory> histories = itemHistoryRepository.findAllByItemId(id);
+        
+        for (ItemHistory history : histories) {
+            
+            itemHistoryRepository.delete(history.getId());
+        }
+        
+        // Delete the Item
+        itemRepository.delete(id); 
+        
+        return id;
+    }
+    
     @Override
     public void updateItemHistory(Item item) {
         

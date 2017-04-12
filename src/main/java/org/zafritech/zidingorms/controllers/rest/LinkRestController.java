@@ -73,9 +73,9 @@ public class LinkRestController {
     @RequestMapping(value = "/api/link/links/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<Link>> getLinks(@PathVariable(value = "id") Long id) {
         
-        List<Link> link = linkService.findItemLinks(id);
+        List<Link> links = linkService.findItemLinks(id);
         
-        return new ResponseEntity<List<Link>>(link, HttpStatus.OK);
+        return new ResponseEntity<List<Link>>(links, HttpStatus.OK);
     }
     
     @RequestMapping(value = "/api/link/incominglinks/{id}", method = RequestMethod.GET)

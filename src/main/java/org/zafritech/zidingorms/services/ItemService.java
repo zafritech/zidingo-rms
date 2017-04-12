@@ -23,6 +23,8 @@ public interface ItemService {
 
     Item saveNewDao(ItemDao itemDao);
     
+    Long deleteItem(Long id);
+    
     void updateItemHistory(Item item);
     
     void updateLinksChanged(Item item);
