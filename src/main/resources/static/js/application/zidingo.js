@@ -33,6 +33,8 @@ $(document).ready(function () {
 
         },
         error: function () {
+            
+            checkLogin();
             $("#projectsList").append('<br/>No projects to list.');
         }
     });
@@ -95,12 +97,28 @@ function loadProjectTree(id) {
         },
         error: function () {
 
+            checkLogin();
+            
             $('#projectTree').empty();
             $("#projectTree").append('<br/>Error!');
         }
     });
 }
-;
+
+
+function checkLogin() {
+    
+    $.ajax({
+        
+        url: '/api/login/check',
+        type: "GET",
+        dataType: "json",
+        success: function() {
+            
+            window.location.replace('/login');
+        }
+    });
+}
 
 
 function zTreeOnClick(event, treeId, treeNode, clickFlag) {
@@ -145,6 +163,31 @@ $(document).ready(function () {
     });
 });
 
+
+$(document).ready(function(){
+   
+    $('button').tooltip();
+    
+    $(".top-tip").tooltip({
+        placement: 'top',
+        html: true
+    });
+    
+    $(".top-bottom").tooltip({
+        placement: 'bottom',
+        html: true
+    });
+    
+    $(".top-left").tooltip({
+        placement: 'left',
+        html: true
+    });
+    
+    $(".top-right").tooltip({
+        placement: 'right',
+        html: true
+    });
+});
 
 // Manage user roles script
 (function () {
@@ -198,530 +241,6 @@ $(document).ready(function () {
         e.preventDefault();
     });
 }(jQuery));
-
-
-// Edit Item
-$(document).ready(function () {
-
-    $('#editItemModal').on('show.bs.modal', function (e) {
-        var itemId = $(e.relatedTarget).data('item-id');
-        $.ajax({
-            url: '/api/item/' + itemId,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                removeOptions(document.getElementById('editItemClass'));
-                removeOptions(document.getElementById('editItemLevel'));
-                removeOptions(document.getElementById('editItemType'));
-                removeOptions(document.getElementById('editIdentTemplate'));
-
-                getItemClasses(data.itemClass, 'edit');
-                getItemLevels(data.itemLevel, 'edit');
-                getItemTypes(data.itemType.itemTypeName, 'edit');
-                getIdentifierTemplates(data.artifact.id, 'edit');
-                getMediaTypes(data.mediaType, 'edit');
-
-                $(e.currentTarget).find('input[name="artifactId"]').val(data.artifact.id);
-                $(e.currentTarget).find('input[name="editId"]').val(data.id);
-                $(e.currentTarget).find('input[name="editSysId"]').val(data.sysId);
-                $(e.currentTarget).find('input[name="editItemType"]').val(data.itemType.itemTypeName);
-                $(e.currentTarget).find('input[name="editIdentifier"]').val(data.identifier);
-                $(e.currentTarget).find('textarea[name="editItemValue"]').val(data.itemValue);
-                $(e.currentTarget).find('input[name="editSortIndex"]').val(data.sortIndex);
-                
-                if (isEmpty(data.identifier)) {
-
-                    document.getElementById('editItemType').disabled = true;
-                    document.getElementById('editIdentifier').disabled = true;
-
-                } else {
-
-                    document.getElementById('editItemType').disabled = false;
-                    document.getElementById('editIdentifier').disabled = false;
-                }
-
-                if (data.itemClass !== "REQUIREMENT") {
-
-                    $('#editRequirementRow').hide();
-                    $('#editIdentField').hide();
-
-                } else {
-
-                    $('#editRequirementRow').show();
-                    $('#editIdentField').show();
-                }
-
-                $.ajax({
-                    url: '/api/link/incominglinks/' + itemId,
-                    type: "GET",
-                    dataType: "json",
-                    success: function (data) {
-                        
-                        console.log(data);
-                        
-                        if (data > 0) {
-                            
-                            var warningMsg  =   '<div id="linkedItemsWarning" style="padding: 8px 0; color: red; text-align: center; font-weight: bold;">' +
-                                                '<span>WARNING: This item has ' + data + ' incoming link(s).<br/>Modification of the item could impact the linking item(s).</span>' +
-                                                '</div>';
-                                        
-                            $('#linkedItemsWarning').remove();
-                            $(warningMsg).insertBefore($('#itemDetalsGroup'));
-                            
-                        } else {
-                            
-                            $('#linkedItemsWarning').remove();
-                        }
-                    }
-                });
-            },
-            error: function (data) {
-                var selectItemClass = document.getElementById('editItemClass');
-                var selectItemLevel = document.getElementById('editItemLevel');
-
-                $(selectItemClass).empty();
-                $(selectItemLevel).empty();
-
-                getItemClasses(data.itemClass, 'edit');
-                getItemLevels(data.itemLevel, 'edit');
-                document.getElementById('editSysId').disabled = false;
-            }
-        });
-    });
-
-
-    $('#createItemModal').on('show.bs.modal', function (e) {
-
-        var artifictId = document.getElementById('artifactId').value;
-        var refItemId = $(e.relatedTarget).data('ref-item-id');
-        var refAboveIdx = $(e.relatedTarget).data('ref-item-idx');
-        var refBelowIdx = parseInt(refAboveIdx) + 1;
-        var refItemSysId = $(e.relatedTarget).data('ref-item-sys-id');
-        var refPosition = $(e.relatedTarget).data('ref-pos');
-
-        removeOptions(document.getElementById('createItemClass'));
-        removeOptions(document.getElementById('createItemLevel'));
-        removeOptions(document.getElementById('createMediaType'));
-        removeOptions(document.getElementById('createItemType'));
-        removeOptions(document.getElementById('createIdentTemplate'));
-
-        getItemClasses('PROSE', 'create');
-        getItemLevels(1, 'create');
-        getItemTypes('Functional', 'create');
-        getIdentifierTemplates(artifictId, 'create');
-        getMediaTypes('TEXT', 'create');
-
-        $(e.currentTarget).find('input[name="artifactId"]').val(artifictId);
-        $(e.currentTarget).find('input[name="createId"]').val(refItemId);
-
-        if (refPosition === 'ABOVE') {
-
-            $(e.currentTarget).find('input[name="createSortIndex"]').val(refAboveIdx);
-            $(e.currentTarget).find('input[name="createInsertBefore"]').val(refItemSysId);
-
-        } else if (refPosition === 'BELOW') {
-
-            $(e.currentTarget).find('input[name="createSortIndex"]').val(refBelowIdx);
-            $(e.currentTarget).find('input[name="createInsertAfter"]').val(refItemSysId);
-        }
-
-        document.getElementById('createIdentTemplate').disabled = true;
-        document.getElementById('createItemType').disabled = true;
-        document.getElementById('createIdentifier').disabled = true;
-
-        $('#createRequirementRow').hide();
-        $('#createIdentifierContainer').hide();
-    });
-
-
-    // Save Edited Item
-    $('#createItemSaveBtn').click(function () {
-
-        $.ajax({
-            type: "GET",
-            contentType: "application/json",
-            url: "/api/items/nextsystemid/" + document.getElementById('artifactId').value,
-            dataType: "text",
-            timeout: 60000,
-            success: function (responseText) {
-
-                var data = {};
-
-                data['artifactId'] = document.getElementById('artifactId').value;
-                data['sysId'] = responseText;
-                data['itemClass'] = document.getElementById('createItemClass').value;
-                data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('createIdentifier').value : '';
-                data['itemLevel'] = document.getElementById('createItemLevel').value;
-                data['itemType'] = document.getElementById('createItemType').value;
-                data['mediaType'] = document.getElementById('createMediaType').value;
-                data['itemValue'] = document.getElementById('createItemValue').value;
-                data['sortIndex'] = document.getElementById('createSortIndex').value;
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json",
-                    url: "/api/items/new",
-                    data: JSON.stringify(data),
-                    dataType: "json",
-                    timeout: 60000,
-                    success: function (data) {
-
-                        var refElementId = '';
-                        var newItemElement = '';
-
-                        var refItemId = document.getElementById('createId').value;
-                        var refSortIdx = document.getElementById('createSortIndex').value;
-
-                        if (!isEmpty(document.getElementById('createInsertBefore').value)) {
-
-                            refElementId = document.getElementById('createInsertBefore').value;
-
-                        } else if (!isEmpty(document.getElementById('createInsertAfter').value)) {
-
-                            refElementId = document.getElementById('createInsertAfter').value;
-                            
-                        } else {
-
-                            location.reload();
-                            return true;
-                        }
-
-                        var regex1 = new RegExp(refItemId, "g");
-                        var regex2 = new RegExp(refElementId, "g");
-                        var regex3 = new RegExp(refSortIdx, "g");
-
-                        var menuElement = $(document.getElementById('menu-container-' + refElementId)).clone().html();
-
-                        menuElement = menuElement.replace(regex1, data.id);
-                        menuElement = menuElement.replace(regex2, data.sysId);
-                        
-                        var menuElementHTML = menuElement.replace(regex3, data.sortIndex);
-
-                        if (data['itemClass'] === "REQUIREMENT") {
-
-                            newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
-                                    '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
-                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                    '</div>' +
-                                    '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
-                                    '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
-                                    '</div>' +
-                                    '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                    menuElementHTML +
-                                    '</div>';
-
-
-
-                        } else {
-
-                            var itemClass = (data.itemClass === "HEADER") ? 'item-header-' + data.itemLevel : 'item-level-' + data.itemLevel;
-
-                            newItemElement = '<div id="' + data.sysId + '" class="row ' + itemClass + '">' +
-                                    '<div id="value-container-' + data.sysId + '" class="col-xs-11">' +
-                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                    '</div>' +
-                                    '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                    menuElementHTML +
-                                    '</div>';
-                        }
-
-                        if (!isEmpty(document.getElementById('createInsertBefore').value)) {
-
-                            $(newItemElement).insertBefore('#' + refElementId);
-
-                        } else if (!isEmpty(document.getElementById('createInsertAfter').value)) {
-
-                            $(newItemElement).insertAfter('#' + refElementId);
-                        }
-
-                        $(data.sysId).show();
-
-                        $('#createItemModal').modal('hide');
-                        showToastr('success', 'Item successfully created!');
-                    },
-                    error: function (e) {
-
-                        $('#createItemModal').modal('hide');
-                        showToastr('error', 'There was an error creating an item!');
-                    }
-                });
-            },
-            error: function () {
-
-                showToastr('error', 'There was an error creating an item!');
-            }
-        });
-    });
-
-
-    // Save Edited Item
-    $('#editItemSaveBtn').click(function () {
-
-        var data = {};
-
-        data['id'] = document.getElementById('editId').value;
-        data['artifactId'] = document.getElementById('artifactId').value;
-        data['sysId'] = document.getElementById('editSysId').value;
-        data['itemClass'] = document.getElementById('editItemClass').value;
-        data['itemType'] = document.getElementById('editItemType').value;
-        data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('editIdentifier').value : '';
-        data['itemLevel'] = document.getElementById('editItemLevel').value;
-        data['itemValue'] = document.getElementById('editItemValue').value;
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "/api/items/save",
-            data: JSON.stringify(data),
-            dataType: "json",
-            timeout: 60000,
-            success: function (data) {
-
-                if (data.itemClass === "HEADER") {
-
-                    document.getElementById(data.sysId).className = 'row item-header-' + data.itemLevel;
-
-                } else if (data.itemClass === "REQUIREMENT") {
-
-                    var reqElementId = document.getElementById('ident-' + data.sysId);
-
-                    // Not a requirement yet (converted from prose)
-                    if (!document.getElementById(reqElementId)) {
-
-                        var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
-                                '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
-                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                                '</div>' +
-                                '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
-                                '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
-                                '</div>' +
-                                '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                                document.getElementById('menu-container-' + data.sysId).innerHTML +
-                                '</div>' +
-                                '</div>';
-
-                        var currentItemElement = document.getElementById(data.sysId);
-
-                        $(currentItemElement).replaceWith(newItemElement);
-                    }
-
-                    // Is PROSE or other itemClass
-                } else {
-
-                    var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + ' ' + data.itemClass + '">' +
-                            '<div id="value-container-' + data.sysId + '" class="col-xs-11 ' + data.itemClass.toLowerCase() + '">' +
-                            '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
-                            '</div>' +
-                            '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
-                            document.getElementById('menu-container-' + data.sysId).innerHTML +
-                            '</div>' +
-                            '</div>';
-
-                    var currentItemElement = document.getElementById(data.sysId);
-
-                    $(currentItemElement).replaceWith(newItemElement);
-                }
-
-                $('#editItemModal').modal('hide');
-                showToastr('success', '[' + data.sysId + '] modfied!');
-            },
-            error: function () {
-
-                $('#editItemModal').modal('hide');
-                showToastr('error', 'An error occured updating item [' + data.sysId + ']!');
-            }
-        });
-    });
-
-
-    $('#manageIdentFormatsModal').on('show.bs.modal', function () {
-
-        var id = document.getElementById('artifactId').value;
-
-        $.ajax({
-            url: '/api/items/identifiers/' + id,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                var container = document.getElementById('format-container');
-                var formats = '';
-
-                $.each(data, function (key, index) {
-
-                    formats = formats + '<div class="row">' +
-                            '<div class="col-sm-10">' +
-                            '<span>' + index.variableValue + '</span>' +
-                            '<input type="hidden" name="formats[]" value="' + index.variableValue + '" />' +
-                            '</div>' +
-                            '<div class="col-sm-2">' +
-                            '<button type="button" class="close pull-right">' +
-                            '<span style="color:red;" aria-hidden="true">×</span>' +
-                            '<span class="sr-only">Close</span>' +
-                            '</button>' +
-                            '</div>' +
-                            '</div>';
-                });
-
-                container.innerHTML = formats;
-            },
-            error: function () {
-
-            }
-        });
-
-    });
-
-
-    function getItemTypes(selectedOption, action) {
-
-        var url = '/api/items/itemtypes';
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                var select = document.getElementById(action + 'ItemType');
-                $.each(data, function (key, index) {
-                    var opt = document.createElement('option');
-                    opt.value = index.itemTypeName;
-                    opt.innerHTML = index.itemTypeLongName;
-                    select.appendChild(opt);
-                });
-
-                select.value = selectedOption;
-            }
-        });
-    }
-
-
-    function getItemClasses(selectedValue, action) {
-        
-        var url = '/api/items/classes';
-        
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                // Populate options
-                var select = document.getElementById(action + 'ItemClass');
-
-                $.each(data, function (key, index) {
-
-                    var opt = document.createElement('option');
-
-                    opt.value = index;
-                    opt.innerHTML = index;
-                    select.appendChild(opt);
-                });
-
-                select.value = selectedValue;
-            }
-        });
-    }
-
-
-    function getIdentifierTemplates(id, action) {
-
-        var url = '/api/items/identifiers/' + id;
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                // Populate options
-                var select = document.getElementById(action + 'IdentTemplate');
-                var input = document.getElementById(action + 'Identifier');
-
-                $.each(data, function (key, index) {
-
-                    var opt = document.createElement('option');
-
-                    opt.value = index.variableValue;
-                    opt.innerHTML = index.variableValue;
-                    select.appendChild(opt);
-                });
-
-                if (!isEmpty(input.value)) {
-
-                    select.value = input.value.substr(0, input.value.lastIndexOf("-"));
-                }
-            }
-        });
-    }
-
-
-    function getMediaTypes(selectedOption, action) {
-
-        var url = '/api/items/mediatypes';
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data) {
-
-                // Populate dropdown control
-                var select = document.getElementById(action + 'MediaType');
-
-                $.each(data, function (key, index) {
-
-                    var opt = document.createElement('option');
-
-                    opt.value = index;
-                    opt.innerHTML = index;
-                    select.appendChild(opt);
-                });
-
-                select.value = selectedOption;
-            }
-        });
-    }
-
-
-    function removeOptions(selectbox)
-    {
-        var i;
-        for (i = selectbox.options.length - 1; i >= 0; i--)
-        {
-            selectbox.remove(i);
-        }
-    }
-
-    function getItemLevels(itemLevel, action) {
-
-        var select = document.getElementById(action + 'ItemLevel');
-        var levels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-
-        $(select).empty();
-
-        $.each(levels, function (i, opt) {
-            $(select).append($('<option></option>').val(opt).html('Level ' + opt));
-        });
-
-        $(select).val(itemLevel);
-    }
-
-    // Show loading spinner on import popup closing
-    $('#importExcelModal').on('hidden.bs.modal', function () {
-
-        document.getElementById('artifactEmpty').className = 'row hidden';
-        document.getElementById('artifactLoading').className = 'row';
-    });
-
-    // Reload page on popup closing
-    $('#createItemModal').on('hidden.bs.modal', function () {
-//		location.reload();
-    });
-
-});
 
 
 function itemCreateClassChange() {
@@ -1068,7 +587,6 @@ function BootboxEditItem(id) {
         });
     });
 }
-
 
 
 function BootboxCreateItem(id, pos) {
@@ -1856,7 +1374,6 @@ function BootboxDisplayLinks(id) {
                     
                         if (result) {
                             
-//                            window.location.replace('/items/links/' +id);  // No browser history
                             window.location.href = '/items/links/' +id;
                         }
                     }
@@ -2142,3 +1659,76 @@ $(function () {
         }
     });
 });
+
+
+function BootboxLinkDeleteConfirm(id) {
+    
+    $.ajax({
+        url: '/api/link/' + id,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            console.log(data);
+            
+            var message  =  '<div style="margin-bottom: 10px; text-align:center; color: crimson;">Do you really want to delete the following link?</div>' +
+                            '<div style="font-weight: bold; text-align:center;">[ ' + data.srcItem.identifier + ' ] ----> [ ' + data.dstItem.identifier + ' ]</div>';
+            
+            var itemSysId = data.dstItem.sysId;
+            
+            bootbox.confirm({
+                
+                title: 'Confirm Link Deletion',
+                message: message,
+                buttons: {
+                    confirm: {
+                        
+                        label: 'Confirm',
+                        className: 'btn-success btn-fixed-width-100'
+                    },
+                    cancel: {
+                        
+                        label: 'Cancel',
+                        className: 'btn-danger btn-fixed-width-100'
+                    }
+                },
+                callback: function(result) {
+                    
+                    if (result) {
+                        
+                        $.ajax({
+
+                            type: "GET",
+                            contentType: "application/json",
+                            url: "/api/link/delete/" + id,
+                            dataType: "json",
+                            cache: false
+                        })
+                        .done(function () {
+                            
+                            $('#remote-link-' + itemSysId).remove();
+                            showToastr('success', 'Link to item ' + itemSysId + ' deleted.');
+                        });
+                    }
+                }
+            });
+        }
+    });
+    
+}
+
+function BootboxAlertSmall(title, msg) {
+    
+    bootbox.alert({
+        title: '<span style="font-weight: bold; color: crimson;"><i class="fa fa-warning"></i> '+title+'</span>',
+        message: msg,
+        size: 'small',
+        buttons: {
+            ok: {
+                
+                label: 'OK',
+                className: 'btn-primary btn-fixed-width-100'
+            }
+        }
+    });
+}

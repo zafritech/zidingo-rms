@@ -38,13 +38,22 @@
                     </div>
                 </div>
                 
+                <div class="row">
+                    <div class="col-md-9">&nbsp;</div>
+                    <div class="col-md-3" style="padding-right: 20px;">
+                        <div class="pull-right" >
+                            <a th:href="@{'/artifacts/' + ${item.artifact.id}}"><i class="fa fa-fw fa-file-text" style="color: #00aced"></i> Return to document</a>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="row" style="margin: 8px 0;">
                     <div class="col-sm-2 links-list-header">Item Identifier</div>
                     <div class="col-sm-9 links-list-header">Linked Item Details</div>
-                    <div class="col-sm-1 links-list-header">Actions</div>
+                    <div class="col-sm-1 links-list-header">&nbsp;</div>
                 </div>
-                
-                <div th:each="link : ${links}">
+             
+                <div th:each="link : ${links}" th:attr="id=${link.srcItem.id == item.id} ? ${'remote-link-' + link.dstItem.sysId} : ${'remote-link-' + link.srcItem.sysId}">
                     
                     <div th:if="${link.srcItem.id} == ${item.id}" class="row links-list-row">
                         <div class="col-sm-2">
@@ -55,8 +64,12 @@
                             <span th:text="${link.dstItem.itemValue}">DestinationValue</span>
                         </div>
                         <div class="col-sm-1" style="padding-right: 0px;">
-                            <button type="button" class="btn btn-success btn-circle"><i class="glyphicon glyphicon-arrow-right"></i></button>
-                            <button type="button" class="btn btn-danger btn-circle"><i class="glyphicon glyphicon-trash"></i></button>
+                            <button type="button" class="btn btn-success btn-circle tip-left" title="Outgoing Link">
+                                <i class="glyphicon glyphicon-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-circle tip-left" title="Delete link" th:onclick="'javascript:BootboxLinkDeleteConfirm(\'' + ${link.id} + '\');'">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </button>
                         </div>
 
                     </div>
@@ -73,8 +86,15 @@
                         </div>
                         
                         <div class="col-sm-1" style="padding-right: 0px;">
-                            <button type="button" class="btn btn-danger btn-circle"><i class="glyphicon glyphicon-arrow-left"></i></button>
-                            <button type="button" class="btn btn-primary btn-circle"><i class="glyphicon glyphicon-comment"></i></button>
+                            <button type="button" class="btn btn-danger btn-circle tip-left" title="Incoming Link">
+                                <i class="glyphicon glyphicon-arrow-left"></i>
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-primary btn-circle tip-left" 
+                                    title="Cannot Delete" 
+                                    onclick="javascript:BootboxAlertSmall('Deletion Not Allowed','Deleting an Incoming Link is NOT allowed. Deletion can only be done from the link source Item.');">
+                                <i class="fa fa-info"></i>
+                            </button>
                         </div>
                     
                     </div>

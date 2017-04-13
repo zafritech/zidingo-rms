@@ -63,8 +63,9 @@
             </div>
 
             <div sec:authorize="isAuthenticated()">
-                <p>Logged user: <span sec:authentication="name">Bob</span></p>
-                <p>Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span></p>
+                <script>
+                    window.location.replace("/profile");
+                </script>
             </div>
 
         </div>

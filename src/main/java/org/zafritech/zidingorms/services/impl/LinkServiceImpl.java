@@ -65,6 +65,30 @@ public class LinkServiceImpl implements LinkService {
         itemRepository.save(item);
     }
 
+    @Override 
+    public Link findOne(Long id) {
+       
+        return linkRepository.findOne(id); 
+    }
+    
+    @Override
+    public Long deleteLink(Long id) {
+        
+        Link link = linkRepository.findOne(id);
+        Item srcItem = itemRepository.findOne(link.getSrcItem().getId());
+        Item dstItem = itemRepository.findOne(link.getDstItem().getId());
+        
+        linkRepository.delete(id);
+        
+        srcItem.setLinkCount(srcItem.getLinkCount() - 1);
+        itemRepository.save(srcItem);
+        
+        dstItem.setLinkCount(dstItem.getLinkCount() - 1);
+        itemRepository.save(dstItem);
+        
+        return id;
+    }
+    
     @Override
     public List<Link> findItemLinks(Long id) {
 

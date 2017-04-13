@@ -70,8 +70,24 @@ public class LinkRestController {
         return new ResponseEntity<Link>(link, HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/api/link/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Link> getLink(@PathVariable(value = "id") Long id) {
+        
+        Link link = linkService.findOne(id);
+        
+        return new ResponseEntity<Link>(link, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/link/delete/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Long> deleteLink(@PathVariable(value = "id") Long id) {
+        
+        Long linkId = linkService.deleteLink(id);
+        
+        return new ResponseEntity<Long>(linkId, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/api/link/links/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<Link>> getLinks(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<List<Link>> getLinksList(@PathVariable(value = "id") Long id) {
         
         List<Link> links = linkService.findItemLinks(id);
         

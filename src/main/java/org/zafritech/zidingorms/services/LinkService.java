@@ -19,6 +19,10 @@ public interface LinkService {
     
     Link saveNewDao(LinkDao linkDao);
     
+    Link findOne(Long id);
+    
+    Long deleteLink(Long id);
+    
     List<Link> findItemLinks(Long id);
     
     Long getIncomingItemLinksCount(Long id);
