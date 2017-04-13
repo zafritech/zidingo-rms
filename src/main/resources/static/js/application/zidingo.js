@@ -15,8 +15,8 @@ $(document).ready(function () {
             $.each(data, function (key, index) {
 
                 list = list
-                        + '<li>'
-                        + '<a href="#" onclick="return loadProjectTree(' + index.id + ');">'
+                        + '<li style="border-bottom: 1px solid #c0c0c0;">'
+                        + '<a href="javascript:void(0);" onclick="return loadProjectTree(' + index.id + ');">'
                         + index.projectShortName
                         + '<i class="fa fa-fw fa-table pull-right" style="margin: 4px 0;"></i>'
                         + '</a>'
@@ -67,6 +67,7 @@ function loadProjectTree(id) {
     };
 
     $.ajax({
+        
         url: url,
         type: "GET",
         dataType: "json",
@@ -82,6 +83,9 @@ function loadProjectTree(id) {
 
                 $("#projectsList").collapse('hide');
                 $("#more-less").removeClass('fa-minus-square').addClass('fa-plus-square');
+                
+                $('#projectTree').show();
+                $('#more-less-modules').addClass('fa-minus-square').removeClass('fa-plus-square');
 
                 zTreeObj = $.fn.zTree.init($("#projectTree"), setting, data);
 
@@ -101,6 +105,8 @@ function loadProjectTree(id) {
             
             $('#projectTree').empty();
             $("#projectTree").append('<br/>Error!');
+            $("#projectTree").hide();
+            $('#more-less-modules').addClass('fa-plus-square').removeClass('fa-minus-square');
         }
     });
 }
@@ -150,20 +156,6 @@ function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 }
 
 
-$(document).ready(function () {
-
-    $("#projectsList").on("hide.bs.collapse", function () {
-
-        $("#more-less").toggleClass('fa-minus-square fa-plus-square');
-    });
-
-    $("#projectModules").on("show.bs.collapse", function () {
-
-        $("#more-less-modules").toggleClass('fa-plus-square fa-minus-square');
-    });
-});
-
-
 $(document).ready(function(){
    
     $('button').tooltip();
@@ -188,6 +180,42 @@ $(document).ready(function(){
         html: true
     });
 });
+
+
+function ToggleProjectModulesTree() {
+    
+    var query = $('#projectTree');
+    var isVisible = query.is(':visible');
+    
+    if (isVisible === true) {
+
+        query.hide();
+        $('#more-less-modules').addClass('fa-plus-square').removeClass('fa-minus-square');
+    
+    } else {
+
+        query.show();
+        $('#more-less-modules').addClass('fa-minus-square').removeClass('fa-plus-square');
+    }
+}
+
+
+function ToggleApplicationMenu() {
+    
+    var query = $('#applicationMenu');
+    var isVisible = query.is(':visible');
+    
+    if (isVisible === true) {
+
+        query.hide();
+        $('#more-less-appmenu').addClass('fa-plus-square').removeClass('fa-minus-square');
+    
+    } else {
+
+        query.show();
+        $('#more-less-appmenu').addClass('fa-minus-square').removeClass('fa-plus-square');
+    }
+}
 
 // Manage user roles script
 (function () {
@@ -371,8 +399,6 @@ function BootboxEditItem(id) {
             url: '/modal/item/item-edit-form.html',
             success: function (data) {
 
-                console.log(itemDao);
-                
                 var box = bootbox.confirm({
                     
                     message: data,
@@ -401,8 +427,6 @@ function BootboxEditItem(id) {
                             data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('editIdentifier').value : '';
                             data['itemLevel'] = document.getElementById('editItemLevel').value;
                             data['itemValue'] = document.getElementById('editItemValue').value;
-
-                            console.log(data);
 
                             $.ajax({
 
@@ -851,8 +875,6 @@ function BootboxDeleteItem(id) {
 
                         var cantDelete = false;
                        
-                        console.log(data);
-                        
                         $.each(data, function (key, index) {
                             
                             if (parseInt(index.dstItem.id) === parseInt(id)) {
@@ -1668,9 +1690,7 @@ function BootboxLinkDeleteConfirm(id) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            
-            console.log(data);
-            
+           
             var message  =  '<div style="margin-bottom: 10px; text-align:center; color: crimson;">Do you really want to delete the following link?</div>' +
                             '<div style="font-weight: bold; text-align:center;">[ ' + data.srcItem.identifier + ' ] ----> [ ' + data.dstItem.identifier + ' ]</div>';
             
@@ -1716,6 +1736,7 @@ function BootboxLinkDeleteConfirm(id) {
     });
     
 }
+
 
 function BootboxAlertSmall(title, msg) {
     
