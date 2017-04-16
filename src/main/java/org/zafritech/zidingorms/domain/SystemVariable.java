@@ -42,6 +42,14 @@ public class SystemVariable implements Serializable {
         this.ownerId = ownerId;
     }
 
+    @Override
+    public String toString() {
+        
+        return "SystemVariable{" + "id=" + id + ", variableName=" + 
+                variableName + ", variableValue=" + variableValue + 
+                ", ownerType=" + ownerType + ", ownerId=" + ownerId + '}';
+    }
+
     public Long getId() {
         return id;
     }

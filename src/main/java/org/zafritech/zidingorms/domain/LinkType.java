@@ -72,6 +72,14 @@ public class LinkType implements Serializable {
         this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
+    @Override
+    public String toString() {
+        
+        return "LinkType{" + "id=" + id + 
+               ", linkTypeName=" + linkTypeName + ", linkTypeLongName=" + 
+               linkTypeLongName + ", creationDate=" + creationDate + '}';
+    }
+    
     public Long getId() {
         return id;
     }

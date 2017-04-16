@@ -45,12 +45,9 @@ public class User implements Serializable {
     private String lastName;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "XREF_USER_ROLES",
-            joinColumns = {
-                @JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {
-                @JoinColumn(name = "role_id", referencedColumnName = "id")}
+    @JoinTable(name = "XREF_USER_ROLES",
+               joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+               inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
     @JsonBackReference
     private Set<Role> userRoles = new HashSet<Role>();
@@ -61,6 +58,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
+        
         return "User {"
                 + "id:" + getId()
                 + ", User Email = '" + getEmail() + '\''
