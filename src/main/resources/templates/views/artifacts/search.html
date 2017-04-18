@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS Search</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+
+    <body>
+
+        <div layout:fragment="content">
+
+            <div class="row" style="border-bottom: 1px solid #E3E3E3;">
+                
+                <div class="col-md-12" style="padding-left: 8px;">
+                    <h1 class="page-header" style="border-bottom: none; padding-bottom: 2px;">
+                        <span>Search Results</span>
+                    </h1>
+                </div>
+                
+                
+            </div>
+            
+            <div th:if="${!results.itemsList.isEmpty()}">
+                
+                <div class="row" style="border-bottom: 1px solid #c0c0c0;">
+                    <div class="col-md-6" style="padding-top: 22px;">
+                        <h4 th:text="'Found ' + ${results.resultsSize} + ' result(s) for &quot;' + ${string} + '&quot;, ' + ${results.lastPage} + ' pages'">Project name</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="pagination pagination-sm pull-right">
+                            <li th:class="${results.currentPage == 1} ? 'disabled' : ''">
+                                <span th:if="${results.currentPage == 1}">First</span>
+                                <a th:if="${results.currentPage != 1}" th:href="@{'/artifact/items/search?page=1&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}">First</a>
+                            </li>
+                            <li th:class="${results.currentPage != 1} ? '' : 'disabled'">
+                                <span th:if="${results.currentPage == 1}">«</span>
+                                <a th:if="${results.currentPage != 1}" th:href="@{'/artifact/items/search?page=' + ${results.currentPage - 1} + '&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}"><span>«</span></a>
+                            </li>
+                            
+                            <li th:each="page : ${results.pageList}" th:class="${page == results.currentPage ? 'active' : ''}">
+                                <span th:if="${page == results.currentPage}" th:text="${page}">1</span>
+                                <a th:if="${page != results.currentPage}" th:href="@{'/artifact/items/search?page=' + ${page} + '&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}" th:text="${page}">1</a>
+                            </li>
+                            
+                            <li th:if="${results.lastPage > results.lastDisplayed}" class="disabled"><span>...</span></li>
+                            <li th:class="${results.currentPage == results.lastPage} ? 'disabled' : ''">
+                                <span th:if="${results.currentPage == results.lastPage}">»</span>
+                                <a th:if="${results.currentPage != results.lastPage}" th:href="@{'/artifact/items/search?page=' + ${results.currentPage + 1} + '&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}">»</a>
+                            </li>
+                            <li th:class="${results.currentPage == results.lastPage} ? 'disabled' : ''">
+                                <span th:if="${results.currentPage == results.lastPage}">Last</span>
+                                <a th:if="${results.currentPage != results.lastPage}" th:href="@{'/artifact/items/search?page=' + ${results.lastPage} + '&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>  
+                
+                <div th:each="item : ${results.itemsList}" style="border-bottom: 1px solid #c0c0c0; padding: 5px 0 20px 0;">
+                    
+                    <div class="row">
+
+                        <div class="col-md-2" style="color: #316AC5;">
+                            <span th:text="${item.sysId}"></span>
+                        </div>
+
+                        <div class="col-md-10">
+                            <a th:href="@{'/artifacts/'+ ${item.artifact.id}}">
+                                <span th:text="${item.artifact.artifactLongName}"></span>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="margin-top: 8px;">
+
+                        <div class="col-md-2">
+                            <span th:text="${item.identifier}" style="font-weight: bold; color: red;"></span>
+                        </div>
+
+                        <div class="col-md-10">
+                            <span th:text="${item.itemValue}"></span>
+                        </div>
+
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+            <div th:if="${results.itemsList.isEmpty()}">
+                
+                <div class="row">
+                    
+                    <div class="col-lg-6 col-lg-offset-3" style="margin-top: 180px;">
+
+                        <div class="text-center" style="color: #c0c0c0;">
+                            <i class="fa fa-search fa-5x"></i>
+                        </div>
+                        
+                        <div class="text-center" style="color: #c0c0c0;">
+                            <h3>No search results found.</h3>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+        </div>
+
+    </body>
+
+    <th:block layout:fragment="scripts"></th:block>
+
+</html>

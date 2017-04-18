@@ -613,20 +613,156 @@ function BootboxEditItem(id) {
 }
 
 
-function BootboxCreateItem(id, pos) {
+
+function BootboxCreateFirstItem(id) {
     
+    var url = '/api/item/createfirst/' + id;
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: url,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) { 
+        
+        console.log(data);
+
+        var refItem = data;
+        
+        $.ajax({
+            type: "GET",
+            url: '/modal/item/item-create-form.html',
+            success: function (data) {
+                
+                var box = bootbox.confirm({
+                    
+                    message: data,
+                    title: "Create new Item",
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-danger btn-fixed-width-100"
+                        },
+                        confirm: {
+                            label: "Save",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) { 
+                        
+                        if (result) {
+
+                            var data = {};
+
+                            data['artifactId'] = document.getElementById('createArtifactId').value;
+                            data['itemClass'] = document.getElementById('createItemClass').value;
+                            data['identifier'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('createIdentifier').value : '';
+                            data['itemType'] = (data['itemClass'] === "REQUIREMENT") ? document.getElementById('createItemType').value : '';
+                            data['itemLevel'] = document.getElementById('createItemLevel').value;
+                            data['itemValue'] = document.getElementById('createItemValue').value;
+                            data['sortIndex'] = document.getElementById('createSortIndex').value;
+
+                            console.log(data);
+                        
+                            $.ajax({
+                                
+                                type: "POST",
+                                contentType: "application/json",
+                                url: "/api/items/new",
+                                data: JSON.stringify(data),
+                                dataType: "json",
+                                timeout: 60000,
+                                success: function () {
+                                   
+                                    location.reload();
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                box.on("shown.bs.modal", function(e) {
+                   
+                    $(e.currentTarget).find('input[name="createArtifactId"]').prop('value', id);
+                    $(e.currentTarget).find('input[name="createSortIndex"]').prop('value', 0);
+
+                    // Empty all SELECT controls
+                    $(e.currentTarget).find('select[name="createItemLevel"]').empty();
+                    $(e.currentTarget).find('select[name="createItemClass"]').empty();
+                    $(e.currentTarget).find('select[name="createItemType"]').empty();
+                    $(e.currentTarget).find('select[name="createIdentTemplate"]').empty();
+                    $(e.currentTarget).find('select[name="createMediaType"]').empty();
+                    
+                    // Clear INPUT and TEXTAREA controls
+                    $(e.currentTarget).find('input[name="createIdentifier"]').val('');
+                    $(e.currentTarget).find('textarea[name="createItemValue"]').val('');
+                    
+                    
+                    // Populate Item Levels SELECT
+                    $.each(refItem.itemLevels, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemLevel"]').append('<option value="' + index + '">Level ' + index + '</option>');
+                    });
+                    
+                    // Populate Item Classes SELECT
+                    $.each(refItem.itemClasses, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemClass"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                    
+                    // Populate Requirement Types SELECT
+                    $.each(refItem.itemTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createItemType"]').append('<option value="' + index.itemTypeName + '">' + index.itemTypeLongName + '</option>');
+                    });
+                    
+                    // Populate Requirement Ident Templates SELECT
+                    $.each(refItem.identPrefices, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createIdentTemplate"]').append('<option value="' + index.variableValue + '">' + index.variableValue + '</option>');
+                    });
+                    
+                    // Populate Media Types SELECT
+                    $.each(refItem.mediaTypes, function (key, index) {
+
+                        $(e.currentTarget).find('select[name="createMediaType"]').append('<option value="' + index + '">' + index + '</option>');
+                    });
+                    
+                    // Default selected values for dropdowns
+                    $(e.currentTarget).find('select[name="createItemLevel"]').prop('value', 1);
+                    $(e.currentTarget).find('select[name="createItemClass"]').prop('value', "REQUIREMENT");
+                    $(e.currentTarget).find('select[name="createItemType"]').prop('value', "Functional");
+                    $(e.currentTarget).find('select[name="createMediaType"]').prop('value', "TEXT");
+                          
+                    itemCreateIdentTemplateChange();
+                });
+                
+                box.modal('show');
+            }
+        });
+    });
+}
+
+
+
+function BootboxCreateItem(id, pos) {
+ 
+    var url = "/api/item/create/" + id; 
     var newSortIndex = 0;
     
     $.ajax({
 
         type: "GET",
         contentType: "application/json",
-        url: "/api/item/create/" + id,
+        url: url,
         dataType: "json",
         cache: false
     })
     .done(function (data) { 
-           
+    
         var refItem = data;
 
         if (pos === "ABOVE") { newSortIndex = refItem.item.sortIndex; } 
@@ -668,6 +804,7 @@ function BootboxCreateItem(id, pos) {
                             console.log(data);
                             
                             $.ajax({
+                                
                                 type: "POST",
                                 contentType: "application/json",
                                 url: "/api/items/new",
@@ -1752,4 +1889,77 @@ function BootboxAlertSmall(title, msg) {
             }
         }
     });
+}
+
+
+function FileUploadLoadding() {
+    
+    $('#artifactEmpty').addClass('hidden');
+    $('#artifactLoading').removeClass('hidden');
+}
+
+
+function SendMessage() {
+    
+    var message  =  '<form id="sendMessage" action="/messages/send" method="post">' +
+                    '<input type="hidden" name="artifactId" id="artifactId" value="" />' +
+                    '<div class="form-group">' +
+                    '<label for="messageSubject">Subject</label>' +
+                    '<input type="text" class="form-control file-loading" id="messageSubject" name="messageSubject" placeholder="Message Subject" />' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="messageBody">Message Details</label>' +
+                    '<textarea class="form-control"  rows="5" cols="50" id="messageBody" name="messageBody"></textarea>' +
+                    '</div>' +
+                    '</form>';
+
+    
+    bootbox.confirm({
+        
+        title: "Send global message",
+        message: message,
+        buttons: {
+            confirm: {
+                label: 'Send',
+                className: 'btn-success btn-fixed-width-100'
+            },
+            cancel: {
+                label: 'Cancel',
+                className: 'btn-danger btn-fixed-width-100'
+            }
+        },
+        callback: function (result) {
+            
+            if (result) {
+                
+                var data = {};
+                            
+                data['subject'] = document.getElementById('messageSubject').value;
+                data['message'] = document.getElementById('messageBody').value;
+
+                console.log(data);
+
+                $.ajax({
+                                
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/api/messages/message/new",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    timeout: 60000,
+                    success: function (data) {
+
+                        showToastr('success', 'Message sent!');
+
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+function SendNotification() {
+    
+    bootbox.alert("Send global notification.");
 }
