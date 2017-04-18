@@ -15,9 +15,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
 import org.zafritech.zidingorms.commons.enums.MediaType;
 
+@Indexed
 @Entity(name = "TBL_ITEMS")
 public class Item implements Serializable {
 
@@ -29,13 +34,17 @@ public class Item implements Serializable {
 
     private String uuId;
 
+    @Field
     private String sysId;
 
     @Column(columnDefinition = "TEXT")
     private String itemClass;
 
+    @Field
     private String identifier;
 
+    @Field(store = Store.NO)
+    @NotNull
     @Column(columnDefinition = "TEXT")
     private String itemValue;
 

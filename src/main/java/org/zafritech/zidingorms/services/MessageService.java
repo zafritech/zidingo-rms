@@ -5,18 +5,20 @@
  */
 package org.zafritech.zidingorms.services;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.domain.User;
+import org.zafritech.zidingorms.dao.MsgDao;
+import org.zafritech.zidingorms.dao.NoticeDao;
+import org.zafritech.zidingorms.domain.Message;
+import org.zafritech.zidingorms.domain.Notification;
 
 /**
  *
  * @author LukeS
  */
 @Service
-public interface GeneralService {
+public interface MessageService {
     
-    User loggedInUser();
+    Message saveMessage(MsgDao msgDao);
     
-    List<User> allUser();
+    Notification saveNotification(NoticeDao noticeDao);
 }

@@ -54,19 +54,18 @@ public class ItemRestController {
         return itemService.findById(id);
     }
 
+    @RequestMapping(value = "/api/item/createfirst/{id}", method = RequestMethod.GET)
+    public ItemCreateDao createFirstArtifactItem(@PathVariable(value = "id") Long id) {
+
+        ItemCreateDao createDao = itemService.getDaoForFirstItemCreate(id);
+        
+        return createDao;
+    }
+    
     @RequestMapping(value = "/api/item/create/{id}", method = RequestMethod.GET)
     public ItemCreateDao getRefItemForCreate(@PathVariable(value = "id") Long id) {
-
-        ItemCreateDao createDao = itemService.findByIdForCreate(id);
         
-        createDao.setItemTypes(itemTypeRepository.findAllByOrderByItemTypeLongName());
-        createDao.setIdentPrefices(sysVarRepository
-                                        .findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(
-                                        createDao.getItem().getArtifact().getId(), 
-                                        "DOCUMENT", 
-                                        SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name()));
-                
-        return createDao;
+        return itemService.findByIdForCreate(id);
     }
 
     @RequestMapping(value = "/api/item/edit/{id}", method = RequestMethod.GET)

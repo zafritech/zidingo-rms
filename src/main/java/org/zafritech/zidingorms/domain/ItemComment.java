@@ -1,6 +1,5 @@
 package org.zafritech.zidingorms.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -14,7 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
+@Indexed
 @Entity(name = "REF_ITEM_COMMENTS")
 public class ItemComment implements Serializable {
 
@@ -30,6 +34,8 @@ public class ItemComment implements Serializable {
     @JoinColumn(name = "itemId")
     private Item item;
 
+    @Field(store = Store.NO)
+    @NotNull
     @Column(columnDefinition = "TEXT")
     private String comment;
 

@@ -4,9 +4,11 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity(name = "TBL_MESSAGE_ATTACHMENTS")
-public class Attachment implements Serializable {
+public class MessageAttachment implements Serializable {
 
     @Id
     @GeneratedValue
@@ -14,24 +16,30 @@ public class Attachment implements Serializable {
     
     private String uuid;
     
+    @ManyToOne
+    @JoinColumn(name = "messageId")
+    private Message message;
+    
     private String attachmentName;
     
     private String attachmentPath;
     
     private String attachmentType;
 
-    public Attachment() {
+    public MessageAttachment() {
         
     }
 
-    public Attachment(String attachmentName, String attachmentPath) {
+    public MessageAttachment(Message message, String attachmentName, String attachmentPath) {
         
+        this.message = message;
         this.attachmentName = attachmentName;
         this.attachmentPath = attachmentPath;
     }
 
-    public Attachment(String attachmentName, String attachmentPath, String attachmentType) {
+    public MessageAttachment(Message message, String attachmentName, String attachmentPath, String attachmentType) {
         
+        this.message = message;
         this.attachmentName = attachmentName;
         this.attachmentPath = attachmentPath;
         this.attachmentType = attachmentType;
@@ -49,6 +57,14 @@ public class Attachment implements Serializable {
         this.uuid = uuid;
     }
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+    
     public String getAttachmentName() {
         return attachmentName;
     }

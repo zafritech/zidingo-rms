@@ -2,9 +2,8 @@ package org.zafritech.zidingorms.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -12,39 +11,40 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
-import org.zafritech.zidingorms.commons.enums.MessageStatusType;
 
-@Entity(name = "TBL_MESSAGE_STATUSES")
-public class MessageStatus implements Serializable {
+@Entity(name = "TBL_MESSAGE_RECIPIENTS")
+public class MessageRecipient implements Serializable {
 
     @Id
     @GeneratedValue
     private Long id;
     
     private String uuId;
-        
-    private User user;
+    
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User recipient;
     
     @ManyToOne
     @JoinColumn(name = "messageId")
     private Message message;
     
-    @Enumerated(EnumType.STRING)
-    private MessageStatusType statusType;
-    
+    private boolean messageRead;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date statusDate;
-
-    public MessageStatus() {
+    private Date messageReadDate;
+    
+    public MessageRecipient() {
         
     }
 
-    public MessageStatus(User user, Message message, MessageStatusType statusType) {
+    public MessageRecipient(User recipient, Message message) {
         
-        this.user = user;
+        this.uuId = UUID.randomUUID().toString();
+        this.recipient = recipient;
         this.message = message;
-        this.statusType = statusType;
+        this.messageRead = false;
     }
 
     public Long getId() {
@@ -59,12 +59,12 @@ public class MessageStatus implements Serializable {
         this.uuId = uuId;
     }
 
-    public User getUser() {
-        return user;
+    public User getRecipient() {
+        return recipient;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
     public Message getMessage() {
@@ -75,19 +75,19 @@ public class MessageStatus implements Serializable {
         this.message = message;
     }
 
-    public MessageStatusType getStatusType() {
-        return statusType;
+    public boolean isMessageRead() {
+        return messageRead;
     }
 
-    public void setStatusType(MessageStatusType statusType) {
-        this.statusType = statusType;
+    public void setMessageRead(boolean read) {
+        this.messageRead = read;
     }
 
-    public Date getStatusDate() {
-        return statusDate;
+    public Date getMessageReadDate() {
+        return messageReadDate;
     }
 
-    public void setStatusDate(Date statusDate) {
-        this.statusDate = statusDate;
+    public void setMessageReadDate(Date messageReadDate) {
+        this.messageReadDate = messageReadDate;
     }
 }

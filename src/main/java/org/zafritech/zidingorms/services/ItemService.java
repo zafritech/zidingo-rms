@@ -13,6 +13,8 @@ public interface ItemService {
 
     Item findById(Long id);
     
+    ItemCreateDao getDaoForFirstItemCreate(Long id);
+    
     ItemCreateDao findByIdForCreate(Long id);
     
     ItemEditDao findByIdForEdit(Long id);

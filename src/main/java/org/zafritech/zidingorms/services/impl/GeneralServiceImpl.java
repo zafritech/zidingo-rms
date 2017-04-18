@@ -5,6 +5,8 @@
  */
 package org.zafritech.zidingorms.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,5 +36,11 @@ public class GeneralServiceImpl implements GeneralService {
         User user = userRepository.findByUserName(name);
 
         return user;
+    }
+    
+    @Override 
+    public List<User> allUser() {
+        
+        return new ArrayList(userRepository.findAll());
     }
 }

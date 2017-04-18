@@ -25,6 +25,7 @@ import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemHistoryRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
+import org.zafritech.zidingorms.repositories.ItemTypeRepository;
 import org.zafritech.zidingorms.repositories.LinkRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.services.ItemService;
@@ -35,6 +36,9 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    public ItemTypeRepository itemTypeRepository;
+    
     @Autowired
     private ItemHistoryRepository itemHistoryRepository;
     
@@ -57,11 +61,35 @@ public class ItemServiceImpl implements ItemService {
     }
     
     @Override
+    public ItemCreateDao getDaoForFirstItemCreate(Long id) {
+        
+        DaoToCreateConverter createConverter = new DaoToCreateConverter();
+        Item item = new Item();
+        item.setArtifact(artifactRepository.findOne(id)); 
+        ItemCreateDao createDao = createConverter.convert(item);
+        
+        createDao.setItemTypes(itemTypeRepository.findAllByOrderByItemTypeLongName());
+        createDao.setIdentPrefices(sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(
+                                                    id, 
+                                                    "DOCUMENT", 
+                                                    SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name()));
+        
+        return createDao;
+    }
+    
+    @Override
     public ItemCreateDao findByIdForCreate(Long id) {
         
         DaoToCreateConverter createConverter = new DaoToCreateConverter();
+        ItemCreateDao createDao = createConverter.convert(itemRepository.findOne(id));
         
-        return createConverter.convert(itemRepository.findOne(id));
+        createDao.setItemTypes(itemTypeRepository.findAllByOrderByItemTypeLongName());
+        createDao.setIdentPrefices(sysVarRepository.findByOwnerIdAndOwnerTypeAndVariableNameOrderByVariableValue(
+                                                    createDao.getItem().getArtifact().getId(), 
+                                                    "DOCUMENT", 
+                                                    SystemVariableTypes.REQUIREMENT_ID_TEMPLATE.name()));
+        
+        return createDao;
     }
     
     @Override

@@ -1,18 +1,5 @@
 package org.zafritech.zidingorms.services.impl;
 
-import com.itextpdf.io.font.FontConstants;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.Style;
-import com.itextpdf.layout.element.AreaBreak;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.property.AreaBreakType;
-import com.itextpdf.layout.property.TextAlignment;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
@@ -44,12 +32,10 @@ import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
 import org.zafritech.zidingorms.domain.Artifact;
-import org.zafritech.zidingorms.domain.ArtifactHierachy;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.ItemComment;
 import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.domain.User;
-import org.zafritech.zidingorms.repositories.ArtifactHierachyRepository;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemCommentRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
@@ -64,9 +50,6 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Autowired
     private ArtifactRepository artifactRepository;
-
-    @Autowired
-    private ArtifactHierachyRepository hierachyRepository;
 
     @Autowired
     private SystemVariableRepository sysVarRepository;
@@ -138,19 +121,8 @@ public class ArtifactServiceImpl implements ArtifactService {
     public Artifact importExcel(Long artifactId, String filePath) {
 
         Artifact artifact = artifactRepository.findOne(artifactId);
-
-        // Item sort index
-        int index = 0;
-
-        // Prepare parent items
-        Item currLevel1Item = null;
-        Item currLevel2Item = null;
-        Item currLevel3Item = null;
-        Item currLevel4Item = null;
-        Item currLevel5Item = null;
-        Item currLevel6Item = null;
-        Item currLevel7Item = null;
-        Item currLevel8Item = null;
+        
+        int index = 0;  // Item sort index
 
         try {
 
@@ -161,8 +133,8 @@ public class ArtifactServiceImpl implements ArtifactService {
             Workbook workbook = getWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
 
-//            while(i <= worksheet.getLastRowNum()) {
-            while (i <= 101) {
+            while(i <= worksheet.getLastRowNum()) {
+//            while ((i <= 101) && (i <= worksheet.getLastRowNum())) {
 
                 ItemDao itemDao = new ItemDao();
                 Item item = new Item();
@@ -175,91 +147,40 @@ public class ArtifactServiceImpl implements ArtifactService {
                 String ident = (String) getCellValue(row.getCell(1));
                 itemDao.setIdentifier((ident != null && !ident.isEmpty()) ? ident : "");
 
+                // Is the Item a Requirement
+                String itemClass = (String) getCellValue(row.getCell(2));
+                itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : itemClass);
+
                 // Item value
-                String value = (String) getCellValue(row.getCell(2));
+                String value = (String) getCellValue(row.getCell(3));
                 itemDao.setItemValue((value != null && !value.isEmpty()) ? value : "");
 
-                // Is the Item a Requirement
-                String itemClass = (String) getCellValue(row.getCell(3));
-                itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : ItemClass.PROSE.name());
-
                 // Set the Requirement type
-                itemDao.setItemType((itemClass.equalsIgnoreCase("DEF")) ? itemTypeRepository.findByItemTypeName("Unclassified")
-                        : itemTypeRepository.findByItemTypeName("Prose"));
+                itemDao.setItemType((itemClass.equalsIgnoreCase("DEF") || itemClass.equalsIgnoreCase("REQUIREMENT")) 
+                        ? itemTypeRepository.findByItemTypeName("Functional")
+                        : itemTypeRepository.findByItemTypeName("None"));
                 
                 // Item level in hierachy
-                int level = (int) (double) getCellValue(row.getCell(14));
+                int level = (int) (double) getCellValue(row.getCell(4));
                 itemDao.setItemLevel(level);
 
-                itemDao.setSortIndex(index++);
+                if (row.getCell(5).getCellTypeEnum() == CellType.NUMERIC) {
+                    
+                    int itemIndex = (int) (double) getCellValue(row.getCell(5));
+                    itemDao.setSortIndex(itemIndex);
+                    index = itemIndex;
+                    
+                } else {
+                    
+                    itemDao.setSortIndex(index++);
+                }
 
                 itemDao.setArtifactId(artifact.getId());
-
-                switch (level) {
-
-                    case 1:
-                        currLevel1Item = this.saveItemDao(itemDao);
-                        item = currLevel1Item;
-                        ArtifactHierachy hierachyEntry1 = new ArtifactHierachy(artifact, currLevel1Item, null);
-                        hierachyRepository.save(hierachyEntry1);
-                        break;
-
-                    case 2:
-                        currLevel2Item = this.saveItemDao(itemDao);
-                        item = currLevel2Item;
-                        ArtifactHierachy hierachyEntry2 = new ArtifactHierachy(artifact, currLevel2Item, currLevel1Item);
-                        hierachyRepository.save(hierachyEntry2);
-                        break;
-
-                    case 3:
-                        currLevel3Item = this.saveItemDao(itemDao);
-                        item = currLevel3Item;
-                        ArtifactHierachy hierachyEntry3 = new ArtifactHierachy(artifact, currLevel3Item, currLevel2Item);
-                        hierachyRepository.save(hierachyEntry3);
-                        break;
-
-                    case 4:
-                        currLevel4Item = this.saveItemDao(itemDao);
-                        item = currLevel4Item;
-                        ArtifactHierachy hierachyEntry4 = new ArtifactHierachy(artifact, currLevel4Item, currLevel3Item);
-                        hierachyRepository.save(hierachyEntry4);
-                        break;
-
-                    case 5:
-                        currLevel5Item = this.saveItemDao(itemDao);
-                        item = currLevel5Item;
-                        ArtifactHierachy hierachyEntry5 = new ArtifactHierachy(artifact, currLevel5Item, currLevel4Item);
-                        hierachyRepository.save(hierachyEntry5);
-                        break;
-
-                    case 6:
-                        currLevel6Item = this.saveItemDao(itemDao);
-                        item = currLevel6Item;
-                        ArtifactHierachy hierachyEntry6 = new ArtifactHierachy(artifact, currLevel6Item, currLevel5Item);
-                        hierachyRepository.save(hierachyEntry6);
-                        break;
-
-                    case 7:
-                        currLevel7Item = this.saveItemDao(itemDao);
-                        item = currLevel7Item;
-                        ArtifactHierachy hierachyEntry7 = new ArtifactHierachy(artifact, currLevel7Item, currLevel7Item);
-                        hierachyRepository.save(hierachyEntry7);
-                        break;
-
-                    case 8:
-                        currLevel8Item = this.saveItemDao(itemDao);
-                        item = currLevel8Item;
-                        ArtifactHierachy hierachyEntry8 = new ArtifactHierachy(artifact, currLevel8Item, currLevel7Item);
-                        hierachyRepository.save(hierachyEntry8);
-                        break;
-
-                    default:
-                        item = this.saveItemDao(itemDao);
-                }
+                item = this.saveItemDao(itemDao);
                 
                 // Item comments
-                String clientComment = (String) getCellValue(row.getCell(11));
-                String contractorComment = (String) getCellValue(row.getCell(12));
+                String clientComment = (row.getCell(6, Row.RETURN_BLANK_AS_NULL) != null) ? (String) getCellValue(row.getCell(6, Row.RETURN_BLANK_AS_NULL)) : "";
+                String contractorComment = (row.getCell(7, Row.RETURN_BLANK_AS_NULL) != null) ? (String) getCellValue(row.getCell(7, Row.RETURN_BLANK_AS_NULL)) : "";
                 
                 // Save client comment
                 if (clientComment != null && !clientComment.isEmpty()) {

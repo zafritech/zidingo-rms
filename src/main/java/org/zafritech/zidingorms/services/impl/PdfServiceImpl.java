@@ -18,6 +18,7 @@ import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Tab;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.AreaBreakType;
 import com.itextpdf.layout.property.HorizontalAlignment;
@@ -126,11 +127,11 @@ public class PdfServiceImpl implements PdfService {
                     }
                    
                 } else if (item.getItemClass().equals("REQUIREMENT")) {
+
+                    Paragraph p = new Paragraph();
+                    p.add((item.getIdentifier()).trim() + ":").add(new Tab()).add((item.getItemValue()).trim());
+                    document.add(p);
                     
-                    Table reqTable = new Table(new float[]{1, 4}).setBorder(Border.NO_BORDER);
-                    reqTable.addCell(item.getIdentifier()).setBorder(Border.NO_BORDER);
-                    reqTable.addCell(item.getItemValue()).setBorder(Border.NO_BORDER);
-                    document.add(reqTable);
                     addEmptyLine(document, 1);
                     
                 } else {
@@ -155,7 +156,7 @@ public class PdfServiceImpl implements PdfService {
         
         Map<String, Style> styles = new HashMap<String, Style>();
         
-        PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
+        PdfFont font = PdfFontFactory.createFont(FontConstants.HELVETICA);
         PdfFont fontItalic = PdfFontFactory.createFont(FontConstants.TIMES_ITALIC);
         
         // Normal Style
@@ -165,42 +166,42 @@ public class PdfServiceImpl implements PdfService {
         
         // Title Style
         Style titleStyle = new Style();
-        titleStyle.setFont(font).setFontSize(20);
+        titleStyle.setFont(font).setFontSize(16);
         titleStyle.setBold();
         titleStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
         styles.put("Title", titleStyle);
         
         // Subtitle Style
         Style subTitleStyle = new Style();
-        subTitleStyle.setFont(font).setFontSize(16);
+        subTitleStyle.setFont(font).setFontSize(14);
         subTitleStyle.setBold();
         subTitleStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
         styles.put("Subtitle", subTitleStyle);
         
         // Header1 Style
         Style header1Style = new Style();
-        header1Style.setFont(font).setFontSize(18);
+        header1Style.setFont(font).setFontSize(14);
         header1Style.setBold();
         header1Style.setHorizontalAlignment(HorizontalAlignment.LEFT);
         styles.put("Header1", header1Style);
         
         // Header2 Style
         Style header2Style = new Style();
-        header2Style.setFont(font).setFontSize(16);
+        header2Style.setFont(font).setFontSize(13);
         header2Style.setBold();
         header2Style.setHorizontalAlignment(HorizontalAlignment.LEFT);
         styles.put("Header2", header2Style);
         
         // Header3 Style
         Style header3Style = new Style();
-        header3Style.setFont(font).setFontSize(14);
+        header3Style.setFont(font).setFontSize(12);
         header3Style.setBold();
         header3Style.setHorizontalAlignment(HorizontalAlignment.LEFT);
         styles.put("Header3", header3Style);
         
         // Header4 Style
         Style header4Style = new Style();
-        header4Style.setFont(font).setFontSize(12);
+        header4Style.setFont(font).setFontSize(11);
         header4Style.setBold();
         header4Style.setHorizontalAlignment(HorizontalAlignment.LEFT);
         styles.put("Header4", header4Style);

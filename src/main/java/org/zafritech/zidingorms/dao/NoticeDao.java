@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.zafritech.zidingorms.commons.enums;
+package org.zafritech.zidingorms.dao;
 
 /**
  *
  * @author LukeS
  */
-public enum NotificationStatusType {
+public class NoticeDao {
     
-    SENT, READ, ACKNOWLEDGED
 }

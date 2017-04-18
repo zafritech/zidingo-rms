@@ -1,15 +1,19 @@
 package org.zafritech.zidingorms.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -27,56 +31,64 @@ public class Message implements Serializable {
     private String uuId;
     
     @OneToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "senderId")
     private User sender;
+    
+    @Column(columnDefinition = "TEXT")
+    private String subject;
     
     @Column(columnDefinition = "TEXT")
     private String message;
     
     @ManyToOne
-    @JoinColumn(name = "replyToId")
-    private Message replyTo;
-    
-    @OneToMany
-    @JoinTable(name = "XREF_MESSAGE_RECIPIENTS", 
-               joinColumns = {@JoinColumn(name = "message_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    private Set<User> recipients = new HashSet<User>();
-
-    @OneToMany
-    @JoinTable(name = "XREF_MESSAGE_ATTACHMENTS_LIST", 
-               joinColumns = {@JoinColumn(name = "message_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "attachment_id", referencedColumnName = "id")}
-    )
-    private Set<Attachment> attachments = new HashSet<Attachment>();
-    
-    @OneToMany
-    @JoinTable(name = "XREF_MESSAGE_STATUS_LIST", 
-               joinColumns = {@JoinColumn(name = "message_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "status_id", referencedColumnName = "id")}
-    )
-    private Set<MessageStatus> statusList = new HashSet<MessageStatus>();
-    
+    @JoinColumn(name = "parentId")
+    private Message parentMessage;
+        
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentDate;
+    
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiryDate;
+    
+    private boolean reminder;
+    
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date nextReminder;
+    
+    private int reminderFrequency;
 
     public Message() {
         
     }
 
-    public Message(User sender, String message) {
+    public Message(String subject, String message) {
         
-        this.sender = sender;
+        this.uuId = UUID.randomUUID().toString();
+        this.subject = subject;
         this.message = message;
+        this.sentDate = new Timestamp(System.currentTimeMillis());
     }
 
-    public Message(User sender, String message, Message replyTo) {
+    public Message(String subject, String message, Message parentMessage) {
         
-        this.sender = sender;
+        this.uuId = UUID.randomUUID().toString();
+        this.subject = subject;
         this.message = message;
-        this.replyTo = replyTo;
+        this.parentMessage = parentMessage;
+        this.sentDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" + "id=" + id + ", uuId=" + uuId + ", sender=" + 
+                sender + ", subject=" + subject + ", message=" + message + 
+                ", parentMessage=" + parentMessage + ", sentDate=" + sentDate + 
+                ", expiryDate=" + expiryDate + ", reminder=" + reminder + 
+                ", nextReminder=" + nextReminder + ", reminderFrequency=" + 
+                reminderFrequency + '}';
     }
 
     public Long getId() {
@@ -99,6 +111,14 @@ public class Message implements Serializable {
         this.sender = sender;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -107,36 +127,12 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public Message getReplyTo() {
-        return replyTo;
+    public Message getParentMessage() {
+        return parentMessage;
     }
 
-    public void setReplyTo(Message replyTo) {
-        this.replyTo = replyTo;
-    }
-
-    public Set<User> getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(Set<User> recipients) {
-        this.recipients = recipients;
-    }
-
-    public Set<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(Set<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public Set<MessageStatus> getStatusList() {
-        return statusList;
-    }
-
-    public void setStatusList(Set<MessageStatus> statusList) {
-        this.statusList = statusList;
+    public void setParentMessage(Message parentMessage) {
+        this.parentMessage = parentMessage;
     }
 
     public Date getSentDate() {
@@ -146,5 +142,36 @@ public class Message implements Serializable {
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
     }
-    
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public boolean isReminder() {
+        return reminder;
+    }
+
+    public void setReminder(boolean reminder) {
+        this.reminder = reminder;
+    }
+
+    public Date getNextReminder() {
+        return nextReminder;
+    }
+
+    public void setNextReminder(Date nextReminder) {
+        this.nextReminder = nextReminder;
+    }
+
+    public int getReminderFrequency() {
+        return reminderFrequency;
+    }
+
+    public void setReminderFrequency(int reminderFrequency) {
+        this.reminderFrequency = reminderFrequency;
+    }
 }

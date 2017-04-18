@@ -2,15 +2,12 @@ package org.zafritech.zidingorms.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,22 +21,15 @@ public class Notification implements Serializable {
     
     private String uuId;
     
+    @OneToOne
+    @JoinColumn(name = "senderId")
+    private User sender;
+    
+    @Column(columnDefinition = "TEXT")
+    private String subject;
+    
     @Column(columnDefinition = "TEXT")
     private String notification;
-    
-    @OneToMany
-    @JoinTable(name = "XREF_NOTIFICATION_RECIPIENTS", 
-               joinColumns = {@JoinColumn(name = "notification_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    private Set<User> recipients = new HashSet<User>();
-    
-    @OneToMany
-    @JoinTable(name = "XREF_NOTIFICATION_STATUS_LIST", 
-               joinColumns = {@JoinColumn(name = "notification_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "status_id", referencedColumnName = "id")}
-    )
-    private Set<NotificationStatus> statusList = new HashSet<NotificationStatus>();
     
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,9 +46,9 @@ public class Notification implements Serializable {
 
     @Override
     public String toString() {
-        
-        return "Notification{" + "id=" + getId() + ", notification=" + 
-                getNotification() + ", notificationDate=" + getNotificationDate() + '}';
+        return "Notification{" + "id=" + getId() + ", sender=" + getSender() + 
+               ", subject=" + getSubject() + ", notification=" + getNotification() + 
+               ", notificationDate=" + getNotificationDate() + '}';
     }
 
     public Long getId() {
@@ -73,28 +63,28 @@ public class Notification implements Serializable {
         this.uuId = uuId;
     }
 
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public String getNotification() {
         return notification;
     }
 
     public void setNotification(String notification) {
         this.notification = notification;
-    }
-
-    public Set<User> getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(Set<User> recipients) {
-        this.recipients = recipients;
-    }
-
-    public Set<NotificationStatus> getStatusList() {
-        return statusList;
-    }
-
-    public void setStatusList(Set<NotificationStatus> statusList) {
-        this.statusList = statusList;
     }
 
     public Date getNotificationDate() {

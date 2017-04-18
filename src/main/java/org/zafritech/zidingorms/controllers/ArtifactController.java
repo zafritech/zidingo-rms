@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
+import org.zafritech.zidingorms.dao.SearchDao;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
 import org.zafritech.zidingorms.domain.Link;
@@ -19,6 +20,7 @@ import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
+import org.zafritech.zidingorms.search.ItemSearch;
 import org.zafritech.zidingorms.services.ArtifactService;
 import org.zafritech.zidingorms.services.LinkService;
 
@@ -49,6 +51,10 @@ public class ArtifactController {
         this.artifactRepository = artifactRepository;
     }
     
+    // Inject the UserSearch object
+    @Autowired
+    private ItemSearch itemSearch;
+
     @RequestMapping("/artifacts")
     public String artifacts(Model model) {
 
@@ -122,5 +128,27 @@ public class ArtifactController {
         model.addAttribute("newLineChar", "\n");
 
         return "/views/item/links";
+    }
+    
+    @RequestMapping("/artifact/items/search")
+    public String searchItems(String q, Long size, Long page, Model model) {
+        
+        SearchDao searchResults = null;
+        
+        try {
+            
+            searchResults = itemSearch.search(q, size, page);
+          
+        } catch (Exception ex) {
+            
+          // here you should handle unexpected errors
+          // ...
+          // throw ex;
+        }
+        
+        model.addAttribute("results", searchResults);
+        model.addAttribute("string", q.replace(" ", "+"));
+        
+        return "/views/artifacts/search";
     }
 }
