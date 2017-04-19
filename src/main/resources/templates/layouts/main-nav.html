@@ -19,30 +19,30 @@
                 </button>
                 <a class="navbar-brand" href="/">Zidingo RMS</a>
             </div>
-
-            <!-- Search box - responsive -->
-            <div class="col-md-2 pull-right">
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <form class="navbar-form" action="/artifact/items/search" role="search">
-                            <div class="input-group">
-                                <input type="hidden" class="form-control" id="page" name="page" value="1" />
-                                <input type="hidden" class="form-control" id="size" name="size" value="10" />
-                                <input type="text" class="form-control" placeholder="Search" name="q" />
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                  </ul>
-            </div>
             
             <!-- Top Menu Items -->
             <div>
                 <ul class="nav navbar-right top-nav">
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <ul class="dropdown-menu" style="width: 400px !important; padding-left: 20px;">
+                            <form class="navbar-form" action="/artifact/items/search" role="search">
+                                <div class="input-group btn-block">
+                                    <input type="hidden" class="form-control" id="page" name="page" value="1" />
+                                    <input type="hidden" class="form-control" id="size" name="size" value="10" />
+                                    <input type="text" class="form-control" placeholder="Enter search terms" name="q" />
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </ul>
+                    </li>
+                    
                     <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
-                        <a href="/admin" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
+                        <a href="/admin" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
                             <i class="fa fa-cog"></i> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
@@ -69,88 +69,16 @@
                     <li class="dropdown">
                         <a href="/messages" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
                            <i class="fa fa-envelope"></i> <b class="caret"></b>
-                            <sup class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;">10+</sup>
+                            <sup id="userMessageCount" class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;"></sup>
                         </a>
-                        <ul class="dropdown-menu message-dropdown">
-                            <li class="message-preview">
-                                <a href="/profile/inbox/1">
-                                    <div class="media">
-                                        <span class="pull-left">
-                                            <img class="media-object" src="/images/admin.jpg" alt="" />
-                                        </span>
-                                        <div class="media-body">
-                                            <h5 class="media-heading"><strong>John Smith</strong>
-                                            </h5>
-                                            <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="message-preview">
-                                <a href="/profile/inbox/2">
-                                    <div class="media">
-                                        <span class="pull-left">
-                                            <img class="media-object" src="/images/admin.jpg" alt="" />
-                                        </span>
-                                        <div class="media-body">
-                                            <h5 class="media-heading"><strong>John Smith</strong>
-                                            </h5>
-                                            <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="message-preview">
-                                <a href="/profile/inbox/3">
-                                    <div class="media">
-                                        <span class="pull-left">
-                                            <img class="media-object" src="/images/admin.jpg" alt="" />
-                                        </span>
-                                        <div class="media-body">
-                                            <h5 class="media-heading"><strong>John Smith</strong>
-                                            </h5>
-                                            <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur...</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="message-footer">
-                                <a href="#">Read All New Messages</a>
-                            </li>
-                        </ul>
+                        <ul id="userMessageSummaries" class="dropdown-menu message-dropdown" style="width: 350px;"></ul>
                     </li>
                     <li class="dropdown">
                         <a href="/notifications" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
                             <i class="fa fa-bell"></i> <b class="caret"></b>
-                            <sup class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;">6</sup>
+                            <sup id="userNotificationsCount" class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;"></sup>
                         </a>
-                        <ul class="dropdown-menu alert-dropdown">
-                            <li>
-                                <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="#">View All</a>
-                            </li>
-                        </ul>
+                        <ul id="userNotificationDetails" class="dropdown-menu alert-dropdown" style="width: 300px;"></ul>
                     </li>
                     
                     <li class="dropdown">
@@ -169,9 +97,8 @@
                     </li>
                     
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
-                            <i class="fa fa-user"></i>
-                            <span sec:authentication="name"> Guest</span><b class="caret"></b>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
+                            <i class="fa fa-user"></i> <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
@@ -196,6 +123,7 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
+
                     <li class="active">
                         <a href="javascript:void(0);" data-toggle="collapse" data-target="#projectsList" style="background: #369; color: #fff;">
                             <i class="fa fa-fw fa-briefcase"></i> Projects

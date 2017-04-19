@@ -5,11 +5,13 @@
  */
 package org.zafritech.zidingorms.services;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.dao.MsgDao;
 import org.zafritech.zidingorms.dao.NoticeDao;
 import org.zafritech.zidingorms.domain.Message;
 import org.zafritech.zidingorms.domain.Notification;
+import org.zafritech.zidingorms.domain.User;
 
 /**
  *
@@ -18,7 +20,11 @@ import org.zafritech.zidingorms.domain.Notification;
 @Service
 public interface MessageService {
     
-    Message saveMessage(MsgDao msgDao);
+    Message sendMessage(MsgDao msgDao);
     
-    Notification saveNotification(NoticeDao noticeDao);
+    Notification sendNotification(NoticeDao noticeDao);
+    
+    List<Message> getUnreadMessages(User user);
+    
+    List<Notification> getUnreadNotifications(User user);
 }

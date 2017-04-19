@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,12 +19,9 @@ public class Notification implements Serializable {
     
     private String uuId;
     
-    @OneToOne
-    @JoinColumn(name = "senderId")
-    private User sender;
+    private String notificationPriority;
     
-    @Column(columnDefinition = "TEXT")
-    private String subject;
+    private String name;
     
     @Column(columnDefinition = "TEXT")
     private String notification;
@@ -39,16 +34,19 @@ public class Notification implements Serializable {
         
     }
 
-    public Notification(String notification) {
+    public Notification(String name, String notification, String priority) {
         
+        this.name = name;
         this.notification = notification;
+        this.notificationPriority = priority;
     }
 
     @Override
     public String toString() {
-        return "Notification{" + "id=" + getId() + ", sender=" + getSender() + 
-               ", subject=" + getSubject() + ", notification=" + getNotification() + 
-               ", notificationDate=" + getNotificationDate() + '}';
+        
+        return "Notification{" + "id=" + id + ", uuId=" + uuId + 
+               ", notification=" + notification + ", notificationDate=" + 
+               notificationDate + '}';
     }
 
     public Long getId() {
@@ -63,20 +61,20 @@ public class Notification implements Serializable {
         this.uuId = uuId;
     }
 
-    public User getSender() {
-        return sender;
+    public String getName() {
+        return name;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getNotificationPriority() {
+        return notificationPriority;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setNotificationPriority(String notificationPriority) {
+        this.notificationPriority = notificationPriority;
     }
 
     public String getNotification() {

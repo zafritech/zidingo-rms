@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity(name = "TBL_NOTIFICATION_RECIPIENTS")
-class NotificationRecepient implements Serializable {
+public class NotificationRecepient implements Serializable {
 
     @Id
     @GeneratedValue

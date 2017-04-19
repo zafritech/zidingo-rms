@@ -1,5 +1,90 @@
 /* global toastr, bootbox */
 
+/* Update User toolbar with messages */
+$(document).ready(function () {
+    
+    $.ajax({
+        
+        url: '/api/messages/unread',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            var msgCount = (data.length > 10) ? '10+' : data.length;
+            
+            $('#userMessageCount').html(msgCount);
+            
+            $.each(data, function (key, index) {
+                
+                var subject = index.subject;
+                
+                var subjectSummary = (subject.length > 48) ? subject.substring(0, 45) + '...' : subject;
+                var date = new Date(index.sentDate);
+                var whenSent = timeSince(index.sentDate) + '<br/>'+ date.toISOString().substring(0, 19).replace("T", " ");
+                
+                var message  =  '<li class="message-preview">' +
+                                '<a href="/profile/inbox/' + index.uuId + '">' +
+                                '<div class="media">' +
+                                '<span class="pull-left"><img class="media-object" src="/images/admin.jpg" alt="" /></span>' +
+                                '<div class="media-body">' +
+                                '<h5 class="media-heading">From:<strong> ' + index.sender.firstName + '</strong></h5>' +
+                                '<p class="small text-muted"><i class="fa fa-clock-o"></i> ' + whenSent + '</p>' +
+                                '<p>' + subjectSummary + '...</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</a>' +
+                                '</li>';
+                        
+                $('#userMessageSummaries').append(message);
+                
+            });
+            
+            $('#userMessageSummaries').append('<li class="message-footer"><a href="#">Read All New Messages</a></li>');
+        }
+    });
+});
+
+/* Update User toolbar with notifications */
+$(document).ready(function () {
+    
+    $.ajax({
+        
+        url: '/api/notifications/unread',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            console.log(data);
+            
+            var msgCount = (data.length > 10) ? '10+' : data.length;
+            
+            $('#userNotificationsCount').html(msgCount);
+            
+            $.each(data, function (key, index) {
+                
+                var name = index.name;
+                var alertClass = '';
+                
+                if (index.notificationPriority === "HIGH") { alertClass = 'danger'; }
+                if (index.notificationPriority === "NORMAL") { alertClass = 'success'; }
+                if (index.notificationPriority === "MEDIUM") { alertClass = 'warning'; }
+                  
+                var simpleAlert  =  '<div class="notice notice-' + alertClass + '" >' +
+                                    '<strong>' + name + '</strong> ' + index.notification + 
+                                    '</div>';
+                    
+                $('#userNotificationDetails').append(simpleAlert);
+                
+            });
+            
+            $('#userNotificationDetails').append('<li class="divider"></li>');
+            $('#userNotificationDetails').append('<li class="message-footer"><a href="#">View all</a></li>');
+        }
+    });
+});
+
+
+
 // Retrieve projects list
 $(document).ready(function () {
 
@@ -1947,7 +2032,7 @@ function SendMessage() {
                     data: JSON.stringify(data),
                     dataType: "json",
                     timeout: 60000,
-                    success: function (data) {
+                    success: function () {
 
                         showToastr('success', 'Message sent!');
 
@@ -1961,5 +2046,92 @@ function SendMessage() {
 
 function SendNotification() {
     
-    bootbox.alert("Send global notification.");
+    var message  =  '<form id="sendNotification" action="/notifications/send" method="post">' +
+                    '<input type="hidden" name="artifactId" id="artifactId" value="" />' +
+                    '<div class="form-group">' +
+                    '<label for="message">Notification Details</label>' +
+                    '<textarea class="form-control"  rows="5" cols="50" id="message" name="message"></textarea>' +
+                    '</div>' +
+                    '</form>';
+            
+    bootbox.confirm({
+        
+        title: "Send global notification",
+        message: message,
+        buttons: {
+            confirm: {
+                label: 'Send',
+                className: 'btn-success btn-fixed-width-100'
+            },
+            cancel: {
+                label: 'Cancel',
+                className: 'btn-danger btn-fixed-width-100'
+            }
+        },
+        callback: function (result) {
+            
+            if (result) {
+                
+                var data = {};
+                            
+                data['name'] = "General Alert";
+                data['priority'] = "NORMAL";
+                data['message'] = document.getElementById('message').value;
+
+                console.log(data);
+                
+                $.ajax({
+                                
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/api/messages/notification/new",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    timeout: 60000,
+                    success: function () {
+
+                        showToastr('success', 'Message sent!');
+
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+function timeSince(date) {
+
+    var seconds = Math.floor((new Date() - date) / 1000);
+
+    var interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+        
+        return interval + " years ago";
+    }
+    
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        
+        return interval + " months ago";
+    }
+    
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        
+        return interval + " days ago";
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        
+        return interval + " hours ago";
+    }
+    
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        
+        return interval + " minutes ago";
+    }
+    
+    return Math.floor(seconds) + " seconds ago";
 }

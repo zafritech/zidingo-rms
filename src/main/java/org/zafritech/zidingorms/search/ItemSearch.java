@@ -48,7 +48,7 @@ public class ItemSearch {
         @SuppressWarnings("unchecked")
                 
         int size = jpaQuery.getResultSize();
-        jpaQuery.setFirstResult((pageSize.intValue() * (page.intValue() - 1) + 1)); 
+        jpaQuery.setFirstResult((pageSize.intValue() * (page.intValue() - 1))); 
         jpaQuery.setMaxResults(pageSize.intValue());
 
         List<Item> list = jpaQuery.getResultList();

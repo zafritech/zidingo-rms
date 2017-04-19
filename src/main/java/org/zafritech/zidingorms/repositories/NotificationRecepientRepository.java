@@ -7,14 +7,14 @@ package org.zafritech.zidingorms.repositories;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
-import org.zafritech.zidingorms.domain.MessageRecipient;
+import org.zafritech.zidingorms.domain.NotificationRecepient;
 import org.zafritech.zidingorms.domain.User;
 
 /**
  *
  * @author LukeS
  */
-public interface MessageRecipientRepository extends CrudRepository<MessageRecipient, Long> {
+public interface NotificationRecepientRepository extends CrudRepository<NotificationRecepient, Long> {
     
-    List<MessageRecipient> findByRecipientAndMessageRead(User user, boolean read);
+    List<NotificationRecepient> findByRecipientAndNotificationRead(User user, boolean noticeRead);
 }
