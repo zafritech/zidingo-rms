@@ -42,10 +42,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> findAll() {
 
         List<User> users = new ArrayList<>();
+        List<User> sanitizedUsers = new ArrayList<>();
 
         userRepository.findAll().forEach(users::add);
+        
+        users.forEach(user->{
+            
+            user.setUserName(null); 
+            user.setPassword(null); 
+            sanitizedUsers.add(user);
+            
+        });
 
-        return users;
+        return sanitizedUsers;
     }
 
     @Override

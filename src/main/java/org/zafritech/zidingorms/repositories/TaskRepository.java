@@ -3,26 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.zafritech.zidingorms.services;
+package org.zafritech.zidingorms.repositories;
 
 import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 import org.zafritech.zidingorms.domain.Task;
-import org.springframework.stereotype.Service;
-import org.zafritech.zidingorms.dao.TaskDao;
 import org.zafritech.zidingorms.domain.User;
 
 /**
  *
  * @author LukeS
  */
-@Service
-public interface GeneralService {
+public interface TaskRepository extends CrudRepository<Task, Long> {
     
-    User loggedInUser();
-    
-    List<User> allUser();
-    
-    Task createTask(TaskDao taskDao);
-    
-    List<Task>  getActiveTasks(User user);
+    List<Task> findByAssignedToAndTaskStatus(User user, String status);
 }

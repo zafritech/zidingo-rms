@@ -45,7 +45,7 @@
                         <a href="/admin" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
                             <i class="fa fa-cog"></i> <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" style="width: 180px;">
                             <li>
                                 <a href="/admin/dash"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                             </li>
@@ -59,41 +59,37 @@
                                 <a href="/admin/users"><i class="fa fa-fw fa-user"></i> Manage Users</a>
                             </li>
                             <li>
-                                <a href="javascript:void(0);" th:onclick="'javascript:SendMessage();'"><i class="fa fa-fw fa-envelope"></i> Send Message</a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:CreateUserTask();'"><i class="fa fa-fw fa-tasks"></i> Create user task</a>
                             </li>
                             <li>
-                                <a href="javascript:void(0);" th:onclick="'javascript:SendNotification();'"><i class="fa fa-fw fa-bell"></i> Send Notice</a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:SendMessage();'"><i class="fa fa-fw fa-envelope"></i> Send message</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" th:onclick="'javascript:SendNotification();'"><i class="fa fa-fw fa-bell"></i> Send notice</a>
                             </li>
                         </ul>
                     </li>
-                    <li class="dropdown">
+                    <li id="userMessages" class="dropdown">
                         <a href="/messages" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
                            <i class="fa fa-envelope"></i> <b class="caret"></b>
-                            <sup id="userMessageCount" class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;"></sup>
+                            <sup id="userMessageCount" class="badge badge-hitcount"></sup>
                         </a>
                         <ul id="userMessageSummaries" class="dropdown-menu message-dropdown" style="width: 350px;"></ul>
                     </li>
-                    <li class="dropdown">
+                    <li id="userNotifications" class="dropdown">
                         <a href="/notifications" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
                             <i class="fa fa-bell"></i> <b class="caret"></b>
-                            <sup id="userNotificationsCount" class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;"></sup>
+                            <sup id="userNotificationsCount" class="badge badge-hitcount"></sup>
                         </a>
                         <ul id="userNotificationDetails" class="dropdown-menu alert-dropdown" style="width: 300px;"></ul>
                     </li>
                     
-                    <li class="dropdown">
+                    <li id="userTasks" class="dropdown">
                         <a href="/notifications" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
                             <i class="fa fa-tasks"></i> <b class="caret"></b>
-                            <sup class="badge" style="font-size: 10px; background-color: #F44336; color: #FFF; margin-left: -30px; margin-top: -10px;">10+</sup>
+                            <sup id="userTasksCount" class="badge badge-hitcount"></sup>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="/profile"><i class="fa fa-fw fa-check"></i> Confirmations</a>
-                            </li>
-                            <li>
-                                <a href="/profile"><i class="fa fa-fw fa-comments"></i> Comments</a>
-                            </li>
-                        </ul>
+                        <ul id="userTasksDetails" class="dropdown-menu tasks-dropdown" style="width: 300px;"></ul>
                     </li>
                     
                     <li class="dropdown">

@@ -1,7 +1,32 @@
 /* global toastr, bootbox */
 
-/* Update User toolbar with messages */
 $(document).ready(function () {
+ 
+    /* On page load */
+    RefreshUI();
+    
+    /* Repeat every minute */
+    var uiRefresh = window.setInterval(RefreshUI, 60*1000);
+    
+});
+
+
+/* Update User Interface (UI) notifications */
+function RefreshUI() {
+       
+    /* Update User toolbar with messages */
+    UpdateUserMessageAlerts();
+    
+    /* Update User toolbar with notifications */
+    UpdateUserNotificationAlerts();
+    
+    /* Update User toolbar with tasks list */
+    UpdateUserTasksAlerts();
+    
+}
+
+/* Update User toolbar with messages */
+function UpdateUserMessageAlerts() {
     
     $.ajax({
         
@@ -10,42 +35,51 @@ $(document).ready(function () {
         dataType: "json",
         success: function (data) {
             
-            var msgCount = (data.length > 10) ? '10+' : data.length;
-            
-            $('#userMessageCount').html(msgCount);
-            
-            $.each(data, function (key, index) {
+            if (data.length > 0) {
                 
-                var subject = index.subject;
+                var msgCount = (data.length > 10) ? '10+' : data.length;
+
+                $('#userMessageCount').html(msgCount);
+                $('#userMessageSummaries').empty();
                 
-                var subjectSummary = (subject.length > 48) ? subject.substring(0, 45) + '...' : subject;
-                var date = new Date(index.sentDate);
-                var whenSent = timeSince(index.sentDate) + '<br/>'+ date.toISOString().substring(0, 19).replace("T", " ");
+                $.each(data, function (key, index) {
+
+                    var subject = index.subject;
+
+                    var subjectSummary = (subject.length > 48) ? subject.substring(0, 45) + '...' : subject;
+                    var date = new Date(index.sentDate);
+                    var whenSent = timeSince(index.sentDate) + '<br/>'+ date.toISOString().substring(0, 19).replace("T", " ");
+
+                    var message  =  '<li class="message-preview">' +
+                                    '<a href="/profile/inbox/' + index.uuId + '">' +
+                                    '<div class="media">' +
+                                    '<span class="pull-left"><img class="media-object" src="/images/admin.jpg" alt="" /></span>' +
+                                    '<div class="media-body">' +
+                                    '<h5 class="media-heading">From:<strong> ' + index.sender.firstName + '</strong></h5>' +
+                                    '<p class="small text-muted"><i class="fa fa-clock-o"></i> ' + whenSent + '</p>' +
+                                    '<p>' + subjectSummary + '...</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</li>';
+
+                    $('#userMessageSummaries').append(message);
+
+                });
+
+                $('#userMessageSummaries').append('<li class="message-footer"><a href="#">Read All New Messages</a></li>');
+                $('#userMessages').show();
+                 
+            } else {
                 
-                var message  =  '<li class="message-preview">' +
-                                '<a href="/profile/inbox/' + index.uuId + '">' +
-                                '<div class="media">' +
-                                '<span class="pull-left"><img class="media-object" src="/images/admin.jpg" alt="" /></span>' +
-                                '<div class="media-body">' +
-                                '<h5 class="media-heading">From:<strong> ' + index.sender.firstName + '</strong></h5>' +
-                                '<p class="small text-muted"><i class="fa fa-clock-o"></i> ' + whenSent + '</p>' +
-                                '<p>' + subjectSummary + '...</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '</a>' +
-                                '</li>';
-                        
-                $('#userMessageSummaries').append(message);
-                
-            });
-            
-            $('#userMessageSummaries').append('<li class="message-footer"><a href="#">Read All New Messages</a></li>');
+                $('#userMessages').hide();
+            }
         }
     });
-});
+}
 
 /* Update User toolbar with notifications */
-$(document).ready(function () {
+function UpdateUserNotificationAlerts() {
     
     $.ajax({
         
@@ -53,36 +87,101 @@ $(document).ready(function () {
         type: "GET",
         dataType: "json",
         success: function (data) {
+             
+            if (data.length > 0) {
+                
+                var msgCount = (data.length > 10) ? '10+' : data.length;
+
+                $('#userNotificationsCount').html(msgCount);
+                $('#userNotificationDetails').empty();
+                
+                $.each(data, function (key, index) {
+
+                    var name = index.name;
+                    var alertClass = '';
+
+                    if (index.notificationPriority === "HIGH") { alertClass = 'danger'; }
+                    if (index.notificationPriority === "NORMAL") { alertClass = 'success'; }
+                    if (index.notificationPriority === "MEDIUM") { alertClass = 'warning'; }
+
+                    var simpleAlert  =  '<div class="notice notice-' + alertClass + '" >' +
+                                        '<strong>' + name + '</strong> ' + index.notification + 
+                                        '</div>';
+
+                    $('#userNotificationDetails').append(simpleAlert);
+
+                });
+
+                $('#userNotificationDetails').append('<li class="divider"></li>');
+                $('#userNotificationDetails').append('<li class="message-footer"><a href="#">View all</a></li>');
+                $('#userNotifications').show();
+            
+            } else {
+                
+                $('#userNotifications').hide();
+            }
+        }
+    });
+}
+
+
+/* Update User toolbar with tasks */
+function UpdateUserTasksAlerts() {
+    
+    $.ajax({
+        
+        url: '/api/tasks/active',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
             
             console.log(data);
             
-            var msgCount = (data.length > 10) ? '10+' : data.length;
-            
-            $('#userNotificationsCount').html(msgCount);
-            
-            $.each(data, function (key, index) {
+            if (data.length > 0) {
                 
-                var name = index.name;
-                var alertClass = '';
+                var taskCount = (data.length > 10) ? '10+' : data.length;
                 
-                if (index.notificationPriority === "HIGH") { alertClass = 'danger'; }
-                if (index.notificationPriority === "NORMAL") { alertClass = 'success'; }
-                if (index.notificationPriority === "MEDIUM") { alertClass = 'warning'; }
-                  
-                var simpleAlert  =  '<div class="notice notice-' + alertClass + '" >' +
-                                    '<strong>' + name + '</strong> ' + index.notification + 
-                                    '</div>';
+                $('#userTasksCount').html(taskCount);
+                $('#userTasksDetails').empty();
+                
+                $.each(data, function (key, index) {
                     
-                $('#userNotificationDetails').append(simpleAlert);
+                    var taskClass = 'progress-bar-primary';
+                    var percentage = Math.round(index.taskProgress / index.initialSize * 100);
+                    
+                    if (percentage >= 75) {
+                        taskClass = 'progress-bar-success';
+                    } else if (percentage >= 50) {
+                        taskClass = 'progress-bar-warning';
+                    } else if (percentage >= 25) {
+                        taskClass = 'progress-bar-info';
+                    } else if (percentage < 25) {
+                        taskClass = 'progress-bar-danger';
+                    }
+                            
+                    var task =  '<li>' +
+                                '<div style="padding: 10px; border-top: 1px solid #c0c0c0;">' +
+                                '<span style="color: #369;"><strong>' + index.taskName + '</strong></span>' +
+                                '<span class="pull-right">' + percentage + '%</span>' +
+                                '<div class="progress">' +
+                                '<div class="progress-bar ' + taskClass + '" role="progressbar" style="width: ' + percentage + '%" arial-valuenow="' + percentage + '" arial-valuemin="0" arial-valuemax="100"></div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</li>';
+                        
+                    $('#userTasksDetails').append(task);
+                     
+                });
                 
-            });
-            
-            $('#userNotificationDetails').append('<li class="divider"></li>');
-            $('#userNotificationDetails').append('<li class="message-footer"><a href="#">View all</a></li>');
+                $('#userTasks').show();
+                
+            } else {
+                
+                $('#userTasks').hide();
+            }
         }
     });
-});
-
+}
 
 
 // Retrieve projects list
@@ -1848,6 +1947,7 @@ function getFoldersByProject(projId, selectedId) {
 }
 
 
+
 function showToastr(msgType, message) {
 
     toastr.options = {
@@ -1983,6 +2083,119 @@ function FileUploadLoadding() {
     $('#artifactLoading').removeClass('hidden');
 }
 
+
+function CreateUserTask() {
+    
+    var task =  '<form id="sendMessage" action="/messages/send" method="post">' +
+                '<input type="hidden" name="artifactId" id="artifactId" value="" />' +
+                '<div class="row">' +
+                '<div class="form-group col-sm-4">' +
+                '<label for="assignedTo">Assign to</label>' +
+                '<select class="form-control" id="assignedTo" name="assignedTo"></select>' +
+                '</div>' +
+                '<div class="form-group col-sm-4">' +
+                '<label for="taskUnits">Units of measure</label>' +
+                '<select class="form-control" id="taskUnits" name="taskUnits"></select>' +
+                '</div>' +
+                '<div class="form-group col-sm-4">' +
+                '<label for="initialSize">Task size</label>' +
+                '<input type="text" class="form-control" id="initialSize" name="initialSize" placeholder="Size value" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label for="taskName">Task name</label>' +
+                '<input type="text" class="form-control file-loading" id="taskName" name="taskName" placeholder="Task name" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label for="taskDetails">Task details</label>' +
+                '<textarea class="form-control"  rows="5" cols="50" id="taskDetails" name="taskDetails"></textarea>' +
+                '</div>' +
+                '</form>';
+        
+    var box  =  bootbox.confirm({
+        
+                    title: "Create user task",
+                    message: task,
+                    buttons: {
+                        confirm: {
+                            label: 'Create',
+                            className: 'btn-success btn-fixed-width-100'
+                        },
+                        cancel: {
+                            label: 'Cancel',
+                            className: 'btn-danger btn-fixed-width-100'
+                        }
+                    },
+                    callback: function (result) {
+
+                        if (result) {
+
+                            var data = {};
+        
+                            data['assignedTo'] = $("#assignedTo").val();
+                            data['taskUnits'] = $("#taskUnits").val();
+                            data['initialSize'] = $("#initialSize").val();
+                            data['taskName'] = $("#taskName").val();
+                            data['taskDetails'] = $("#taskDetails").val();
+                            
+                            console.log(data);
+                            
+                            $.ajax({
+                                
+                                type: "POST",
+                                contentType: "application/json",
+                                url: "/api/tasks/new",
+                                data: JSON.stringify(data),
+                                dataType: "json",
+                                timeout: 60000,
+                                success: function (data) {
+                                    
+                                }
+                            });
+                        }
+                    }
+                });
+                
+    box.on("shown.bs.modal", function(e) {
+        
+        $.ajax({
+            
+            url: '/api/users/list',
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+
+                // Populate dropdown controls
+                var selectUserOptions = '';
+                var selectUnitsOptions  =   '<option value="COUNT">Count</option>' + 
+                                            '<option value="HOURS">Hours</option>' + 
+                                            '<option value="DAYS">Days</option>' + 
+                                            '<option value="WEEKS">Weeks</option>' + 
+                                            '<option value="MONTHS">Months</option>'; 
+                var defaultUser = '';
+
+                $.each(data, function (key, index) {
+
+                    selectUserOptions = selectUserOptions + '<option value="' + index.uuId + '">' + index.firstName+ '</option>';
+                    
+                    if (index.firstName === 'Admin') {
+                        
+                        defaultUser = index.uuId;
+                    }
+                });
+
+                $(e.currentTarget).find('select[id="assignedTo"]').append(selectUserOptions);
+                $(e.currentTarget).find('select[id="taskUnits"]').append(selectUnitsOptions);
+                
+                $(e.currentTarget).find('select[name="assignedTo"]').prop('value', defaultUser);
+                $(e.currentTarget).find('select[name="taskUnits"]').prop('value', "COUNT");
+            }
+        });
+        
+    });
+    
+    box.modal('show');
+}
 
 function SendMessage() {
     

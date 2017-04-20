@@ -92,6 +92,13 @@ ul.message-dropdown {
     overflow-y: auto;
 }
 
+.tasks-dropdown {
+    
+    max-height: 250px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 li.message-preview {
     width: 335px;
     border-bottom: 1px solid rgba(0,0,0,.15);
@@ -582,6 +589,15 @@ ul.alert-dropdown {
     margin: 2px; 
     padding: 2px 0 10px 0; 
     border-bottom: 1px solid #E3E3E3;
+}
+
+.badge-hitcount {
+    
+    font-size: 10px; 
+    background-color: #F44336; 
+    color: #FFF; 
+    margin-left: -30px; 
+    margin-top: -10px;
 }
 
 /* Alerts - simple cards alerts */
