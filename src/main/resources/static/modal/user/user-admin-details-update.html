@@ -1,0 +1,78 @@
+<form>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="First name" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="userEmail">Email</label>
+                <input type="text" class="form-control" id="userEmail" name="userEmail"  placeholder="Email"/>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="userLoginName">Login</label>
+                <input type="text" class="form-control" id="userLoginName" name="userLoginName" placeholder="Login name" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="userPhoneNumber">Phone number</label>
+                <input type="text" class="form-control" id="userPhoneNumber" name="userPhoneNumber"  placeholder="Phone number"/>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="userMobileNumber">Mobile number</label>
+                <input type="text" class="form-control" id="userMobileNumber" name="userMobileNumber" placeholder="Mobile number" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="userAddres">Address</label>
+                <input type="text" class="form-control" id="userAddres" name="userAddres" placeholder="Address" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="userCountry">Country</label>
+                <select class="form-control" id="userCountry" name="userCountry" onchange="OnUserUpdateCountryChange();"></select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="userState">State/Province</label>
+                <select class="form-control" id="userState" name="userState" onchange="OnUserUpdateStateChange();"></select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="userCity">City/Town</label>
+                <select class="form-control" id="userCity" name="userCity"></select>
+            </div>
+        </div>
+    </div>
+    
+</form>

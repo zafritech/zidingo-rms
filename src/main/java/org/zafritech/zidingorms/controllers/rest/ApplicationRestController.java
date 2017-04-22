@@ -14,13 +14,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.zafritech.zidingorms.dao.TaskDao;
-import org.zafritech.zidingorms.domain.Message;
+import org.zafritech.zidingorms.domain.City;
+import org.zafritech.zidingorms.domain.Country;
+import org.zafritech.zidingorms.domain.State;
 import org.zafritech.zidingorms.domain.User;
+import org.zafritech.zidingorms.repositories.CityRepository;
+import org.zafritech.zidingorms.repositories.CountryRepository;
+import org.zafritech.zidingorms.repositories.StateRepository;
 import org.zafritech.zidingorms.services.GeneralService;
 import org.zafritech.zidingorms.services.UserService;
 
@@ -36,6 +42,15 @@ public class ApplicationRestController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private CountryRepository countryRepository;
+    
+    @Autowired
+    private StateRepository stateRepository;
+    
+    @Autowired
+    private CityRepository cityRepository;
     
     @RequestMapping("/api/login/check")
     public ResponseEntity<String> checkUserLogin(Model model) {
@@ -71,5 +86,38 @@ public class ApplicationRestController {
         List<Task> tasks = generalService.getActiveTasks(user);
         
         return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/countries/list", method = GET)
+    public ResponseEntity<List<Country>> getCountriesList() {
+        
+        List<Country> countries = countryRepository.findAll();
+        
+        return new ResponseEntity<List<Country>>(countries, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/states/list/{id}", method = GET)
+    public ResponseEntity<List<State>> getStatesList(@PathVariable(value = "id") Long id) {
+        
+        List<State> states = stateRepository.findByCountry(countryRepository.findOne(id)); 
+        
+        return new ResponseEntity<List<State>>(states, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/cities/list/{id}", method = GET)
+    public ResponseEntity<List<City>> getCitiesList(@PathVariable(value = "id") Long id) {
+        
+        List<City> cities = cityRepository.findByState(stateRepository.findOne(id)); 
+        
+        return new ResponseEntity<List<City>>(cities, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/user/byuuid/{uuid}", method = GET)
+    public ResponseEntity<User> getUserByUuId(@PathVariable(value = "uuid") String uuid) {
+        
+        User user = userService.getByUuId(uuid); 
+        user.setPassword(null); 
+        
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 }

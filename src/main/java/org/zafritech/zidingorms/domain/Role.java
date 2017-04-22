@@ -23,6 +23,8 @@ public class Role implements Serializable {
 
     private String roleName;
 
+    private String roleDisplayName;
+
     @ManyToMany(mappedBy = "userRoles")
     @JsonManagedReference
     private Set<User> users = new HashSet<User>();
@@ -32,6 +34,7 @@ public class Role implements Serializable {
         return "User Role{"
                 + "ID:" + getId()
                 + ", Role Name = '" + getRoleName() + '\''
+                + ", Role Display Name = '" + getRoleDisplayName() + '\''
                 + '}';
     }
 
@@ -44,51 +47,49 @@ public class Role implements Serializable {
         this.roleName = name;
     }
 
-    /**
-     * @return the Id
-     */
+    public Role(String name, String displayName) {
+
+        this.uuId = UUID.randomUUID().toString();
+        this.roleName = name;
+        this.roleDisplayName = displayName;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     public Long getId() {
         return Id;
     }
 
-    /**
-     * @return the uuId
-     */
     public String getUuId() {
         return uuId;
     }
 
-    /**
-     * @param uuId the uuId to set
-     */
     public void setUuId(String uuId) {
         this.uuId = uuId;
     }
 
-    /**
-     * @return the roleName
-     */
     public String getRoleName() {
         return roleName;
     }
 
-    /**
-     * @param roleName the roleName to set
-     */
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
 
-    /**
-     * @return the users
-     */
+    public String getRoleDisplayName() {
+        return roleDisplayName;
+    }
+
+    public void setRoleDisplayName(String roleDisplayName) {
+        this.roleDisplayName = roleDisplayName;
+    }
+
     public Set<User> getUsers() {
         return users;
     }
 
-    /**
-     * @param users the users to set
-     */
     public void setUsers(Set<User> users) {
         this.users = users;
     }

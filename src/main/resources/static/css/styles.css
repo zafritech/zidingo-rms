@@ -654,3 +654,8 @@ ul.alert-dropdown {
     
     color: #d73814;
 }
+
+.progress {
+    
+    height: 8px !important;
+}

@@ -455,6 +455,308 @@ function ToggleApplicationMenu() {
 }(jQuery));
 
 
+
+function BootboxAdminUserPwdReset(uuId, user) {
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/user/user-admin-password-reset.html',
+        success: function (data) {
+
+            bootbox.confirm({
+
+                message: data,
+                title: "Reset password",
+                size: 'small',
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Change",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+
+                    if (result) {
+
+                        var data = {};
+
+                        data['uuId'] = user;
+                        data['password'] = document.getElementById('newPassword').value;
+                        data['confirmPassword'] = document.getElementById('confirmNewPassword').value;
+                        
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/admin/password/reset",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function (data) {
+
+                                showToastr('success', 'Password for ' + user +' changed!');
+                            }
+                        });
+                    }
+                }
+            }); 
+        }
+    });
+}
+
+
+function BootboxAdminUserDetailsUpdate(uuId, user) {
+    
+    $.ajax({
+        
+        type: "GET",
+        url: '/modal/user/user-admin-details-update.html',
+        success: function (data) {
+            
+            var box = bootbox.confirm({
+
+                message: data,
+                title: "Update user details for " + user,
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Change",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    if (result) {
+                        
+                    }
+                }
+            });
+            
+            box.on("shown.bs.modal", function(e) {
+                
+                $.ajax({
+
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/countries/list",
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+
+                    var selectCountryOptions = '';
+
+                    BootboxAdminGetUserInfo(uuId);
+                    
+                    $.each(data, function (key, index) {
+
+                        selectCountryOptions = selectCountryOptions + '<option value="' + index.id + '">' + index.countryName+ '</option>';
+
+                    });
+                    
+                    $('#userCountry').empty();
+                    $('#userCountry').append(selectCountryOptions);
+                });
+            });
+        }
+    });
+    
+}
+
+
+function BootboxAdminGetUserInfo(uuId) {
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/user/byuuid/" + uuId,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        console.log(data);
+
+        if (data.firstName !== null) {
+            
+            $('#firstName').prop('value', data.firstName);
+        }
+
+        if (data.lastName !== null) {
+            
+            $('#lastName').prop('value', data.lastName);
+        }
+
+        $('#userEmail').prop('value', data.email);
+        $('#userLoginName').prop('value', data.userName);
+        
+        $('#userEmail').prop('disabled', true);
+        $('#userLoginName').prop('disabled', true);
+    });
+}
+
+
+function OnUserUpdateCountryChange(){
+    
+    var countryId = document.getElementById('userCountry').value;
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/states/list/" + countryId,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        console.log(data);
+
+        var selectStateOptions = '';
+
+        $.each(data, function (key, index) {
+
+            selectStateOptions = selectStateOptions + '<option value="' + index.id + '">' + index.stateName+ '</option>';
+
+        });
+
+        $('#userState').empty();
+        $('#userState').append(selectStateOptions);
+
+        OnUserUpdateStateChange();
+    });
+}
+
+
+function OnUserUpdateStateChange() {
+    
+    var stateId = document.getElementById('userState').value;
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/cities/list/" + stateId,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+       
+        console.log(data);
+          
+        var selectCityOptions = '';
+
+        $.each(data, function (key, index) {
+
+            selectCityOptions = selectCityOptions + '<option value="' + index.id + '">' + index.cityName+ '</option>';
+
+        });
+
+        $('#userCity').empty();
+        $('#userCity').append(selectCityOptions);
+        
+    });
+}
+
+
+function BootboxAdminUserRolesManage(uuId, user) {
+    
+    $.ajax({
+        
+        type: "GET",
+        url: '/modal/user/user-admin-roles-manage.html',
+        success: function (data) {
+            
+            bootbox.confirm({
+
+                message: data,
+                title: "Manage user roles",
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Change",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    if (result) {
+                        
+                    }
+                }
+            });
+        }
+    });
+    
+}
+
+
+function BootboxAdminUserDelete(uuId, user) {
+    
+    bootbox.confirm({
+                    
+        message: 'Do you really want to permanently delete the user <b>' + user + '</b>?',
+        title: "Delete user",
+        size: 'small',
+        buttons: {
+            cancel: {
+                label: "Cancel",
+                className: "btn-danger btn-fixed-width-100"
+            },
+            confirm: {
+                label: "Delete",
+                className: "btn-success btn-fixed-width-100"
+            }
+        },
+        callback: function (result) {
+
+            if (result) {
+                
+                /* To Do - Delete */
+            }
+        }
+    });
+}
+
+
+function BootboxAdminUserDisable(uuId, user) {
+    
+    bootbox.confirm({
+                    
+        message: 'Do you really want to disable the user <b>' + user + '</b>?',
+        title: "Disable user",
+        size: 'small',
+        buttons: {
+            cancel: {
+                label: "Cancel",
+                className: "btn-danger btn-fixed-width-100"
+            },
+            confirm: {
+                label: "Disable",
+                className: "btn-success btn-fixed-width-100"
+            }
+        },
+        callback: function (result) {
+
+            if (result) {
+                
+                /* To Do - Delete */
+            }
+        }
+    });
+}
+
+
 function itemCreateClassChange() {
 
     var itemClass = document.getElementById('createItemClass');

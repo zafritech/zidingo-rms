@@ -91,11 +91,11 @@ public class StarterCLR implements CommandLineRunner {
     @Transactional
     private void SeedRoles() {
 
-        roleRepository.save(new Role("ROLE_ADMIN"));
-        roleRepository.save(new Role("ROLE_MANAGER"));
-        roleRepository.save(new Role("ROLE_USER"));
-        roleRepository.save(new Role("ROLE_ACTUATOR"));
-        roleRepository.save(new Role("ROLE_GUEST"));
+        roleRepository.save(new Role("ROLE_ADMIN", "Administrator"));
+        roleRepository.save(new Role("ROLE_MANAGER", "Manager"));
+        roleRepository.save(new Role("ROLE_USER", "Application User"));
+        roleRepository.save(new Role("ROLE_ACTUATOR", "System Actuator"));
+        roleRepository.save(new Role("ROLE_GUEST", "Guest User"));
     }
 
     @Transactional

@@ -133,8 +133,8 @@ public class ArtifactServiceImpl implements ArtifactService {
             Workbook workbook = getWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
 
-            while(i <= worksheet.getLastRowNum()) {
-//            while ((i <= 101) && (i <= worksheet.getLastRowNum())) {
+//            while(i <= worksheet.getLastRowNum()) {
+            while ((i <= 501) && (i <= worksheet.getLastRowNum())) {
 
                 ItemDao itemDao = new ItemDao();
                 Item item = new Item();

@@ -8,80 +8,85 @@
         <title>User Profile - User</title>
     </head>
     <body>
+        
         <div layout:fragment="content">
 
-            <div class="col-lg-12">
-                <h1 class="page-header">
-                    My Profile: <small th:text="${user.email}">My Profile</small>
-                </h1>
-            </div>
-
-            <div id="content" class="row" style="margin: 40px 4px;">
-
-                <div class="col-md-4">
-
-                    <img src="/images/profile.png" class="img-rounded img-responsive" />
-
-
-                </div>
-                <div class="col-md-8">
-
-                    <div class="alert alert-info">
-                        <h2 style="margin-top: -5px;">My Bio</h2>
-                        <h4>Bootstrap user profile template </h4>
-                        <p>
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-                            3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. 
-                        </p>
+            <div class="row" style="margin-top: 50px;">
+                
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <span class="panel-title" th:text="'My Profile: ' + ${user.firstName}" style="font-size: 22px;font-weight: bold;">User Name</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3 " align="center">
+                                    <img src="/images/profile.png" class="img-rounded img-responsive" />
+                                </div>
+                                <div class=" col-md-9 col-lg-9 ">
+                                    <table class="table table-user-information">
+                                        <tbody>
+                                            <tr th:if="${user.lastName != null}">
+                                                <td><strong>Full name:</strong></td>
+                                                <td th:text="${user.firstName} + ' ' + ${user.lastName}">Full Name</td>
+                                            </tr>
+                                            <tr th:if="${user.lastName == null}">
+                                                <td><strong>Full name:</strong></td>
+                                                <td th:text="${user.firstName}">Full Name</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Projects:</strong></td>
+                                                <td>Qatar Foundation PMS</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Role/Discipline:</strong></td>
+                                                <td>Systems Engineer</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Location:</strong></td>
+                                                <td>PMS Office, Education City, Doha, Qatar</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Email:</strong></td>
+                                                <td th:text="${user.email}">email@example.com</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Login ID:</strong></td>
+                                                <td th:text="${user.userName}">email@example.com</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Telephone:</strong></td>
+                                                <td>+974 3332 7500</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Mobile:</strong></td>
+                                                <td>+974 3332 7500</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <a href="javascript:void(0);" data-original-title="Message to Admin" data-toggle="tooltip" ype="button" class="btn btn-sm btn-success">
+                                <i class="glyphicon glyphicon-envelope"></i>
+                            </a>
+                            <span class="pull-right">
+                                <a href="javascript:void(0);" title="Update details" type="button" class="btn btn-sm btn-primary tip-left">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <a href="javascript:void(0);" title="Change password" type="button" class="btn btn-sm btn-warning tip-left">
+                                    <i class="fa fa-key"></i>
+                                </a>
+                                <a href="/logout" title="Logout" type="button" class="btn btn-sm btn-danger">
+                                    <i class="glyphicon glyphicon-off"></i>
+                                </a>
+                            </span>
+                        </div>
                     </div>
-
-                    <div >
-                        <a href="#" class="btn btn-social btn-facebook">
-                            <i class="fa fa-facebook"></i>&nbsp; Facebook
-                        </a>
-                        <a href="#" class="btn btn-social btn-google">
-                            <i class="fa fa-google-plus"></i>&nbsp; Google
-                        </a>
-                        <a href="#" class="btn btn-social btn-twitter">
-                            <i class="fa fa-twitter"></i>&nbsp; Twitter 
-                        </a>
-                        <a href="#" class="btn btn-social btn-linkedin">
-                            <i class="fa fa-linkedin"></i>&nbsp; Linkedin 
-                        </a>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div id="content" class="row" style="margin: 40px 4px;">
-
-                <div class="col-md-4">
-
-                    <h3 style="margin-bottom: 20px;">Update Personal Details</h3>
-                    <label>Email</label>
-                    <input type="text" class="form-control" th:value="${user.email}" disabled="true" />
-                    <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" />
-                    <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" />
-                    <a href="#" class="btn btn-success" style="margin-top: 15px;">Update Details</a>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <h3 style="margin-bottom: 20px;">Change Password</h3>
-                    <label>Enter Old Password</label>
-                    <input type="password" class="form-control" placeholder="Current password" />
-                    <label>Enter New Password</label>
-                    <input type="password" class="form-control" placeholder="New password" />
-                    <label>Confirm New Password</label>
-                    <input type="password" class="form-control" placeholder="Confirm new password" />
-                    <a href="#" class="btn btn-warning" style="margin-top: 15px;">Change Password</a>
                 </div>
             </div>
-
+            
         </div>
     </body>
 </html>
