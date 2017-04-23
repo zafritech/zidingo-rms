@@ -8,7 +8,9 @@ package org.zafritech.zidingorms.services;
 import java.util.List;
 import org.zafritech.zidingorms.domain.Task;
 import org.springframework.stereotype.Service;
+import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.TaskDao;
+import org.zafritech.zidingorms.domain.Claim;
 import org.zafritech.zidingorms.domain.User;
 
 /**
@@ -25,4 +27,6 @@ public interface GeneralService {
     Task createTask(TaskDao taskDao);
     
     List<Task>  getActiveTasks(User user);
+    
+    Claim createClaim(ClaimDao claimDao);
 }

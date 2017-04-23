@@ -5,6 +5,7 @@
  */
 package org.zafritech.zidingorms.controllers.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.zafritech.zidingorms.commons.enums.ArtifactStatus;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.ArtifactType;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.Role;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
 import org.zafritech.zidingorms.services.ItemService;
@@ -66,5 +68,15 @@ public class ArtifactRestController {
         List<Item> requirements = itemService.findRequirements(id);
         
         return new ResponseEntity<List<Item>>(requirements, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/artifacts/list", method = RequestMethod.GET)
+    public ResponseEntity<List<Artifact>> getArtifactsList() {
+
+        Iterable<Artifact> artifactsIter = artifactRepository.findAll();
+        List<Artifact> artifacts = new ArrayList<>();
+        artifactsIter.forEach(artifacts::add);
+        
+       return new ResponseEntity<List<Artifact>>(artifacts, HttpStatus.OK);
     }
 }

@@ -13,8 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.zafritech.zidingorms.commons.enums.ClaimType;
+import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.TaskDao;
+import org.zafritech.zidingorms.domain.Claim;
 import org.zafritech.zidingorms.domain.User;
+import org.zafritech.zidingorms.repositories.ClaimRepository;
 import org.zafritech.zidingorms.repositories.TaskRepository;
 import org.zafritech.zidingorms.repositories.UserRepository;
 import org.zafritech.zidingorms.services.GeneralService;
@@ -31,6 +35,9 @@ public class GeneralServiceImpl implements GeneralService {
 
     @Autowired
     private TaskRepository taskRepository;
+    
+    @Autowired
+    private ClaimRepository claimRepository;
     
     @Override
     public User loggedInUser() {
@@ -68,5 +75,15 @@ public class GeneralServiceImpl implements GeneralService {
         List<Task> tasks = taskRepository.findByAssignedToAndTaskStatus(user, "OPEN");
                 
         return tasks;
+    }
+    
+    @Override
+    public Claim createClaim(ClaimDao claimDao) {
+        
+        User user = userRepository.getByUuId(claimDao.getUserUuId());
+        
+        Claim claim = new Claim(user, ClaimType.valueOf(claimDao.getUserClaimType()), claimDao.getUserClaimValue());
+        
+        return claimRepository.save(claim);
     }
 }

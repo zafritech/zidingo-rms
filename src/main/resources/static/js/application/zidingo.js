@@ -135,8 +135,6 @@ function UpdateUserTasksAlerts() {
         dataType: "json",
         success: function (data) {
             
-            console.log(data);
-            
             if (data.length > 0) {
                 
                 var taskCount = (data.length > 10) ? '10+' : data.length;
@@ -401,60 +399,6 @@ function ToggleApplicationMenu() {
     }
 }
 
-// Manage user roles script
-(function () {
-
-    $('#btnRoleToRight').click(function (e) {
-
-        var selectedOpts = $('#availableRolesList option:selected');
-        if (selectedOpts.length === 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#userRolesList').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-
-    $('#btnRolesAllToRight').click(function (e) {
-        var selectedOpts = $('#availableRolesList option');
-        if (selectedOpts.length === 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#userRolesList').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-
-    $('#btnRoleToLeft').click(function (e) {
-        var selectedOpts = $('#userRolesList option:selected');
-        if (selectedOpts.length === 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#availableRolesList').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-
-    $('#btnRolesAllToLeft').click(function (e) {
-        var selectedOpts = $('#userRolesList option');
-        if (selectedOpts.length === 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#availableRolesList').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-}(jQuery));
-
-
 
 function BootboxAdminUserPwdReset(uuId, user) {
     
@@ -593,12 +537,6 @@ function BootboxAdminGetUserInfo(uuId) {
             
             $('#lastName').prop('value', data.lastName);
         }
-
-        $('#userEmail').prop('value', data.email);
-        $('#userLoginName').prop('value', data.userName);
-        
-        $('#userEmail').prop('disabled', true);
-        $('#userLoginName').prop('disabled', true);
     });
 }
 
@@ -674,10 +612,10 @@ function BootboxAdminUserRolesManage(uuId, user) {
         url: '/modal/user/user-admin-roles-manage.html',
         success: function (data) {
             
-            bootbox.confirm({
+            var box = bootbox.confirm({
 
                 message: data,
-                title: "Manage user roles",
+                title: "Roles for " + user,
                 buttons: {
                     cancel: {
                         label: "Cancel",
@@ -692,12 +630,293 @@ function BootboxAdminUserRolesManage(uuId, user) {
                     
                     if (result) {
                         
+                        var rolesListPara = '';
+                        var rolesCount = $('#userRolesList option').length;
+                        
+                        var roles = [];
+                        
+                        for (i = 0; i < rolesCount; i++) {
+                            
+                            var role = {};
+                            role['roleName'] = $('#userRolesList option').eq(i).val();
+                            role['roleDisplayName'] = $('#userRolesList option').eq(i).html();
+                            roles.push(role);
+                            
+                            rolesListPara = rolesListPara + '<p style="line-height: 90%">' + $('#userRolesList option').eq(i).html() + '</p>';
+                        }
+                        
+                        $.ajax({
+
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/roles/add/" + uuId,
+                            data: JSON.stringify(roles),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function (data) {
+                                
+                                console.log(data);
+                                
+                                
+                                var roleListElement  =  '<div id="userRolesTableCell" style="padding-top: 5px;">' +
+                                                        '<span th:each="role : ${profile.userRoles}">' +
+                                                        rolesListPara +
+                                                        '</span>' +
+                                                        '</div>';
+                                                
+                                
+                                                
+                                $('#userRolesTableCell').replaceWith(roleListElement);
+                                
+                                showToastr('success', 'Roles for ' + user + '] updated!');
+                            }
+                        });
                     }
                 }
             });
+            
+            box.on("shown.bs.modal", function(e) { 
+                
+                $.ajax({
+
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/user/roles/all",
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+            
+                    var selectCityOptions = '';
+                    
+                    $.each(data, function (key, index) {
+
+                        selectCityOptions = selectCityOptions + '<option value="' + index.roleName + '">' + index.roleDisplayName + '</option>';
+
+                    });
+                    
+                    $('#availableRolesList').append(selectCityOptions);
+                    
+                    $.ajax({
+
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/api/user/roles/" + uuId,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) {
+
+                        var selectCityOptions = '';
+
+                        $.each(data, function (key, index) {
+
+                            selectCityOptions = selectCityOptions + '<option value="' + index.roleName + '">' + index.roleDisplayName + '</option>';
+
+                            // Remove option from main list
+                            $('#availableRolesList option[value="' + index.roleName + '"]').remove();
+                        });
+
+                        $('#userRolesList').append(selectCityOptions);
+
+                    });
+                });
+            });
+            
+            box.modal('show');
         }
     });
+}
+
+
+function BootboxAdminUserClaimsManage(uuId, user) {
     
+    $.ajax({
+        
+        type: "GET",
+        url: '/modal/user/user-admin-claims-manage.html',
+        success: function (data) {
+            
+            var box = bootbox.confirm({
+
+                message: data,
+                title: "User claims for " + user,
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Update",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    var data = {};
+                    
+                    data['userUuId'] = document.getElementById('userUuId').value;;
+                    data['userClaimType'] = document.getElementById('userClaimType').value;;
+                    data['userClaimValue'] = document.getElementById('userClaimTarget').value;
+                    
+                    console.log(data);
+                    
+                    $.ajax({
+
+                        type: "POST",
+                        contentType: "application/json",
+                        url: "/api/claims/new",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        timeout: 60000,
+                        success: function (data) {
+
+                        }
+                    });
+                }
+            });
+            
+            box.on("shown.bs.modal", function(e) {
+                
+                $.ajax({
+                    
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/claims/claimtypes",
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+                    
+                    $(e.currentTarget).find('input[name="userUuId"]').prop('value', uuId);
+            
+                    var selectClaimTypeOptions = '';
+                    
+                    $.each(data, function (key, index) {
+                        
+                        var claimsArray = index.split('_');
+                        var claimsArray0 = claimsArray[0].charAt(0) + claimsArray[0].slice(1).toLowerCase();
+                        var claimsArray1 = claimsArray[1].charAt(0) + claimsArray[1].slice(1).toLowerCase();
+                        
+                        selectClaimTypeOptions = selectClaimTypeOptions + '<option value="' + index + '">' + claimsArray0 + ' ' + claimsArray1 + '</option>';
+                    });
+
+                    $('#userClaimType').empty();
+                    $('#userClaimType').append(selectClaimTypeOptions);
+                    
+                    OnUserClaimTypeChange();
+                });
+            });
+            
+            box.modal('show');
+        }
+    });
+}
+
+
+function OnUserClaimTypeChange() {
+    
+    var claimType = $('#userClaimType').val();
+    var claimsArray = claimType.split('_');
+    var targetType = claimsArray[0];
+    
+    if (targetType === "PROJECT") {
+        
+        $.ajax({
+                    
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/projects/list",
+            dataType: "json",
+            cache: false
+        })
+        .done(function (data) {
+            
+            var selectProjectsOptions = '';
+                    
+            $.each(data, function (key, index) {
+
+                selectProjectsOptions = selectProjectsOptions + '<option value="' + index.id + '">' + index.projectShortName + '</option>';
+            });
+
+            $('#userClaimTarget').empty();
+            $('#userClaimTarget').append(selectProjectsOptions);
+            
+        });
+        
+    } else if (targetType === "DOCUMENT") {
+        
+        $.ajax({
+                    
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/artifacts/list",
+            dataType: "json",
+            cache: false
+        })
+        .done(function (data) {
+            
+            var selectDocumentOptions = '';
+                    
+            $.each(data, function (key, index) {
+
+                selectDocumentOptions = selectDocumentOptions + '<option value="' + index.id + '">' + index.artifactLongName + '</option>';
+            });
+
+            $('#userClaimTarget').empty();
+            $('#userClaimTarget').append(selectDocumentOptions);
+            
+        });
+    }
+}
+
+
+// Manage user roles script
+function AddRemoveRoles(btn) {
+
+    if (btn === 'RoleToRight') {
+
+        var selectedOpts = $('#availableRolesList option:selected');
+        if (selectedOpts.length === 0) {
+            alert("Nothing to move.");
+        }
+
+        $('#userRolesList').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+    }
+
+    if (btn === 'RolesAllToRight') {
+        
+        var selectedOpts = $('#availableRolesList option');
+        if (selectedOpts.length === 0) {
+            alert("Nothing to move.");
+        }
+
+        $('#userRolesList').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+    }
+
+    if (btn === 'RoleToLeft') {
+        
+        var selectedOpts = $('#userRolesList option:selected');
+        if (selectedOpts.length === 0) {
+            alert("Nothing to move.");
+        }
+
+        $('#availableRolesList').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+    }
+
+    if (btn === 'RolesAllToLeft') {
+        
+        var selectedOpts = $('#userRolesList option');
+        if (selectedOpts.length === 0) {
+            alert("Nothing to move.");
+        }
+
+        $('#availableRolesList').append($(selectedOpts).clone());
+        $(selectedOpts).remove();
+    }
 }
 
 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS Home</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+
+    <body>
+
+        <div layout:fragment="content">
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-md-8 col-md-offset-2" style="padding-left: 30px; padding-right: 20px;">
+                    <span>
+                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserClaimsManage(\'' + ${user.uuId} + '\', \'' + ${user.firstName} + '\');'" class="btn btn-sm btn-success pull-left" style="margin-left: -15px;">
+                            <i class="fa fa-fw fa-plus"></i> New Claim
+                        </a>
+                    </span>
+                    <span class="pull-right"><a th:href="@{'/admin/users/' + ${user.uuId}}">Return to list</a></span>
+                </div>
+            </div>
+
+            <div th:if="${claims.isEmpty()}" class="row">
+                <div class="col-lg-6 col-lg-offset-2" style="margin-top: 50px;">
+                    <div class="text-center" style="color: #c0c0c0;">
+                        <i class="fa fa-legal fa-5x"></i>
+                    </div>
+                    <div class="text-center" style="color: #c0c0c0;">
+                        <h3>No user claims found.</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${!claims.isEmpty()}" class="row">
+                
+                <div class="col-md-8 col-md-offset-2" style="margin-top: 20px;">
+                    <div class="panel panel-info">
+                        
+                        <div class="panel-heading">
+                            <span class="panel-title" th:text="${user.firstName} + '\'s Claims'" style="font-size: 22px;font-weight: bold;">User Name</span>
+                            
+                        </div>
+                        
+                        <div class="panel-body">
+                            <table class="table table-user-information">
+                                <tbody>
+                                    <tr th:each="claim : ${claims}">
+                                        <td th:text="${claim.userClaimType}" style="width: 25%">Claim type</td>
+                                        <td th:text="${claim.userClaimStringValue}">Claim value</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="panel-footer">
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+
+    </body>
+
+    <th:block layout:fragment="scripts"></th:block>
+
+</html>

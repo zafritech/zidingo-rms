@@ -21,7 +21,7 @@
 
             <div class="col-lg-12" style="margin-bottom: 20px;">
                 <a href="/admin/users/new" class="btn btn-sm btn-success pull-left" style="margin-left: -15px;">
-                    <i class="fa fa-fw fa-plus"></i> Add User
+                    <i class="fa fa-fw fa-plus"></i> Add New
                 </a>
                 <form class="form-inline pull-right" style="margin-right: -15px;">
                     <div class="form-group">
@@ -37,7 +37,7 @@
                         <th style="text-align: center; width: 60px;">Id</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th width="140"></th>
+                        <th style="text-align: center; width: 60px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,34 +46,9 @@
                         <td th:text="${user.firstName}">Name ...</td>
                         <td th:text="${user.email}">Email ...</td>
                         <td style="text-align: center;">
-                            <div class="btn-group">
-                                <li class="btn btn-primary btn-sm"><i class="fa fa-wrench fa-fw"></i> Actions</li>
-                                <li class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown">
-                                    <span class="fa fa-caret-down" title="User actions menu"></span>
-                                </li>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a th:href="@{/admin/users/} + ${user.uuId}" style="padding-left:3px;">
-                                            <span class="fa fa-pencil fa-fw text-primary"></span> Edit
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a th:href="@{/admin/users/delete/} + ${user.uuId}" style="padding-left:3px;">
-                                            <span class="fa fa-trash fa-fw text-danger"></span> Delete
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a th:href="@{/admin/users/lockout/} + ${user.uuId}" style="padding-left:3px;">
-                                            <span class="fa fa-ban fa-fw text-danger"></span> Lock out
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a th:href="@{/admin/users/enable/} + ${user.uuId}" style="padding-left:3px;">
-                                            <span class="fa fa-check-square fa-fw text-success"></span> Enable
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <a th:href="@{/admin/users/} + ${user.uuId}">
+                                <i class="glyphicon glyphicon-user"></i>
+                            </a>
                         </td>
                     </tr>
                 </tbody>

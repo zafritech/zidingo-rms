@@ -10,7 +10,13 @@
     <body>
         <div layout:fragment="content">
             
-            <div class="row" style="margin-top: 50px;">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-md-8 col-md-offset-2">
+                    <span class="pull-right"><a href="/admin/users">Return to list</a></span>
+                </div>
+            </div>
+            
+            <div class="row" style="margin-top: 10px;">
                 
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel panel-info">
@@ -54,9 +60,17 @@
                                                 <td th:text="${profile.userName}">email@example.com</td>
                                             </tr>
                                             <tr>
+                                                <td><strong>Telephone:</strong></td>
+                                                <td>+974 3332 7500</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Mobile:</strong></td>
+                                                <td>+974 3332 7500</td>
+                                            </tr>
+                                            <tr>
                                                 <td><strong>Roles:</strong></td>
                                                 <td>
-                                                    <div style="padding-top: 5px;">
+                                                    <div id="userRolesTableCell" style="padding-top: 5px;">
                                                         <span th:each="role : ${profile.userRoles}">
                                                             <p th:text="${role.roleDisplayName}" style="line-height: 90%">Role</p>
                                                         </span>
@@ -64,12 +78,14 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Telephone:</strong></td>
-                                                <td>+974 3332 7500</td>
-                                            </tr>
-                                            <tr>
-                                                <td><strong>Mobile:</strong></td>
-                                                <td>+974 3332 7500</td>
+                                                <td><strong>Claims:</strong></td>
+                                                <td>
+                                                    <div id="userClaimsTableCell" style="padding-top: 5px;">
+                                                        <span>
+                                                            <p style="line-height: 90%">13 claims</p>
+                                                        </span>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -88,7 +104,10 @@
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserRolesManage(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
                                     <i class="fa fa-users"></i>
                                 </a>
-                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserRolesManage(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
+                                <a th:href="@{'/admin/users/claims/' + ${profile.uuId}}"  data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-legal"></i>
+                                </a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserClaimsManage(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
                                     <i class="fa fa-legal"></i>
                                 </a>
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserPwdReset(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning">

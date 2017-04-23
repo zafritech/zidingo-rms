@@ -47,4 +47,12 @@ public class ProjectRestController {
 
         return tree;
     }
+    
+    @RequestMapping(value = "/api/projects/list", method = RequestMethod.GET)
+    public List<Project> getProjectsList() {
+
+        List<Project> projects = projectService.listProjects();
+
+        return projects;
+    }
 }

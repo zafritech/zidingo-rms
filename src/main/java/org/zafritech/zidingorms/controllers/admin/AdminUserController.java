@@ -1,5 +1,7 @@
 package org.zafritech.zidingorms.controllers.admin;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.UserDao;
+import org.zafritech.zidingorms.domain.Artifact;
+import org.zafritech.zidingorms.domain.Claim;
+import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.domain.User;
+import org.zafritech.zidingorms.repositories.ArtifactRepository;
+import org.zafritech.zidingorms.repositories.ClaimRepository;
+import org.zafritech.zidingorms.repositories.ProjectRepository;
 import org.zafritech.zidingorms.repositories.RoleRepository;
 import org.zafritech.zidingorms.services.UserService;
 
@@ -25,6 +34,15 @@ public class AdminUserController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private ClaimRepository claimRepository;
+
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ArtifactRepository artifactRepository;
+    
     @Autowired
     public void setUserService(UserService userService) {
 
@@ -46,6 +64,43 @@ public class AdminUserController {
         model.addAttribute("rolesList", roleRepository.findAll());
 
         return "admin/users/profile";
+    }
+
+    @RequestMapping("/admin/users/claims/{uuid}")
+    public String getUserClaims(@PathVariable String uuid, Model model) {
+
+        User user = userService.getByUuId(uuid);
+        
+        List<Claim> userClaims = claimRepository.findByUser(user);
+        
+        List<ClaimDao> claims = new ArrayList<>();
+        
+        for (Claim userClaim : userClaims) {
+            
+            ClaimDao dao = new ClaimDao();
+            dao.setUserClaimType(userClaim.getClaimType().name());
+            dao.setUserClaimValue(userClaim.getClaimValue());
+            
+            String str = userClaim.getClaimType().name();
+            
+            if (str.substring(0, str.indexOf("_")).equals("PROJECT")) {
+                
+                Project proj = projectRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                dao.setUserClaimStringValue(proj.getProjectShortName());
+                
+            } else if (str.substring(0, str.indexOf("_")).equals("DOCUMENT")) {
+                
+                Artifact doc = artifactRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                dao.setUserClaimStringValue(doc.getArtifactName());
+            }
+            
+            claims.add(dao);
+        }
+        
+        model.addAttribute("user", userService.getByUuId(uuid));
+        model.addAttribute("claims", claims); 
+
+        return "admin/users/claims";
     }
 
     @RequestMapping("/admin/users/edit/{id}")
