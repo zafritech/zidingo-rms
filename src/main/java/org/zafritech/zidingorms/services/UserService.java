@@ -34,4 +34,8 @@ public interface UserService {
     boolean passwordAndConfirmationMatch(UserDao user);
 
     boolean userExists(String email);
+    
+    boolean passwordMatches(String rawPassword, String encodedPassword);
+    
+    User changePasswordTo(User user, String password);
 }

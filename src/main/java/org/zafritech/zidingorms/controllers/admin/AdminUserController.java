@@ -78,6 +78,7 @@ public class AdminUserController {
         for (Claim userClaim : userClaims) {
             
             ClaimDao dao = new ClaimDao();
+            dao.setClaimId(userClaim.getId()); 
             dao.setUserClaimType(userClaim.getClaimType().name());
             dao.setUserClaimValue(userClaim.getClaimValue());
             

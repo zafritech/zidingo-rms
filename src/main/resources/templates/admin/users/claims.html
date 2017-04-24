@@ -21,7 +21,7 @@
                             <i class="fa fa-fw fa-plus"></i> New Claim
                         </a>
                     </span>
-                    <span class="pull-right"><a th:href="@{'/admin/users/' + ${user.uuId}}">Return to list</a></span>
+                    <span class="pull-right"><a th:href="@{'/admin/users/' + ${user.uuId}}">Return to profile</a></span>
                 </div>
             </div>
 
@@ -49,9 +49,14 @@
                         <div class="panel-body">
                             <table class="table table-user-information">
                                 <tbody>
-                                    <tr th:each="claim : ${claims}">
+                                    <tr th:each="claim : ${claims}" th:attr="id='claim-id-' + ${claim.claimId}">
                                         <td th:text="${claim.userClaimType}" style="width: 25%">Claim type</td>
                                         <td th:text="${claim.userClaimStringValue}">Claim value</td>
+                                        <td style="width: 40px;">
+                                            <a href="javascript:void(0);" th:onclick="'javascript:AdminUserClaimDelete(\'' + ${claim.claimId} + '\');'" title="Delete" type="button" class="btn btn-sm btn-danger">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.dao.UserDao;
 import org.zafritech.zidingorms.dao.converter.DaoToUserConverter;
@@ -141,5 +143,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean passwordMatches(String rawPassword, String encodedPassword) {
+
+        return new BCryptPasswordEncoder().matches(rawPassword, rawPassword); 
+    }
+
+    @Override
+    public User changePasswordTo(User user, String password) {
+
+        user.setPassword(new BCryptPasswordEncoder().encode(password)); 
+        
+        return user;
     }
 }

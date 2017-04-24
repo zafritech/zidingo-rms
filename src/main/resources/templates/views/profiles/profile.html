@@ -72,13 +72,13 @@
                                 <i class="glyphicon glyphicon-envelope"></i>
                             </a>
                             <span class="pull-right">
-                                <a href="javascript:void(0);" title="Update details" type="button" class="btn btn-sm btn-primary tip-left">
-                                    <i class="glyphicon glyphicon-edit"></i>
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserDetailsUpdate(\'' + ${user.uuId} + '\', \'' + ${user.firstName} + '\');'" title="Update details" type="button" class="btn btn-sm btn-primary tip-left">
+                                    <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
-                                <a href="javascript:void(0);" title="Change password" type="button" class="btn btn-sm btn-warning tip-left">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxUserChangePassword(\'' + ${user.uuId} + '\');'" title="Change password" type="button" class="btn btn-sm btn-warning tip-left">
                                     <i class="fa fa-key"></i>
                                 </a>
-                                <a href="/logout" title="Logout" type="button" class="btn btn-sm btn-danger">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxUserLogout();'" title="Logout" type="button" class="btn btn-sm btn-danger">
                                     <i class="glyphicon glyphicon-off"></i>
                                 </a>
                             </span>

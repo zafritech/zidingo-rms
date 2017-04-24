@@ -470,7 +470,7 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                         className: "btn-danger btn-fixed-width-100"
                     },
                     confirm: {
-                        label: "Change",
+                        label: "Update",
                         className: "btn-success btn-fixed-width-100"
                     }
                 },
@@ -478,6 +478,33 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                     
                     if (result) {
                         
+                        var data = {};
+                        
+                        data['uuid'] = uuId;
+                        data['firstName'] = document.getElementById('firstName').value;
+                        data['lastName'] = document.getElementById('lastName').value;
+                        data['phoneNumber'] = document.getElementById('userPhoneNumber').value;
+                        data['mobileNumber'] = document.getElementById('userMobileNumber').value;
+                        data['address'] = document.getElementById('userAddres').value;
+                        data['country'] = $('#userCountry option:selected').html();
+                        data['state'] = $('#userState option:selected').html();
+                        data['city'] = $('#userCity option:selected').html();
+                        data['postCode'] = '';
+                        
+                        console.log(data);
+                        
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/user/update/" + uuId,
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function () {
+
+                                showToastr('success', 'Profile for ' + user +' updated!');
+                            }
+                        });
                     }
                 }
             });
@@ -537,6 +564,70 @@ function BootboxAdminGetUserInfo(uuId) {
             
             $('#lastName').prop('value', data.lastName);
         }
+        
+        if (data.phoneNumber !== null) {
+            
+            $('#userPhoneNumber').prop('value', data.phoneNumber);
+        }
+
+        if (data.mobileNumber !== null) {
+            
+            $('#userMobileNumber').prop('value', data.mobileNumber);
+        }
+
+        if (data.address !== null) {
+            
+            $('#userAddres').prop('value', data.address);
+        }
+
+        if (data.country !== null) {
+            
+            var selectedCountry = '';
+            
+            $("#userCountry > option").each(function() {
+                
+                if (this.text === data.country) {
+                    
+                    selectedCountry = this.value;
+                }
+            });
+                                
+            $('#userCountry').prop('value', selectedCountry);
+        }
+        
+        if (data.state !== null) {
+            
+            OnUserUpdateCountryChange();
+            
+            var selectedState = '';
+            
+            $("#userState > option").each(function() {
+                
+                if (this.text === data.state) {
+                    
+                    selectedState = this.value;
+                }
+            });
+                                
+            $('#userState').prop('value', selectedState);
+        }
+        
+        if (data.city !== null) {
+            
+            OnUserUpdateStateChange();
+            
+            var selectedCity = '';
+            
+            $("#userCity > option").each(function() {
+                
+                if (this.text === data.city) {
+                    
+                    selectedCity = this.value;
+                }
+            });
+                                
+            $('#userCity').prop('value', selectedCity);
+        }
     });
 }
 
@@ -555,8 +646,6 @@ function OnUserUpdateCountryChange(){
     })
     .done(function (data) {
         
-        console.log(data);
-
         var selectStateOptions = '';
 
         $.each(data, function (key, index) {
@@ -587,8 +676,6 @@ function OnUserUpdateStateChange() {
     })
     .done(function (data) {
        
-        console.log(data);
-          
         var selectCityOptions = '';
 
         $.each(data, function (key, index) {
@@ -654,10 +741,7 @@ function BootboxAdminUserRolesManage(uuId, user) {
                             dataType: "json",
                             timeout: 60000,
                             success: function (data) {
-                                
-                                console.log(data);
-                                
-                                
+                              
                                 var roleListElement  =  '<div id="userRolesTableCell" style="padding-top: 5px;">' +
                                                         '<span th:each="role : ${profile.userRoles}">' +
                                                         rolesListPara +
@@ -814,6 +898,46 @@ function BootboxAdminUserClaimsManage(uuId, user) {
 }
 
 
+
+function AdminUserClaimDelete(id) {
+    
+    bootbox.confirm({
+                    
+        message: 'Do you really want to permanently delete the user claim?',
+        title: "Delete user claim",
+        size: 'small',
+        buttons: {
+            cancel: {
+                label: "Cancel",
+                className: "btn-danger btn-fixed-width-100"
+            },
+            confirm: {
+                label: "Delete",
+                className: "btn-success btn-fixed-width-100"
+            }
+        },
+        callback: function (result) {
+
+            if (result) {
+                
+                $.ajax({
+                    
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/claims/delete/" + id,
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function () {
+
+                    $('#claim-id-' + id).hide();
+                });
+            }
+        }
+    });
+}
+
+
 function OnUserClaimTypeChange() {
     
     var claimType = $('#userClaimType').val();
@@ -941,19 +1065,83 @@ function BootboxAdminUserDelete(uuId, user) {
 
             if (result) {
                 
-                /* To Do - Delete */
+                $.ajax({
+                    
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/users/delete/" + uuId,
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function () {
+
+                    location.replace("/admin/users");
+                });
             }
         }
     });
 }
 
 
-function BootboxAdminUserDisable(uuId, user) {
+function BootboxUserChangePassword(uuId) {
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/user/user-password-change.html',
+        success: function (data) {
+
+            bootbox.confirm({
+
+                message: data,
+                title: "Change password",
+                size: 'small',
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Change",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+
+                    if (result) {
+
+                        var data = {};
+
+                        data['uuId'] = uuId;
+                        data['currentPassword'] = document.getElementById('oldPassword').value;
+                        data['newPassword'] = document.getElementById('newPassword').value;
+                        data['newPasswordConfirm'] = document.getElementById('confirmNewPassword').value;
+                        
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/user/password/change/" + uuId,
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function (data) {
+
+                                showToastr('success', 'Password for ' + uuId +' changed!');
+                            }
+                        });
+                    }
+                }
+            }); 
+        }
+    });
+}
+
+
+function BootboxUserLogout() { 
     
     bootbox.confirm({
                     
-        message: 'Do you really want to disable the user <b>' + user + '</b>?',
-        title: "Disable user",
+        message: 'Do you want to Logout?',
+        title: "Logout",
         size: 'small',
         buttons: {
             cancel: {
@@ -961,15 +1149,15 @@ function BootboxAdminUserDisable(uuId, user) {
                 className: "btn-danger btn-fixed-width-100"
             },
             confirm: {
-                label: "Disable",
+                label: "Logout",
                 className: "btn-success btn-fixed-width-100"
             }
         },
         callback: function (result) {
-
+            
             if (result) {
                 
-                /* To Do - Delete */
+                location.replace('/logout');
             }
         }
     });
@@ -1668,8 +1856,6 @@ function BootboxDeleteItem(id) {
             url: '/modal/item/item-delete-form.html',
             success: function (data) {
 
-                console.log(itemToDelete);
-                
                 var box = bootbox.confirm({
                     
                     message: data,
@@ -2254,8 +2440,6 @@ function BootboxDisplayLinks(id) {
                         cache: false
                     })
                     .done(function (data) {
-                        
-                        console.log(data);
                 
                         var links = '';
                         var linkIdentClass = 'link-display-ident';
@@ -2659,8 +2843,6 @@ function CreateUserTask() {
                             data['taskName'] = $("#taskName").val();
                             data['taskDetails'] = $("#taskDetails").val();
                             
-                            console.log(data);
-                            
                             $.ajax({
                                 
                                 type: "POST",
@@ -2756,8 +2938,6 @@ function SendMessage() {
                 data['subject'] = document.getElementById('messageSubject').value;
                 data['message'] = document.getElementById('messageBody').value;
 
-                console.log(data);
-
                 $.ajax({
                                 
                     type: "POST",
@@ -2811,8 +2991,6 @@ function SendNotification() {
                 data['name'] = "General Alert";
                 data['priority'] = "NORMAL";
                 data['message'] = document.getElementById('message').value;
-
-                console.log(data);
                 
                 $.ajax({
                                 

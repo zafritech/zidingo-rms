@@ -27,6 +27,7 @@ import org.zafritech.zidingorms.commons.enums.ClaimType;
 import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.RoleDao;
 import org.zafritech.zidingorms.dao.TaskDao;
+import org.zafritech.zidingorms.dao.UserEditDao;
 import org.zafritech.zidingorms.domain.City;
 import org.zafritech.zidingorms.domain.Claim;
 import org.zafritech.zidingorms.domain.Country;
@@ -34,6 +35,7 @@ import org.zafritech.zidingorms.domain.Role;
 import org.zafritech.zidingorms.domain.State;
 import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.CityRepository;
+import org.zafritech.zidingorms.repositories.ClaimRepository;
 import org.zafritech.zidingorms.repositories.CountryRepository;
 import org.zafritech.zidingorms.repositories.RoleRepository;
 import org.zafritech.zidingorms.repositories.StateRepository;
@@ -68,6 +70,9 @@ public class ApplicationRestController {
     
     @Autowired
     private CityRepository cityRepository;
+    
+    @Autowired
+    private ClaimRepository claimRepository;
     
     @RequestMapping("/api/login/check")
     public ResponseEntity<String> checkUserLogin(Model model) {
@@ -138,6 +143,37 @@ public class ApplicationRestController {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/api/user/update/{uuid}", method = POST)
+    public ResponseEntity<User> getUserUpdate(@RequestBody UserEditDao userDao, 
+                                              @PathVariable(value = "uuid") String uuid) {
+        
+        User user = userService.getByUuId(uuid); 
+        
+        if (userDao.getFirstName() != null && !userDao.getFirstName().isEmpty()) { user.setFirstName(userDao.getFirstName()); }
+        if (userDao.getLastName() != null && !userDao.getLastName().isEmpty()) { user.setLastName(userDao.getLastName()); }
+        if (userDao.getPhoneNumber() != null && !userDao.getPhoneNumber().isEmpty()) { user.setPhoneNumber(userDao.getPhoneNumber()); }
+        if (userDao.getMobileNumber() != null && !userDao.getMobileNumber().isEmpty()) { user.setMobileNumber(userDao.getMobileNumber()); }
+        if (userDao.getAddress() != null && !userDao.getAddress().isEmpty()) { user.setAddress(userDao.getAddress()); }
+        if (userDao.getCountry() != null && !userDao.getCountry().isEmpty()) { user.setCountry(userDao.getCountry()); }
+        if (userDao.getState() != null && !userDao.getState().isEmpty()) { user.setState(userDao.getState()); }
+        if (userDao.getCity() != null && !userDao.getCity().isEmpty()) { user.setCity(userDao.getCity()); }
+        if (userDao.getPostCode()!= null && !userDao.getPostCode().isEmpty()) { user.setPostCode(userDao.getPostCode()); }
+        
+        userRepository.save(user);
+        
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/users/delete/{uuid}", method = GET)
+    public ResponseEntity<Long> deleteUser(@PathVariable(value = "uuid") String uuid) {
+        
+        User user = userService.getByUuId(uuid);
+        Long userId = user.getId();
+        userRepository.delete(user); 
+
+        return new ResponseEntity<Long>(userId, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/api/user/roles/{uuid}", method = GET)
     public ResponseEntity<List<Role>> getUserRoles(@PathVariable(value = "uuid") String uuid) {
         
@@ -180,12 +216,19 @@ public class ApplicationRestController {
         return new ResponseEntity<List<ClaimType>>(Arrays.asList(ClaimType.values()), HttpStatus.OK);
     }
     
-    
     @RequestMapping(value = "/api/claims/new", method = POST)
     public ResponseEntity<Claim> newClaim(@RequestBody ClaimDao claimDao) {
         
         Claim claim = generalService.createClaim(claimDao);
 
         return new ResponseEntity<Claim>(claim, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/api/claims/delete/{id}", method = GET)
+    public ResponseEntity<Long> deleteClaim(@PathVariable(value = "id") Long id) {
+        
+        claimRepository.delete(id);
+
+        return new ResponseEntity<Long>(id, HttpStatus.OK);
     }
 }

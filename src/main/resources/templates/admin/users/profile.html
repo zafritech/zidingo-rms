@@ -49,7 +49,7 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Location:</strong></td>
-                                                <td>PMS Office, Education City, Doha, Qatar</td>
+                                                <td th:text="${profile.address} + ', ' + ${profile.state} + ', ' + ${profile.city} + ', ' + ${profile.country}">PMS Office, Education City, Doha, Qatar</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Email:</strong></td>
@@ -61,11 +61,11 @@
                                             </tr>
                                             <tr>
                                                 <td><strong>Telephone:</strong></td>
-                                                <td>+974 3332 7500</td>
+                                                <td th:text="${profile.phoneNumber}">+974 3332 7500</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Mobile:</strong></td>
-                                                <td>+974 3332 7500</td>
+                                                <td th:text="${profile.mobileNumber}">+974 3332 7500</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Roles:</strong></td>
@@ -99,7 +99,7 @@
                             </a>
                             <span class="pull-right">
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserDetailsUpdate(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="modal tooltip" type="button" class="btn btn-sm btn-primary">
-                                    <i class="glyphicon glyphicon-edit"></i>
+                                    <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserRolesManage(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
                                     <i class="fa fa-users"></i>
@@ -107,14 +107,8 @@
                                 <a th:href="@{'/admin/users/claims/' + ${profile.uuId}}"  data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
                                     <i class="fa fa-legal"></i>
                                 </a>
-                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserClaimsManage(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">
-                                    <i class="fa fa-legal"></i>
-                                </a>
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserPwdReset(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Edit this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning">
                                     <i class="fa fa-key"></i>
-                                </a>
-                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserDisable(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-orjavascript:BootboxAdminUserDeleteiginal-title="Disable this user" data-toggle="tooltip" type="button" class="btn btn-sm btn-warning">
-                                    <i class="glyphicon glyphicon-ban-circle"></i>
                                 </a>
                                 <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminUserDelete(\'' + ${profile.uuId} + '\', \'' + ${profile.firstName} + '\');'" data-original-title="Remove this user" type="button" class="btn btn-sm btn-danger">
                                     <i class="glyphicon glyphicon-trash"></i>

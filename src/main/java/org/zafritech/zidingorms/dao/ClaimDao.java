@@ -11,6 +11,8 @@ package org.zafritech.zidingorms.dao;
  */
 public class ClaimDao {
     
+    private Long claimId;
+            
     private String userUuId;
     
     private String userClaimType;
@@ -35,6 +37,14 @@ public class ClaimDao {
         return "ClaimDao{" + "userUuId=" + userUuId + ", userClaimType=" + userClaimType + ", userClaimValue=" + userClaimValue + '}';
     }
 
+    public Long getClaimId() {
+        return claimId;
+    }
+
+    public void setClaimId(Long claimId) {
+        this.claimId = claimId;
+    }
+    
     public String getUserUuId() {
         return userUuId;
     }
