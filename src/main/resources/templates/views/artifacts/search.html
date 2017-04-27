@@ -22,11 +22,14 @@
                     </h1>
                 </div>
                 
-                
             </div>
             
-            <div th:if="${!results.itemsList.isEmpty()}">
-                
+<!--            <div id="isSearchPage" class="hidden">
+                <span th:text="${string}" id="searchQueryString">String</span>
+            </div>-->
+            
+            <div th:if="${results != null}">
+
                 <div class="row" style="border-bottom: 1px solid #c0c0c0;">
                     <div class="col-md-6" style="padding-top: 22px;">
                         <h4 th:text="'Found ' + ${results.resultsSize} + ' result(s) for &quot;' + ${string} + '&quot;, ' + ${results.lastPage} + ' pages'">Project name</h4>
@@ -60,7 +63,7 @@
                     </div>
                 </div>  
                 
-                <div th:each="item : ${results.itemsList}" style="border-bottom: 1px solid #c0c0c0; padding: 5px 0 20px 0;">
+                <div th:each="item : ${results.itemsList}" style="border-bottom: 1px solid #c0c0c0; padding: 5px 0 20px 0;" class="panel-body">
                     
                     <div class="row">
 
@@ -69,7 +72,7 @@
                         </div>
 
                         <div class="col-md-10">
-                            <a th:href="@{'/artifacts/'+ ${item.artifact.id}}">
+                            <a th:href="@{'/artifact/search/result/' + ${item.artifact.id} + '?item=' + ${item.id} + '&amp;size=' + ${results.pageSize} + '&amp;q=' + ${string}}">
                                 <span th:text="${item.artifact.artifactLongName}"></span>
                             </a>
                         </div>
@@ -92,7 +95,7 @@
                 
             </div>
             
-            <div th:if="${results.itemsList.isEmpty()}">
+            <div th:if="${(results == null) || (results.itemsList.isEmpty())}">
                 
                 <div class="row">
                     

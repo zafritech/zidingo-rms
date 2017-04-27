@@ -151,6 +151,7 @@ public class ApplicationRestController {
         
         if (userDao.getFirstName() != null && !userDao.getFirstName().isEmpty()) { user.setFirstName(userDao.getFirstName()); }
         if (userDao.getLastName() != null && !userDao.getLastName().isEmpty()) { user.setLastName(userDao.getLastName()); }
+        if (userDao.getMainRole() != null && !userDao.getMainRole().isEmpty()) { user.setMainRole(userDao.getMainRole()); }
         if (userDao.getPhoneNumber() != null && !userDao.getPhoneNumber().isEmpty()) { user.setPhoneNumber(userDao.getPhoneNumber()); }
         if (userDao.getMobileNumber() != null && !userDao.getMobileNumber().isEmpty()) { user.setMobileNumber(userDao.getMobileNumber()); }
         if (userDao.getAddress() != null && !userDao.getAddress().isEmpty()) { user.setAddress(userDao.getAddress()); }

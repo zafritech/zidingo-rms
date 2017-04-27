@@ -52,7 +52,7 @@ public class AdminUserController {
     @RequestMapping(value = {"/admin/users", "/admin/users/list"})
     public String listUsers(Model model) {
 
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", userService.findOrderByFirstName());
 
         return "admin/users/list";
     }

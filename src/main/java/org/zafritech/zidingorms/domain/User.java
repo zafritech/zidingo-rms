@@ -44,6 +44,8 @@ public class User implements Serializable {
 
     private String lastName;
     
+    private String mainRole;
+    
     private String phoneNumber;
     
     private String mobileNumber;
@@ -115,123 +117,68 @@ public class User implements Serializable {
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
 
-    /**
-     * @return the id
-     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     public Long getId() {
         return id;
     }
 
-    /**
-     * @return the uuId
-     */
     public String getUuId() {
         return uuId;
     }
 
-    /**
-     * @param uuId the uuId to set
-     */
     public void setUuId(String uuId) {
         this.uuId = uuId;
     }
 
-    /**
-     * @return the email
-     */
     public String getEmail() {
         return email;
     }
 
-    /**
-     * @param email the email to set
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * @return the userName
-     */
     public String getUserName() {
         return userName;
     }
 
-    /**
-     * @param userName the userName to set
-     */
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
-    /**
-     * @return the password
-     */
     public String getPassword() {
         return password;
     }
 
-    /**
-     * @param password the password to set
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * @return the firstName
-     */
     public String getFirstName() {
         return firstName;
     }
 
-    /**
-     * @param firstName the firstName to set
-     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    /**
-     * @return the lastName
-     */
     public String getLastName() {
         return lastName;
     }
 
-    /**
-     * @param lastName the lastName to set
-     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    /**
-     * @return the userRoles
-     */
-    public Set<Role> getUserRoles() {
-        return userRoles;
+    public String getMainRole() {
+        return mainRole;
     }
 
-    /**
-     * @param userRoles the userRoles to set
-     */
-    public void setUserRoles(Set<Role> userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    /**
-     * @return the createdDate
-     */
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    /**
-     * @param createdDate the createdDate to set
-     */
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setMainRole(String mainRole) {
+        this.mainRole = mainRole;
     }
 
     public String getPhoneNumber() {
@@ -288,5 +235,21 @@ public class User implements Serializable {
 
     public void setPostCode(String postCode) {
         this.postCode = postCode;
+    }
+
+    public Set<Role> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<Role> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

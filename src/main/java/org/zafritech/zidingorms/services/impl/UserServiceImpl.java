@@ -60,6 +60,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<User> findOrderByFirstName() {
+
+        List<User> users = new ArrayList<>();
+        List<User> sanitizedUsers = new ArrayList<>();
+
+        userRepository.findAllByOrderByFirstNameAsc().forEach(users::add);
+        
+        users.forEach(user->{
+            
+            user.setUserName(null); 
+            user.setPassword(null); 
+            sanitizedUsers.add(user);
+            
+        });
+
+        return sanitizedUsers;
+    }
+
+    @Override
     public User findByUserName(String name) {
 
         return userRepository.findByEmail(name);

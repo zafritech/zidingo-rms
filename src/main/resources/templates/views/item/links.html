@@ -42,7 +42,7 @@
                     <div class="col-md-9">&nbsp;</div>
                     <div class="col-md-3" style="padding-right: 20px;">
                         <div class="pull-right" >
-                            <a th:href="@{'/artifacts/' + ${item.artifact.id}}"><i class="fa fa-fw fa-file-text" style="color: #00aced"></i> Return to document</a>
+                            <a th:href="@{'/artifact/search/result/' + ${item.artifact.id} + '?item=' + ${item.id}}"><i class="fa fa-fw fa-file-text" style="color: #00aced"></i> Return to document</a>
                         </div>
                     </div>
                 </div>

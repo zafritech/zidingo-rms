@@ -73,9 +73,49 @@
                 </div>
 
             </div>
+            
+            <div th:if="${q != null}" id="isSearchPage" class="hidden">
+                <span th:text="${q}" id="searchQueryString"></span>
+            </div>
 
             <div th:if="${!items.isEmpty()}" class="panel-body">
+                
+                <div class="row" style="border-bottom: 1px solid #c0c0c0;">
+                    <div class="col-md-4" style="padding-top: 22px;">
+                        <h4 th:utext="'Page &lt;strong&gt;' + ${currentPage} + '&lt;/strong&gt; of &lt;strong&gt;' + ${pageCount} + '&lt;/strong&gt;'">Page 1 of 26</h4>
+                    </div>
+                    <div class="col-md-8" style="padding-right: 25px;">
+                        <span class="pull-right" style="margin-right: -25px;">
+                            <ul class="pagination pagination-sm">
+                                <li th:class="${currentPage == 1} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == 1}">First</span>
+                                    <a th:if="${currentPage != 1}" th:href="@{'/artifacts/' + ${artifact.id} + '?size=' + ${size} + '&amp;page=1'}">First</a>
+                                </li>
+                                <li th:class="${currentPage != 1} ? '' : 'disabled'">
+                                    <span th:if="${currentPage == 1}">«</span>
+                                    <a th:if="${currentPage != 1}" th:href="@{'/artifacts/' + ${artifact.id} + '?size=' + ${size} + '&amp;page=' + ${currentPage - 1}}"><span>«</span></a>
+                                </li>
 
+                                <li th:each="page : ${pageList}" th:class="${page == currentPage ? 'active' : ''}">
+                                    <span th:if="${page == currentPage}" th:text="${page}">1</span>
+                                    <a th:if="${page != currentPage}" th:href="@{'/artifacts/' + ${artifact.id} + '?size=' + ${size} + '&amp;page=' + ${page}}" th:text="${page}">1</a>
+                                </li>
+
+                                <li th:if="${pageCount > lastDisplayed}" class="disabled"><span>...</span></li>
+                                
+                                <li th:class="${currentPage == pageCount} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == pageCount}">»</span>
+                                    <a th:if="${currentPage != pageCount}" th:href="@{'/artifacts/' + ${artifact.id} + '?size=' + ${size} + '&amp;page=' + ${currentPage + 1}}">»</a>
+                                </li>
+                                <li th:class="${currentPage == pageCount} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == pageCount}">Last</span>
+                                    <a th:if="${currentPage != pageCount}" th:href="@{'/artifacts/' + ${artifact.id} + '?size=' + ${size} + '&amp;page=' + ${pageCount}}">Last</a>
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+                
                 <div th:each="item : ${items}" 
                      th:attr="id=${item.sysId}" 
                      th:classappend="${item.itemClass == 'HEADER'} ? 'row item-header-' + ${item.itemLevel} : 'row item-level-' + ${item.itemLevel} + ' ' + ${#strings.toLowerCase(item.itemClass)}">

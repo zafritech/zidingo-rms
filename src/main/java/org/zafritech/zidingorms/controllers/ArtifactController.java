@@ -5,12 +5,14 @@
  */
 package org.zafritech.zidingorms.controllers;
 
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.dao.SearchDao;
 import org.zafritech.zidingorms.domain.Artifact;
@@ -22,6 +24,7 @@ import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.search.ItemSearch;
 import org.zafritech.zidingorms.services.ArtifactService;
+import org.zafritech.zidingorms.services.ItemService;
 import org.zafritech.zidingorms.services.LinkService;
 
 /**
@@ -39,6 +42,9 @@ public class ArtifactController {
     
     @Autowired
     private ArtifactService artifactService;
+    
+    @Autowired
+    private ItemService itemService;
     
     @Autowired
     private SystemVariableRepository sysVarRepository;
@@ -66,11 +72,27 @@ public class ArtifactController {
     }
 
     @RequestMapping("/artifacts/{id}")
-    public String getArtifact(@PathVariable Long id, Model model) {
+    public String getArtifact(@PathVariable(value = "id") Long id,
+                              @RequestParam(defaultValue = "1", value = "page", required=false) Integer  page,
+                              @RequestParam(defaultValue = "25", value = "size", required=false) Integer size,
+                              @RequestParam(defaultValue = "", value = "q", required=false) String q,
+                              Model model) {
+        
+        int pageCount = (int)Math.ceil((float)(itemService.getNumberOfItems(id) / size)) + 1;
+        int currentPage = (page > pageCount) ? pageCount : page;
 
+        List<Item> items = itemService.getPagedRequirements(id, size, currentPage);
+        List<Integer> pageList = itemService.getPagesList(currentPage, pageCount);
+                
         model.addAttribute("artifact", artifactRepository.findOne(id));
-        model.addAttribute("items", itemRepository.findByArtifactIdOrderBySortIndexAsc(id));
+        model.addAttribute("items", items);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("size", size);
+        model.addAttribute("pageCount", pageCount);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("lastDisplayed", Collections.max(pageList));
         model.addAttribute("newLineChar", "\n");
+        if (!q.isEmpty()) { model.addAttribute("q", q); }
 
         return "/views/artifacts/artifact";
     }
@@ -151,4 +173,19 @@ public class ArtifactController {
         
         return "/views/artifacts/search";
     }
+    
+    @RequestMapping("/artifact/search/result/{id}")
+    public String itemSearchResult(@PathVariable(value = "id") Long id,
+                                    @RequestParam(value = "item", required=false) Long item,
+                                    @RequestParam(defaultValue = "25", value = "size", required=false) Integer size,
+                                    @RequestParam(defaultValue = "", value = "q", required=false) String q) {
+         
+        Integer page = itemService.getPageWithItem(id, item, size);
+        
+        String queryString = (!q.isEmpty()) ? "&q=" + q : "";
+        
+        String url = "/artifacts/" + id + "?size=" + size + "&page=" + page + queryString;
+         
+          return "redirect:" + url;
+     }
 }

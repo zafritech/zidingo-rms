@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.commons.enums.ItemClass;
 import org.zafritech.zidingorms.commons.enums.SystemVariableTypes;
@@ -33,6 +35,8 @@ import org.zafritech.zidingorms.services.ItemService;
 @Service
 public class ItemServiceImpl implements ItemService {
 
+    private final static int PAGESIZE = 40;
+    
     @Autowired
     private ItemRepository itemRepository;
 
@@ -395,5 +399,61 @@ public class ItemServiceImpl implements ItemService {
 
         doc.setModifiedDate(new Timestamp(System.currentTimeMillis()));
         artifactRepository.save(doc);
+    }
+
+    @Override
+    public List<Item> getPagedRequirements(Long id, int pageSize, int pageNumber) {
+        
+        PageRequest request = new PageRequest(pageNumber -1, pageSize, Sort.Direction.ASC, "sortIndex");
+        
+        List<Item> items = itemRepository.findByArtifact(request, artifactRepository.findOne(id));
+        
+        return items;
+    }
+    
+    @Override
+    public int getNumberOfItems(Long id) {
+        
+        return itemRepository.findByArtifactIdOrderBySortIndexAsc(id).size();
+    }
+    
+    @Override
+    public  List<Integer> getPagesList(int currentPage, int lastPage) {
+        
+        List<Integer> pageList = new ArrayList<>();
+
+        int startIndex = 1;
+        int upperLimit = 1;
+        
+        if (lastPage < 9) {
+            
+            startIndex = 1;
+            upperLimit = lastPage;
+            
+        } else {
+
+            upperLimit = ((int) Math.ceil((double)currentPage / 9) * 9);
+            upperLimit = (lastPage < upperLimit) ? lastPage : upperLimit;
+            startIndex = upperLimit - 8;
+        
+        }
+        
+        for (int i = startIndex; i <= upperLimit; i++) {
+
+            pageList.add(i);
+        }
+        
+        return pageList;
+    }
+    
+    @Override
+    public Integer getPageWithItem(Long artifactId, Long itemId, int pageSize) {
+        
+        List<Item> items = itemRepository.findByArtifactIdOrderBySortIndexAsc(artifactId);
+        Item item = itemRepository.findOne(itemId);
+        
+        int itemIndex = items.indexOf(item) + 1;
+        
+        return (int)Math.ceil(itemIndex / pageSize) + 1;
     }
 }

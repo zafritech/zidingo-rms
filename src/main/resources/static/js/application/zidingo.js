@@ -11,6 +11,31 @@ $(document).ready(function () {
 });
 
 
+/* Search results highlighting */
+$(document).ready(function () {
+    
+   if ($('#isSearchPage').length > 0) {
+       
+        var str = $('#searchQueryString').html().replace("+", " ");
+
+        var words = str.split(" ");
+
+        for (var i = 0; i < words.length; i++) {
+            
+            var regexUpper = new RegExp(words[i].charAt(0).toUpperCase() + words[i].slice(1), "g");
+            var regexLower = new RegExp(words[i].toLowerCase(), "g");
+            var highlightUpper = '<span style="background-color: yellow;">' + words[i].charAt(0).toUpperCase() + words[i].slice(1) + '</span>';
+            var highlightLower = '<span style="background-color: yellow;">' + words[i].toLowerCase() + '</span>';
+            
+            $('.panel-body').children().each(function () {
+                
+                $(this).html( $(this).html().replace(regexUpper, highlightUpper) );
+                $(this).html( $(this).html().replace(regexLower, highlightLower) );
+            });
+        }
+   }
+});
+
 /* Update User Interface (UI) notifications */
 function RefreshUI() {
        
@@ -483,6 +508,7 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                         data['uuid'] = uuId;
                         data['firstName'] = document.getElementById('firstName').value;
                         data['lastName'] = document.getElementById('lastName').value;
+                        data['mainRole'] = document.getElementById('userJobTitle').value;
                         data['phoneNumber'] = document.getElementById('userPhoneNumber').value;
                         data['mobileNumber'] = document.getElementById('userMobileNumber').value;
                         data['address'] = document.getElementById('userAddres').value;
@@ -522,7 +548,7 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                 .done(function (data) {
 
                     var selectCountryOptions = '';
-
+                    
                     BootboxAdminGetUserInfo(uuId);
                     
                     $.each(data, function (key, index) {
@@ -563,6 +589,11 @@ function BootboxAdminGetUserInfo(uuId) {
         if (data.lastName !== null) {
             
             $('#lastName').prop('value', data.lastName);
+        }
+
+        if (data.mainRole !== null) {
+            
+            $('#userJobTitle').prop('value', data.mainRole);
         }
         
         if (data.phoneNumber !== null) {
@@ -1310,6 +1341,7 @@ function BootboxEditItem(id) {
                         
                         if (result) {
                             
+                            var newItemValue = '';
                             var data = {};
 
                             data['id'] = document.getElementById('editId').value;
@@ -1321,6 +1353,8 @@ function BootboxEditItem(id) {
                             data['itemLevel'] = document.getElementById('editItemLevel').value;
                             data['itemValue'] = document.getElementById('editItemValue').value;
 
+                            newItemValue = data['itemValue'];
+                            
                             $.ajax({
 
                                 type: "POST",
@@ -1333,7 +1367,11 @@ function BootboxEditItem(id) {
 
                                     if (data.itemClass === "HEADER") {
 
+                                        var oldValue = document.getElementById('value-' + data.sysId);
+                                        var newValue = '<span id="value-' + data.sysId + '">' + newItemValue.replace(/\n/g, '<br/>') + '</span>';
+                                        
                                         document.getElementById(data.sysId).className = 'row item-header-' + data.itemLevel;
+                                        $(oldValue).replaceWith(newValue);
 
                                     } else if (data.itemClass === "REQUIREMENT") {
 
@@ -1344,7 +1382,7 @@ function BootboxEditItem(id) {
 
                                             var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + '">' +
                                                     '<div id="value-container-' + data.sysId + '" class="col-xs-9 requirement-text">' +
-                                                    '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                    '<span id="value-' + data.sysId + '">' + newItemValue.replace(/\n/g, '<br/>') + '</span>' +
                                                     '</div>' +
                                                     '<div class="col-xs-2 requirement-identifier" id="ident-container-' + data.sysId + '">' +
                                                     '<span id="ident-' + data.sysId + '">' + data.identifier + '</span>' +
@@ -1364,7 +1402,7 @@ function BootboxEditItem(id) {
 
                                         var newItemElement = '<div id="' + data.sysId + '" class="row item-level-' + data.itemLevel + ' ' + data.itemClass + '">' +
                                                 '<div id="value-container-' + data.sysId + '" class="col-xs-11 ' + data.itemClass.toLowerCase() + '">' +
-                                                '<span id="value-' + data.sysId + '">' + data.itemValue + '</span>' +
+                                                '<span id="value-' + data.sysId + '">' + newItemValue.replace(/\n/g, '<br/>') + '</span>' +
                                                 '</div>' +
                                                 '<div class="btn-group pull-right normal-text" id="menu-container-' + data.sysId + '">' +
                                                 document.getElementById('menu-container-' + data.sysId).innerHTML +

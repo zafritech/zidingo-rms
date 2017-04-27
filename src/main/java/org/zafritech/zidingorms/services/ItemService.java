@@ -44,4 +44,12 @@ public interface ItemService {
     String getNextRequirementIdentifier(Long id, String template);
     
     List<Item> findRequirements(Long id); 
+    
+    List<Item> getPagedRequirements(Long id, int pageSize, int pageNumber); 
+    
+    int getNumberOfItems(Long id);
+    
+    List<Integer> getPagesList(int currentPage, int lastPage);
+    
+    Integer getPageWithItem(Long artifactId, Long itemId, int pageSize);
 }

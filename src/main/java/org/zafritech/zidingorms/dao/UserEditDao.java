@@ -17,6 +17,8 @@ public class UserEditDao {
     
     private String lastName;
     
+    private String mainRole;
+    
     private String phoneNumber;
     
     private String mobileNumber;
@@ -57,6 +59,14 @@ public class UserEditDao {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getMainRole() {
+        return mainRole;
+    }
+
+    public void setMainRole(String mainRole) {
+        this.mainRole = mainRole;
     }
 
     public String getPhoneNumber() {

@@ -6,15 +6,17 @@
 package org.zafritech.zidingorms.repositories;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
 
 /**
  *
  * @author LukeS
  */
-public interface ItemRepository extends CrudRepository<Item, Long> {
+public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
 
     Item findBySysId(String sysId);
 
@@ -25,4 +27,6 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
     Item findFirstByIdentifierContainingOrderByIdentifierDesc(String identTemplate);
 
     List<Item> findByArtifactIdOrderBySortIndexAsc(Long id);
+    
+    List<Item> findByArtifact(Pageable pageable, Artifact artifact);
 }

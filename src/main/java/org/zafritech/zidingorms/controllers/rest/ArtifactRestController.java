@@ -19,7 +19,6 @@ import org.zafritech.zidingorms.commons.enums.ArtifactStatus;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.ArtifactType;
 import org.zafritech.zidingorms.domain.Item;
-import org.zafritech.zidingorms.domain.Role;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
 import org.zafritech.zidingorms.services.ItemService;

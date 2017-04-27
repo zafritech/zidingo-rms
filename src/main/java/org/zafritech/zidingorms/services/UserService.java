@@ -23,6 +23,8 @@ public interface UserService {
 
     List<User> findAll();
 
+    List<User> findOrderByFirstName();
+
     User getByUuId(String uuid);
 
     User saveUser(User user);

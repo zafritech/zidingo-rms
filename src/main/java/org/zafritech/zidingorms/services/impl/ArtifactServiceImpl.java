@@ -133,8 +133,8 @@ public class ArtifactServiceImpl implements ArtifactService {
             Workbook workbook = getWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
 
-//            while(i <= worksheet.getLastRowNum()) {
-            while ((i <= 501) && (i <= worksheet.getLastRowNum())) {
+            while(i <= worksheet.getLastRowNum()) {
+//            while ((i <= 501) && (i <= worksheet.getLastRowNum())) {
 
                 ItemDao itemDao = new ItemDao();
                 Item item = new Item();
@@ -149,7 +149,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 
                 // Is the Item a Requirement
                 String itemClass = (String) getCellValue(row.getCell(2));
-                itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : itemClass);
+                itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : itemClass.toUpperCase());
 
                 // Item value
                 String value = (String) getCellValue(row.getCell(3));
@@ -185,7 +185,7 @@ public class ArtifactServiceImpl implements ArtifactService {
                 // Save client comment
                 if (clientComment != null && !clientComment.isEmpty()) {
                     
-                    ItemComment comment = new ItemComment(item, clientComment, userService.findByEmail("client@zafritech.org"));
+                    ItemComment comment = new ItemComment(item, clientComment, userService.findByEmail("client@astad.qa"));
                     commentRepository.save(comment);
                     itemService.incrementCommentCount(item.getId());
                 }
@@ -193,7 +193,7 @@ public class ArtifactServiceImpl implements ArtifactService {
                 // Save client comment
                 if (contractorComment != null && !contractorComment.isEmpty()) {
                     
-                    ItemComment comment = new ItemComment(item, contractorComment, userService.findByEmail("contractor@zafritech.org"));
+                    ItemComment comment = new ItemComment(item, contractorComment, userService.findByEmail("contractor@astad.qa"));
                     commentRepository.save(comment);
                     itemService.incrementCommentCount(item.getId());
                 }

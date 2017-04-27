@@ -336,7 +336,10 @@ ul.alert-dropdown {
 .item-header-1 {
     font-size: 28px; 
     padding: 11px 5px;
-    border: 1px solid #c0c0c0;
+    /*border: 1px solid #c0c0c0;*/
+    border-left: 1px solid #c0c0c0;
+    border-right: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
 }
 
 .item-header-2 {

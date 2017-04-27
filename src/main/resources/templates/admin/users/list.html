@@ -34,16 +34,16 @@
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th style="text-align: center; width: 60px;">Id</th>
-                        <th>Name</th>
+                        <th style="width: 22%;">Name</th>
+                        <th style="width: 30%;">Title</th>
                         <th>Email</th>
                         <th style="text-align: center; width: 60px;"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="user : ${users}">
-                        <td th:text="${user.id}" style="text-align: center;">1</td>
-                        <td th:text="${user.firstName}">Name ...</td>
+                        <td th:text="${user.firstName} + ' ' + ${user.lastName != null ? user.lastName : ''}">Name ...</td>
+                        <td th:text="${user.mainRole != null ? user.mainRole : ''}">Email ...</td>
                         <td th:text="${user.email}">Email ...</td>
                         <td style="text-align: center;">
                             <a th:href="@{/admin/users/} + ${user.uuId}">

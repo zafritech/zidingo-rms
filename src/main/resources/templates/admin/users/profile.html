@@ -44,12 +44,12 @@
                                                 <td>Qatar Foundation PMS</td>
                                             </tr>
                                             <tr>
-                                                <td><strong>Role/Discipline:</strong></td>
-                                                <td>Systems Engineer</td>
+                                                <td><strong>Title:</strong></td>
+                                                <td th:text="${profile.mainRole}">Systems Engineer</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Location:</strong></td>
-                                                <td th:text="${profile.address} + ', ' + ${profile.state} + ', ' + ${profile.city} + ', ' + ${profile.country}">PMS Office, Education City, Doha, Qatar</td>
+                                                <td th:text="${profile.address != null ? profile.address : ''} + ' ' + ${profile.state != null ? profile.state : ''} + ' ' + ${profile.city != null ? profile.city : '' } + ' ' + ${profile.country != null ? profile.country : ''}">PMS Office, Education City, Doha, Qatar</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Email:</strong></td>
@@ -77,7 +77,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <tr>
+<!--                                            <tr>
                                                 <td><strong>Claims:</strong></td>
                                                 <td>
                                                     <div id="userClaimsTableCell" style="padding-top: 5px;">
@@ -86,7 +86,7 @@
                                                         </span>
                                                     </div>
                                                 </td>
-                                            </tr>
+                                            </tr>-->
                                         </tbody>
                                     </table>
                                 </div>
