@@ -21,7 +21,10 @@
                             <i class="fa fa-fw fa-plus"></i> New Claim
                         </a>
                     </span>
-                    <span class="pull-right"><a th:href="@{'/admin/users/' + ${user.uuId}}">Return to profile</a></span>
+                    <span class="pull-right">
+                        <a th:href="@{'/admin/users/' + ${user.uuId}}">Return to profile |</a>
+                        <a href="/admin/users"> Return to users</a>
+                    </span>
                 </div>
             </div>
 
@@ -43,7 +46,6 @@
                         
                         <div class="panel-heading">
                             <span class="panel-title" th:text="${user.firstName} + '\'s Claims'" style="font-size: 22px;font-weight: bold;">User Name</span>
-                            
                         </div>
                         
                         <div class="panel-body">

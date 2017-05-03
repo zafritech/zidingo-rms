@@ -11,11 +11,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zafritech.zidingorms.domain.Company;
+import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
+import org.zafritech.zidingorms.repositories.CompanyRepository;
 import org.zafritech.zidingorms.repositories.FolderRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
 import org.zafritech.zidingorms.services.FolderService;
+import org.zafritech.zidingorms.services.ProjectService;
 
 /**
  *
@@ -23,6 +27,12 @@ import org.zafritech.zidingorms.services.FolderService;
  */
 @Controller
 public class ProjectController {
+    
+    @Autowired
+    private ProjectService projectService;
+    
+    @Autowired
+    private CompanyRepository companyRepository;
     
     @Autowired
     private ProjectRepository projectRepository;
@@ -49,7 +59,6 @@ public class ProjectController {
     @RequestMapping("/projects/{id}")
     public String getProject(@PathVariable Long id, Model model) {
 
-//        Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
         Project project = projectRepository.findOne(id);
 
         model.addAttribute("project", project);
@@ -62,12 +71,26 @@ public class ProjectController {
     @RequestMapping("/projects/{id}/{folderId}")
     public String getProjectFolder(@PathVariable Long id, @PathVariable Long folderId, Model model) {
         
-        Project project = projectRepository.findOne(folderRepository.findOne(id).getProject().getId());
+        Project project = projectRepository.findOne(id);
 
         model.addAttribute("project", project);
         model.addAttribute("artifacts", artifactRepository.findByArtifactFolder(folderRepository.findOne(folderId)));
         model.addAttribute("folder", folderRepository.findOne(folderId));
         
         return "/views/projects/project";
+    }
+    
+    @RequestMapping("/projects/metadata/{id}")
+    public String getArtifactMetaData(@PathVariable Long id, Model model) {
+        
+        Project project = projectRepository.findOne(id);
+        Company company = companyRepository.findOne(project.getProjectCompany().getId());
+        List<ItemCategory> categories = projectService.getProjectItemCategories(id);
+
+        model.addAttribute("project", project);
+        model.addAttribute("company", company);
+        model.addAttribute("categories", categories);
+        
+        return "/views/projects/metadata";
     }
 }

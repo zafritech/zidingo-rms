@@ -6,10 +6,20 @@
 package org.zafritech.zidingorms;
 
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.zafritech.zidingorms.domain.Artifact;
+import org.zafritech.zidingorms.domain.Folder;
+import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.loader.DataInitializer;
+import org.zafritech.zidingorms.repositories.ArtifactRepository;
+import org.zafritech.zidingorms.repositories.ArtifactTypeRepository;
+import org.zafritech.zidingorms.repositories.FolderRepository;
+import org.zafritech.zidingorms.repositories.ItemRepository;
+import org.zafritech.zidingorms.repositories.ProjectRepository;
 
 /**
  *
@@ -21,10 +31,28 @@ public class StarterCLR implements CommandLineRunner {
     @Autowired
     private DataInitializer dataInitializer;
     
+    @Autowired
+    private ProjectRepository projectRepository;
+    
+    @Autowired
+    private FolderRepository folderRepository;
+    
+    @Autowired
+    private ArtifactTypeRepository artifactTypeRepository;
+    
+    @Autowired
+    private ArtifactRepository artifactRepository;
+    
+    @Autowired
+    private ItemRepository itemRepository;
+    
     @Override
     public void run(String... strings) throws Exception {
 
 //        InitializeData();
+//        moveFolder();
+//        moveDocument();
+//        createDocument();
     }
     
     private void InitializeData() {
@@ -37,4 +65,45 @@ public class StarterCLR implements CommandLineRunner {
         dataInitializer.initializeProjects();
         dataInitializer.initializeSystemVariable();
     }
+    
+    private void moveFolder() {
+        
+        Folder folder = folderRepository.findOne(6L);
+        Folder parent = folderRepository.findOne(1L);
+        
+        folder.setParent(parent);
+        folderRepository.save(folder);
+    }
+    
+    private void moveDocument() {
+        
+        Folder folder = folderRepository.findOne(14L);
+        Artifact artifact1 = artifactRepository.findOne(4L);
+        Artifact artifact2 = artifactRepository.findOne(5L);
+        
+        artifact1.setArtifactFolder(folder);
+        artifactRepository.save(artifact1);
+        
+        artifact2.setArtifactFolder(folder);
+        artifactRepository.save(artifact2);
+    }
+    
+//    private void createDocument() {
+//        
+//        Project project = projectRepository.findOne(1L);
+//        Folder folder = folderRepository.findOne(12L);
+//        
+//        Artifact artifact = artifactRepository.save(new Artifact("XC08100100-CR18", 
+//                                                                 "Change Request 18", "CR 18 - Change Request #18", 
+//                                                                 artifactTypeRepository.findByArtifactTypeName("GEN"), 
+//                                                                 project, 
+//                                                                 folder));
+//        
+//        for (int i = 7436; i < 7438; i++) {
+//            
+//            Item item = itemRepository.findOne(Long.valueOf(i));
+//            item.setArtifact(artifact);
+//            itemRepository.save(item);
+//        }
+//    }
 }

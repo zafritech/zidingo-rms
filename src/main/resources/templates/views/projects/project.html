@@ -28,8 +28,8 @@
                 <div class="col-md-6" style="padding-right: 20px;">
                     <div th:if="${artifacts.isEmpty()}" class="pull-right" >
                         <a th:href="@{'/projects/metadata/' + ${project.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a> |
-                        <a href="#editItemModal" data-toggle="modal" data-artifact-id=""><i class="fa fa-fw fa-sitemap"></i> Apply Template</a> |
-                        <a href="#createItemModal" data-toggle="modal" data-ref-artifact-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i>Add Document</a>
+                        <a href="javascript:void(0);" data-toggle="modal" data-artifact-id=""><i class="fa fa-fw fa-sitemap"></i> Apply Template</a> |
+                        <a href="javascript:void(0);" data-toggle="modal" data-ref-artifact-idx="0" data-ref-pos="ABOVE"><i class="fa fa-fw fa-pencil"></i>Add Document</a>
                     </div>
                     <div th:if="${!artifacts.isEmpty()}" class="pull-right" >
                         <a th:href="@{'/projects/metadata/' + ${project.id}}"><i class="fa fa-fw fa-list"></i> Metadata</a> |
@@ -45,8 +45,8 @@
                     </div>
                     <div class="col-sm-4">
                         <div class=" pull-right" style=" font-size: 14px;">
-                            <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-file-text"></i> Add Document</a> |
-                            <a href="#importExcelModal" role="button" data-toggle="modal"><i class="fa fa-fw fa-folder"></i> Add Subfolder</a>
+                            <a href="javascript:void(0);" role="button" data-toggle="modal"><i class="fa fa-fw fa-file-text"></i> Add Document</a> |
+                            <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateSubfolder(\'' + ${folder.id} + '\',\'' + ${project.id} + '\');'"><i class="fa fa-fw fa-folder"></i> Add Subfolder</a>
                         </div>
                     </div>
                 </div>

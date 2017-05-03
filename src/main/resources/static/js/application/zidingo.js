@@ -1,4 +1,4 @@
-/* global toastr, bootbox */
+/* global toastr, bootbox, CKEDITOR */
 
 $(document).ready(function () {
  
@@ -6,7 +6,7 @@ $(document).ready(function () {
     RefreshUI();
     
     /* Repeat every minute */
-    var uiRefresh = window.setInterval(RefreshUI, 60*1000);
+    var uiRefresh = window.setInterval(RefreshUI, 2*60*1000);
     
 });
 
@@ -36,9 +36,12 @@ $(document).ready(function () {
    }
 });
 
+
 /* Update User Interface (UI) notifications */
 function RefreshUI() {
        
+//    console.log(new Date().toLocaleTimeString() + ': UI Updated!');
+    
     /* Update User toolbar with messages */
     UpdateUserMessageAlerts();
     
@@ -99,6 +102,10 @@ function UpdateUserMessageAlerts() {
                 
                 $('#userMessages').hide();
             }
+        },
+        error: function() {
+            
+            return;
         }
     });
 }
@@ -145,6 +152,10 @@ function UpdateUserNotificationAlerts() {
                 
                 $('#userNotifications').hide();
             }
+        },
+        error: function() {
+            
+            return;
         }
     });
 }
@@ -202,6 +213,10 @@ function UpdateUserTasksAlerts() {
                 
                 $('#userTasks').hide();
             }
+        },
+        error: function() {
+            
+            return;
         }
     });
 }
@@ -425,6 +440,66 @@ function ToggleApplicationMenu() {
 }
 
 
+function BootboxCreateSubfolder(parentId, projectId) {
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/project/project-subfolder-create-form.html',
+        success: function (data) {
+
+            bootbox.confirm({
+
+                message: data,
+                title: "Create subfolder",
+                size: 'small',
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Create",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    var folderName = '';
+                    
+                    if (result) {
+
+                        folderName = document.getElementById('subFolderName').value;
+                        
+                        var data = {};
+
+                        data['parentId'] = parentId;
+                        data['projectId'] =  projectId;
+                        data['folderName'] =  folderName;
+                        data['folderType'] =  'DOCUMENT';
+                        
+                        console.log(data);
+                    
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/project/folder/create",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function () {
+                                
+                                loadProjectTree(projectId);
+                                showToastr('success', 'Folder ' + folderName + ' created!');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+}
+
+
 function BootboxAdminUserPwdReset(uuId, user) {
     
     $.ajax({
@@ -517,8 +592,6 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                         data['city'] = $('#userCity option:selected').html();
                         data['postCode'] = '';
                         
-                        console.log(data);
-                        
                         $.ajax({
                             type: "POST",
                             contentType: "application/json",
@@ -578,8 +651,6 @@ function BootboxAdminGetUserInfo(uuId) {
         cache: false
     })
     .done(function (data) {
-        
-        console.log(data);
 
         if (data.firstName !== null) {
             
@@ -866,15 +937,13 @@ function BootboxAdminUserClaimsManage(uuId, user) {
                         className: "btn-success btn-fixed-width-100"
                     }
                 },
-                callback: function (result) {
+                callback: function () {
                     
                     var data = {};
                     
                     data['userUuId'] = document.getElementById('userUuId').value;;
                     data['userClaimType'] = document.getElementById('userClaimType').value;;
                     data['userClaimValue'] = document.getElementById('userClaimTarget').value;
-                    
-                    console.log(data);
                     
                     $.ajax({
 
@@ -884,8 +953,9 @@ function BootboxAdminUserClaimsManage(uuId, user) {
                         data: JSON.stringify(data),
                         dataType: "json",
                         timeout: 60000,
-                        success: function (data) {
-
+                        success: function () {
+                            
+                            location.reload('/admin/users/claims/' + uuId);
                         }
                     });
                 }
@@ -1023,6 +1093,120 @@ function OnUserClaimTypeChange() {
             
         });
     }
+}
+
+
+function BootboxProjectDetailsEdit(id) {
+    
+    bootbox.alert('Not implemented: ' + id);
+}
+
+
+function BootboxProjectCategories(id) {
+    
+    $.ajax({
+        type: "GET",
+        url: '/modal/project/project-categories-create.html',
+        success: function (data) {
+            
+            var box = bootbox.confirm({
+
+                message: data,
+                title: "Create project item category",
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: "btn-danger btn-fixed-width-100"
+                    },
+                    confirm: {
+                        label: "Create",
+                        className: "btn-success btn-fixed-width-100"
+                    }
+                },
+                callback: function (result) {
+                    
+                    if (result) {
+                        
+                        var data = {};
+                        
+                        data['projectId'] = id;
+                        data['categoryName'] = document.getElementById('categoryName').value;
+                        data['categoryCode'] = document.getElementById('categoryCode').value;
+                        data['categoryParentId'] = document.getElementById('categoryParent').value;
+                        data['categoryLeadUuId'] = document.getElementById('categoryLead').value;
+                        
+                        console.log(data);
+                        
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/project/category/create",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function (data) {
+
+                                location.replace('/projects/metadata/' + id + '#categories');
+                                showToastr('success', 'Password for ' + data.categoryName +' changed!');
+                            }
+                        });
+                    }
+                }
+            });
+            
+            box.on("shown.bs.modal", function(e) {
+                
+                // Empty all SELECT controls
+                $(e.currentTarget).find('select[name="categoryParent"]').empty();
+                $(e.currentTarget).find('select[name="categoryLead"]').empty();
+                $(e.currentTarget).find('select[id="categoryParent"]').append('<option value="">-- Select Parent Catgory --</option>');
+                 
+                $.ajax({
+            
+                    url: '/api/categories/list/' + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+
+                        // Populate dropdown controls
+                        var selectCategoryOptions = '';
+
+                        $.each(data, function (key, index) {
+
+                            selectCategoryOptions = selectCategoryOptions + '<option value="' + index.id + '">' + index.categoryName + '</option>';
+                        });
+
+                        $(e.currentTarget).find('select[id="categoryParent"]').append(selectCategoryOptions);
+                    }
+                });
+                
+                $.ajax({
+            
+                    url: '/api/users/list',
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+
+                        // Populate dropdown controls
+                        var selectUserOptions = '';
+
+                        $.each(data, function (key, index) {
+
+                            selectUserOptions = selectUserOptions + '<option value="' + index.uuId + '">' + index.firstName + ' ' + index.lastName + '</option>';
+                        });
+
+                        $(e.currentTarget).find('select[id="categoryLead"]').append(selectUserOptions);
+                    }
+                });
+                
+                $(e.currentTarget).find('input[name="parentId"]').prop('value', id);
+                 
+            });
+            
+            box.modal('show');
+        }
+    });
+    
 }
 
 
@@ -1489,7 +1673,6 @@ function BootboxEditItem(id) {
 
                         var s = itemDao.item.identifier;
                         var indentTemplValue = s.substring(0, s.lastIndexOf('-'));
-                        console.log(indentTemplValue);
 
                         $(e.currentTarget).find('select[name="editItemType"]').prop('value', itemDao.item.itemType.itemTypeName);
                         $(e.currentTarget).find('select[name="editIdentTemplate"]').prop('value', indentTemplValue);
@@ -1517,8 +1700,6 @@ function BootboxEditItem(id) {
                         type: "GET",
                         dataType: "json",
                         success: function (data) {
-
-                            console.log(data);
 
                             if (data > 0) {
 
@@ -1559,8 +1740,6 @@ function BootboxCreateFirstItem(id) {
     })
     .done(function (data) { 
         
-        console.log(data);
-
         var refItem = data;
         
         $.ajax({
@@ -1595,8 +1774,6 @@ function BootboxCreateFirstItem(id) {
                             data['itemLevel'] = document.getElementById('createItemLevel').value;
                             data['itemValue'] = document.getElementById('createItemValue').value;
                             data['sortIndex'] = document.getElementById('createSortIndex').value;
-
-                            console.log(data);
                         
                             $.ajax({
                                 
@@ -1731,8 +1908,6 @@ function BootboxCreateItem(id, pos) {
                             data['itemLevel'] = document.getElementById('createItemLevel').value;
                             data['itemValue'] = document.getElementById('createItemValue').value;
                             data['sortIndex'] = document.getElementById('createSortIndex').value;
-
-                            console.log(data);
                             
                             $.ajax({
                                 
@@ -1917,7 +2092,7 @@ function BootboxDeleteItem(id) {
                                 contentType: "application/json",
                                 url: "/api/item/delete/" + id,
                                 timeout: 60000,
-                                success: function (data) {
+                                success: function () {
                                     
                                     $('#' + itemToDelete.sysId).remove();
                                     showToastr('success', 'Item '+ itemToDelete.sysId +' deleted!');

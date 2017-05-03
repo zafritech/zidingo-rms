@@ -15,14 +15,19 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.commons.enums.FolderType;
+import org.zafritech.zidingorms.dao.CategDao;
+import org.zafritech.zidingorms.dao.FolderDao;
 import org.zafritech.zidingorms.dao.ProjectTreeDao;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Company;
 import org.zafritech.zidingorms.domain.Folder;
+import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.FolderRepository;
+import org.zafritech.zidingorms.repositories.ItemCategoryRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
+import org.zafritech.zidingorms.repositories.UserRepository;
 import org.zafritech.zidingorms.services.ProjectService;
 
 /**
@@ -44,6 +49,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ArtifactRepository artifactRepository;
 
+    @Autowired
+    private ItemCategoryRepository itemCategoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+    
     @Transactional
     public Project create(String name, String shortName, Company company) {
 
@@ -127,4 +138,38 @@ public class ProjectServiceImpl implements ProjectService {
 
         return projectRepository.findOne(id);
     }
+
+    @Override
+    public Folder createFolder(FolderDao folderDao) {
+
+        Folder folder = new Folder(folderDao.getFolderName(),
+                                   folderDao.getFolderType(),
+                                   folderRepository.findOne(folderDao.getParentId()),
+                                   projectRepository.findOne(folderDao.getProjectId()));
+        
+        folderRepository.save(folder);
+        
+        return folder;
+    }
+
+    @Override
+    public List<ItemCategory> getProjectItemCategories(Long id) {
+
+        Project project = projectRepository.findOne(id);
+        
+        List<ItemCategory> categories = itemCategoryRepository.findByProjectOrderByCategoryNameAsc(project);
+        
+        return categories;
+    }
+
+    @Override
+    public ItemCategory createItemCategory(CategDao catDao) {
+
+        ItemCategory category = new ItemCategory(catDao.getCategoryName(),
+                                                 catDao.getCategoryCode(),
+                                                 userRepository.getByUuId(catDao.getCategoryLeadUuId()),
+                                                 projectRepository.findOne(catDao.getProjectId()));
+        
+        return itemCategoryRepository.save(category);
+    } 
 }

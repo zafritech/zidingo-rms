@@ -86,7 +86,7 @@ public class ApplicationRestController {
     @RequestMapping("/api/users/list")
     public ResponseEntity<List<User>> getUserList(Model model) {
         
-        List<User> users = userService.findAll();
+        List<User> users = userService.findOrderByFirstName();
         
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }

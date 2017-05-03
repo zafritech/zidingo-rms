@@ -1,0 +1,35 @@
+<form id="createItemCategory" action="/api/project/category/create" method="post">
+
+    <input type="hidden" name="parentId" id="parentId" value="" />
+
+    <div class="row">
+        <div class="col-sm-9" id="categoryNameContainer">
+            <div class="form-group">
+                <label for="categoryName">Category name</label>
+                <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Category name" />
+            </div>
+        </div>
+        <div class="col-sm-3" id="categoryCodeContainer">
+            <div class="form-group">
+                <label for="categoryCode">Code</label>
+                <input type="text" class="form-control" id="categoryCode" name="categoryCode" placeholder="Code" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="categoryParent">Parent category</label>
+                <select class="form-control" id="categoryParent" name="categoryParent"></select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="categoryLead">Category lead</label>
+                <select class="form-control" id="categoryLead" name="categoryLead"></select>
+            </div>
+        </div>
+    </div>
+
+</form>

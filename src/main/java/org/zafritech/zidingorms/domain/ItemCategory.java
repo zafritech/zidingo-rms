@@ -37,6 +37,10 @@ public class ItemCategory implements Serializable {
     @JoinColumn(name = "parentId")
     private ItemCategory parent;
     
+    @ManyToOne
+    @JoinColumn(name = "projectId")
+    private Project project;
+    
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "XREF_ITEM_CATEGORY_MEMBERS",
                joinColumns = {@JoinColumn(name = "item_category_id", referencedColumnName = "id")},
@@ -45,8 +49,9 @@ public class ItemCategory implements Serializable {
     @JsonBackReference
     private Set<User> categoryMembers = new HashSet<User>();
 
+    @ManyToOne
     @JoinColumn(name = "leadId")
-    private User categoryLead;
+    private User lead;
     
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,20 +61,22 @@ public class ItemCategory implements Serializable {
         
     }
 
-    public ItemCategory(String categoryName, String categoryCode) {
+    public ItemCategory(String categoryName, String categoryCode, Project project) {
         
         this.uuId = UUID.randomUUID().toString();
         this.categoryName = categoryName;
         this.categoryCode = categoryCode;
+        this.project = project;
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
 
-    public ItemCategory(String categoryName, String categoryCode, User categoryLead) {
+    public ItemCategory(String categoryName, String categoryCode, User lead, Project project) {
         
         this.uuId = UUID.randomUUID().toString();
         this.categoryName = categoryName;
         this.categoryCode = categoryCode;
-        this.categoryLead = categoryLead;
+        this.project = project;
+        this.lead = lead;
         this.createdDate = new Timestamp(System.currentTimeMillis());
     }
 
@@ -109,6 +116,14 @@ public class ItemCategory implements Serializable {
         this.parent = parent;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public Set<User> getCategoryMembers() {
         return categoryMembers;
     }
@@ -117,12 +132,12 @@ public class ItemCategory implements Serializable {
         this.categoryMembers = categoryMembers;
     }
 
-    public User getCategoryLead() {
-        return categoryLead;
+    public User getLead() {
+        return lead;
     }
 
-    public void setCategoryLead(User categoryLead) {
-        this.categoryLead = categoryLead;
+    public void setLead(User lead) {
+        this.lead = lead;
     }
 
     public Date getCreatedDate() {
