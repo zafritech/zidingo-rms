@@ -6,7 +6,9 @@ import org.zafritech.zidingorms.dao.ItemCreateDao;
 import org.zafritech.zidingorms.dao.ItemDao;
 import org.zafritech.zidingorms.dao.ItemEditDao;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Link;
+import org.zafritech.zidingorms.domain.Project;
 
 @Service
 public interface ItemService {
@@ -44,6 +46,10 @@ public interface ItemService {
     String getNextRequirementIdentifier(Long id, String template);
     
     List<Item> findRequirements(Long id); 
+    
+    List<Item> findByItemCategory(Project project, ItemCategory category);  
+    
+    List<Item> findByItemCategoryPaged(Project project, ItemCategory category, int pageSize, int pageNumber);
     
     List<Item> getPagedRequirements(Long id, int pageSize, int pageNumber); 
     

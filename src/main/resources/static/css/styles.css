@@ -329,6 +329,21 @@ ul.alert-dropdown {
     font-weight: bold;
 }
 
+.item-level-none-first {
+    font-size: 12px; 
+    padding: 11px 5px;
+    border: 1px solid #c0c0c0;
+}
+
+.item-level-none {
+    font-size: 12px; 
+    padding: 11px 5px;
+    /*border: 1px solid #c0c0c0;*/
+    border-left: 1px solid #c0c0c0;
+    border-right: 1px solid #c0c0c0;
+    border-bottom: 1px solid #c0c0c0;
+}
+
 .item-level-0 {
     font-size: 12px;
 }

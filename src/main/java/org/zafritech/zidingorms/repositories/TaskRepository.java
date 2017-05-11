@@ -16,5 +16,9 @@ import org.zafritech.zidingorms.domain.User;
  */
 public interface TaskRepository extends CrudRepository<Task, Long> {
     
-    List<Task> findByAssignedToAndTaskStatus(User user, String status);
+    List<Task> findByAssignedToAndCompleted(User user, boolean completed);
+    
+    List<Task> findByBatchId(String batchId);
+    
+    List<Task> findByAssignedTo(User user);
 }

@@ -7,6 +7,7 @@ package org.zafritech.zidingorms.repositories;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+import org.zafritech.zidingorms.commons.enums.ClaimType;
 import org.zafritech.zidingorms.domain.Claim;
 import org.zafritech.zidingorms.domain.User;
 
@@ -21,4 +22,6 @@ public interface ClaimRepository extends CrudRepository<Claim, Long> {
     List<Claim> findByUserAndClaimType(User user, String claimType);
     
     List<Claim> findByUserAndClaimTypeAndClaimValue(User user, String claimType, String claimValue);
+    
+    List<Claim> findByClaimTypeAndClaimValue(ClaimType claimType, String claimValue);
 }

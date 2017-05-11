@@ -5,63 +5,46 @@
  */
 package org.zafritech.zidingorms.dao;
 
+import org.zafritech.zidingorms.commons.enums.TaskAction;
+
 /**
  *
  * @author LukeS
  */
 public class TaskDao {
     
-    private String assignedTo;
+    private Long itemId;
             
-    private String taskUnits;
+    private String batchId;
 
-    private double initialSize;
-    
-    private String taskName;
-    
-    private String taskDetails;
+    public String getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
+    }
+            
+    private TaskAction taskAction;
 
     public TaskDao() {
         
     }
 
-    public String getAssignedTo() {
-        return assignedTo;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
-    public String getTaskUnits() {
-        return taskUnits;
+    public TaskAction getTaskAction() {
+        return taskAction;
     }
 
-    public void setTaskUnits(String taskUnits) {
-        this.taskUnits = taskUnits;
+    public void setTaskAction(TaskAction taskAction) {
+        this.taskAction = taskAction;
     }
 
-    public double getInitialSize() {
-        return initialSize;
-    }
-
-    public void setInitialSize(double initialSize) {
-        this.initialSize = initialSize;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public String getTaskDetails() {
-        return taskDetails;
-    }
-
-    public void setTaskDetails(String taskDetails) {
-        this.taskDetails = taskDetails;
-    }
 }

@@ -6,14 +6,19 @@
 package org.zafritech.zidingorms.repositories;
 
 import java.util.Set;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.zafritech.zidingorms.domain.User;
 
 /**
  *
  * @author LukeS
  */
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+    
+    @Override
+    Page<User> findAll(Pageable pageable);
 
     User findByEmail(String email);
 

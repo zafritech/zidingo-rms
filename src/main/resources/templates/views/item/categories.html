@@ -1,0 +1,138 @@
+!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS - Item Categories</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+
+    <body>
+
+        <div layout:fragment="content">
+            
+            <div th:if="${category != null}" class="col-lg-12">
+                <h1 class="page-header" th:text="${category.categoryName} + ' Requirements'">Categories Requirements</h1>
+            </div>
+            
+            <div th:if="${!items.isEmpty()}" class="panel-body">
+                <div class="row">
+                    <div class="col-md-4" style="padding-top: 35px; margin-left: -8px;">
+                        <span th:utext="'Page &lt;strong&gt;' + ${currentPage} + '&lt;/strong&gt; of &lt;strong&gt;' + ${pageCount} + '&lt;/strong&gt;'">Page 1 of 1</span>
+                    </div>
+                    <div class="col-md-8" style="padding-right: 25px;">
+                        <span class="pull-right" style="margin-right: -25px;">
+                            <ul class="pagination pagination-sm">
+                                <li th:class="${currentPage == 1} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == 1}">First</span>
+                                    <a th:if="${currentPage != 1}" th:href="@{'/items/' + ${project.uuId} + '/' + ${category.uuId} + '?size=' + ${size} + '&amp;page=1'}">First</a>
+                                </li>
+                                <li th:class="${currentPage != 1} ? '' : 'disabled'">
+                                    <span th:if="${currentPage == 1}">«</span>
+                                    <a th:if="${currentPage != 1}" th:href="@{'/items/' + ${project.uuId} + '/' + ${category.uuId} + '?size=' + ${size} + '&amp;page=' + ${currentPage - 1}}"><span>«</span></a>
+                                </li>
+
+                                <li th:each="page : ${pageList}" th:class="${page == currentPage ? 'active' : ''}">
+                                    <span th:if="${page == currentPage}" th:text="${page}">1</span>
+                                    <a th:if="${page != currentPage}" th:href="@{'/items/' + ${project.uuId} + '/' + ${category.uuId} + '?size=' + ${size} + '&amp;page=' + ${page}}" th:text="${page}">1</a>
+                                </li>
+
+                                <li th:if="${pageCount > lastDisplayed}" class="disabled"><span>...</span></li>
+                                
+                                <li th:class="${currentPage == pageCount} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == pageCount}">»</span>
+                                    <a th:if="${currentPage != pageCount}" th:href="@{'/items/' + ${project.uuId} + '/' + ${category.uuId} + '?size=' + ${size} + '&amp;page=' + ${currentPage + 1}}">»</a>
+                                </li>
+                                <li th:class="${currentPage == pageCount} ? 'disabled' : ''">
+                                    <span th:if="${currentPage == pageCount}">Last</span>
+                                    <a th:if="${currentPage != pageCount}" th:href="@{'/items/' + ${project.uuId} + '/' + ${category.uuId} + '?size=' + ${size} + '&amp;page=' + ${pageCount}}">Last</a>
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${!items.isEmpty()}" class="panel-body" style="margin-top: -30px;">
+                
+                <div th:class="${item.sysId} == ${items[0].sysId} ? 'row item-level-none-first' : 'row'" 
+                     th:each="item : ${items}" 
+                     th:attr="id=${item.sysId}" 
+                     th:classappend="${item.itemClass == 'HEADER'} ? 'row item-header-' + ${item.itemLevel} : 'row item-level-' + ${item.itemLevel} + ' ' + ${#strings.toLowerCase(item.itemClass)}">
+                
+                    <div th:attr="id='value-container-'+${item.sysId}" th:class="${item.itemClass} == 'REQUIREMENT' ? 'col-xs-9 requirement-text' : 'col-xs-11'">
+                        <span th:attr="id='value-'+${item.sysId}"  th:utext="${item.itemValue}">Item</span>
+                    </div>
+                    <div th:attr="id='ident-container-'+${item.sysId}" th:if="${item.itemClass} == 'REQUIREMENT'" class="col-xs-2 requirement-identifier">
+                        <span th:attr="id='ident-'+${item.sysId}" th:text="${item.identifier}">Identifier</span>
+                    </div>
+                    <div th:attr="id='menu-container-'+${item.sysId}" class="btn-group pull-right normal-text">
+
+                        <!-- Item Menu <ul> Container -->
+                        <ul class="item-toolbar-ul dropup">  
+
+                            <li th:attr="id=${'comment-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.commentCount} > 0">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayComments(\'' + ${item.id} + '\');'">
+                                    <i class="fa fa-comments icon-comment"></i> 
+                                </a>
+                            </li>
+
+                            <li th:attr="id=${'link-icon-' + item.sysId}" class="dropdown item-toolbar-li" th:if="${item.LinkCount} > 0">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxDisplayLinks(\'' + ${item.id} + '\');'">
+                                    <i th:classappend="${item.linkChanged} ? 'fa fa-link icon-link-changed' : 'fa fa-link icon-link'"></i> 
+                                </a>
+                            </li>
+
+                            <li th:attr="id=${'menu-icon-' + item.sysId}" class="dropdown item-toolbar-li">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                   <i class="fa fa-bars" style="color: #00aced; font-size: 18px;"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down fa-rotate-90"></i> Add item below</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'ABOVE\');'"><i class="fa fa-fw fa-level-up fa-rotate-270"></i> Add item above</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemUp(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-up"></i> Move item up</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemDown(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-down"></i> Move item down</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxEditItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-pencil"></i> Edit item</a>
+                                    </li>
+                                    <li th:if="${item.itemClass} == 'REQUIREMENT'" class="divider"></li>
+                                    <li th:if="${item.itemClass} == 'REQUIREMENT'">
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxAddComment(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-comments"></i> Add item comment</a>
+                                    </li>
+                                    <li th:if="${item.itemClass} == 'REQUIREMENT'">
+                                        <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-tasks"></i> Item attributes</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxDeleteItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-trash"></i> Delete item</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+                
+            </div>
+
+            
+            
+        </div>
+        
+    </body>
+
+    <th:block layout:fragment="scripts"></th:block>
+
+</html>

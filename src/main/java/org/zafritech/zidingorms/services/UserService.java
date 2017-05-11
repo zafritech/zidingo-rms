@@ -24,6 +24,8 @@ public interface UserService {
     List<User> findAll();
 
     List<User> findOrderByFirstName();
+    
+    List<User> findOrderByFirstName(int pageSize, int pageNumber);
 
     User getByUuId(String uuid);
 
@@ -40,4 +42,6 @@ public interface UserService {
     boolean passwordMatches(String rawPassword, String encodedPassword);
     
     User changePasswordTo(User user, String password);
+    
+    List<Integer> getPagesList(int currentPage, int lastPage);
 }

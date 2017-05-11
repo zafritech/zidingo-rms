@@ -13,9 +13,11 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.commons.enums.FolderType;
 import org.zafritech.zidingorms.dao.CategDao;
+import org.zafritech.zidingorms.dao.DisciplineDao;
 import org.zafritech.zidingorms.dao.FolderDao;
 import org.zafritech.zidingorms.dao.ProjectTreeDao;
 import org.zafritech.zidingorms.domain.Artifact;
@@ -23,9 +25,11 @@ import org.zafritech.zidingorms.domain.Company;
 import org.zafritech.zidingorms.domain.Folder;
 import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Project;
+import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.FolderRepository;
 import org.zafritech.zidingorms.repositories.ItemCategoryRepository;
+import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
 import org.zafritech.zidingorms.repositories.UserRepository;
 import org.zafritech.zidingorms.services.ProjectService;
@@ -37,6 +41,8 @@ import org.zafritech.zidingorms.services.ProjectService;
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
+    private final static int PAGESIZE = 3;
+    
     @PersistenceContext
     private EntityManager em;
 
@@ -51,6 +57,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ItemCategoryRepository itemCategoryRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -142,10 +151,21 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Folder createFolder(FolderDao folderDao) {
 
-        Folder folder = new Folder(folderDao.getFolderName(),
-                                   folderDao.getFolderType(),
-                                   folderRepository.findOne(folderDao.getParentId()),
-                                   projectRepository.findOne(folderDao.getProjectId()));
+        Folder folder = new Folder();
+        
+        if (folderDao.getParentId() == 0) {
+            
+            folder = new Folder(folderDao.getFolderName(),
+                                folderDao.getFolderType(),
+                                folderRepository.findOne(folderDao.getParentId()),
+                                projectRepository.findOne(folderDao.getProjectId()));
+
+        } else {
+            
+            folder = new Folder(folderDao.getFolderName(),
+                                folderDao.getFolderType(),
+                                projectRepository.findOne(folderDao.getProjectId()));
+        }
         
         folderRepository.save(folder);
         
@@ -153,9 +173,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ItemCategory> getProjectItemCategories(Long id) {
+    public List<ItemCategory> getProjectItemCategories(String uuid) {
 
-        Project project = projectRepository.findOne(id);
+        Project project = projectRepository.findByUuId(uuid);
         
         List<ItemCategory> categories = itemCategoryRepository.findByProjectOrderByCategoryNameAsc(project);
         
@@ -172,4 +192,69 @@ public class ProjectServiceImpl implements ProjectService {
         
         return itemCategoryRepository.save(category);
     } 
+
+    @Override
+    public List<ItemCategory> listByProjectByPage(String uuid, int pageSize, int pageNumber) {
+
+        Project project = projectRepository.findByUuId(uuid);
+        PageRequest request = new PageRequest(pageNumber - 1, pageSize);
+        
+        return itemCategoryRepository.findByProjectOrderByCategoryNameAsc(request, project);
+    }
+    
+    @Override
+    public  List<Integer> getPagesList(int currentPage, int lastPage) {
+        
+        List<Integer> pageList = new ArrayList<>();
+
+        int startIndex = 1;
+        int upperLimit = 1;
+        
+        if (lastPage < 9) {
+            
+            startIndex = 1;
+            upperLimit = lastPage;
+            
+        } else {
+
+            upperLimit = ((int) Math.ceil((double)currentPage / 9) * 9);
+            upperLimit = (lastPage < upperLimit) ? lastPage : upperLimit;
+            startIndex = upperLimit - 8;
+        
+        }
+        
+        for (int i = startIndex; i <= upperLimit; i++) {
+
+            pageList.add(i);
+        }
+        
+        return pageList;
+    }
+
+    @Override
+    public List<DisciplineDao> getDisciplinesData(User user) {
+
+        List<ItemCategory> categories = itemCategoryRepository.findByLead(user);
+        List<DisciplineDao> daos = new ArrayList();
+        
+        for (ItemCategory cat : categories) {
+            
+            DisciplineDao dao = new DisciplineDao();
+            
+            dao.setId(cat.getId()); 
+            dao.setUuId(cat.getUuId()); 
+            dao.setProjectId(cat.getProject().getUuId()); 
+            dao.setCategoryCode(cat.getCategoryCode());
+            dao.setCategoryName(cat.getCategoryName());
+            dao.setItemCount(itemRepository.findByItemCategory(cat).size()); 
+            
+            // Exclude empty disciplenes/departments
+            if (dao.getItemCount() > 0) {
+            
+                daos.add(dao);
+            }
+        }
+        
+        return daos;
+    }
 }

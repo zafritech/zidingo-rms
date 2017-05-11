@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS - Project Details</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+
+    <body>
+
+        <div layout:fragment="content">
+
+            <div class="col-lg-12" style="padding-left: 0px;">
+                <h1 class="page-header">
+                    <span  th:text="${project.projectName} + ' Project'">Project</span>
+                </h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 th:text="${company.companyName}">Company name</h4>
+                    <h4 th:text="${#dates.format(project.creationDate, 'yyyy-MM-dd')}">Creation date</h4>
+                </div>
+                <div class="col-md-6" style="padding-right: 20px;">
+                    <div class="pull-right" >
+                        <a th:href="'/projects/' + ${project.uuId}"><i class="fa fa-fw fa-info-circle"></i> Project Home Folder</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="details" th:if="${project != null}" class="row" style="margin-top: 50px;">
+                
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-info">
+                        
+                        <div class="panel-heading">
+                            <span class="panel-title" th:text="${project.projectShortName} + ' - Project Details'" style="font-size: 22px;font-weight: bold;">Project Name - Details</span>
+                            <span class="pull-right">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxProjectDetailsEdit(\'' + ${project.id} + '\');'" title="Update details" type="button" class="btn btn-fixed-width-100 btn-sm btn-success tip-left">
+                                    <i class="glyphicon glyphicon-pencil"></i> Edit
+                                </a>
+                            </span>
+                        </div>
+                        
+                        <div class="panel-body">
+                            <table class="table table-user-information">
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Project name:</strong></td>
+                                        <td th:text="${project.projectName}">Project full Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Alternate name:</strong></td>
+                                        <td th:text="${project.projectShortName}">Project full Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Creation date:</strong></td>
+                                        <td th:text="${#dates.format(project.creationDate, 'MMMM dd, yyyy')}">Creation date</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Description:</strong></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Project sponsor:</strong></td>
+                                        <td th:text="${project.projectCompany.companyName}">Project sponsor</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Project manager:</strong></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 25%"><strong>Contacts:</strong></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div id="categories" th:if="${categories.isEmpty()}" class="row" style="margin-top: 50px;">
+                <div class="col-md-10 col-md-offset-1">
+                    
+                    <div class="panel panel-info">
+                    
+                        <div class="panel-heading">
+                            <span class="panel-title" th:text="${project.projectShortName} + ' - Categories/Disciplines'" style="font-size: 22px;font-weight: bold;">Project Name</span>
+                            <span class="pull-right">
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxProjectCategories(\'' + ${project.id} + '\');'" title="Update details" type="button" class="btn btn-sm btn-success tip-left">
+                                    <i class="glyphicon glyphicon-plus"></i> Add New
+                                </a>
+                            </span>
+                        </div>
+                        
+                        <div class="panel-body">
+                        
+                            <span>No categories or disciplines have been defined for this project.</span>
+                        
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+    </body>
+
+</html>

@@ -9,7 +9,7 @@ package org.zafritech.zidingorms.commons.enums;
  *
  * @author LukeS
  */
-public enum ClaimType {
+public enum TaskAction {
     
-    PROJECT_OWNER, PROJECT_MANAGER, PROJECT_MEMBER, DOCUMENT_OWNER, DOCUMENT_EDITOR, DOCUMENT_REVIWER, DOCUMENT_APPROVER, DOCUMENT_VIEWER, CATEGORY_MEMBER
+    NONE, CONFIRM_REQ, ACKNOWLEDGE_REQ, COMMENT_REQ, EXPORT_REQ, APPROVE_REQ
 }

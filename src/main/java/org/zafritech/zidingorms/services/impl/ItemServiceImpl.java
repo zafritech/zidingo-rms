@@ -21,8 +21,10 @@ import org.zafritech.zidingorms.dao.converter.DaoToItemConverter;
 import org.zafritech.zidingorms.dao.converter.ItemToEditDaoConverter;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.ItemHistory;
 import org.zafritech.zidingorms.domain.Link;
+import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.domain.SystemVariable;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ItemHistoryRepository;
@@ -371,6 +373,23 @@ public class ItemServiceImpl implements ItemService {
         return requirements;
     }
     
+    @Override
+    public List<Item> findByItemCategory(Project project, ItemCategory category) {
+
+        List<Item> items = itemRepository.findByItemCategory(category);
+        
+        return items;
+    }
+    
+    @Override
+    public List<Item> findByItemCategoryPaged(Project project, ItemCategory category, int pageSize, int pageNumber) {
+
+        PageRequest request = new PageRequest(pageNumber -1, pageSize, Sort.Direction.ASC, "sortIndex");
+        
+        List<Item> items = itemRepository.findByItemCategory(request, category);
+        
+        return items;
+    }
     
     private void refreshSortIndeces(Long artifactId, int index) {
 

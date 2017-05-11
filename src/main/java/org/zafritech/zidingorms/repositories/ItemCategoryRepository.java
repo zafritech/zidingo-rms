@@ -6,15 +6,25 @@
 package org.zafritech.zidingorms.repositories;
 
 import java.util.List;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Project;
+import org.zafritech.zidingorms.domain.User;
 
 /**
  *
  * @author LukeS
  */
-public interface ItemCategoryRepository extends CrudRepository<ItemCategory, Long> {
+public interface ItemCategoryRepository extends PagingAndSortingRepository<ItemCategory, Long> {
+    
+    ItemCategory findByUuId(String uuid);
     
     List<ItemCategory> findByProjectOrderByCategoryNameAsc(Project project);
+    
+    List<ItemCategory> findByProjectOrderByCategoryNameAsc(Pageable pageable, Project project);
+    
+    ItemCategory findFirstByCategoryCode(String code);
+    
+    List<ItemCategory> findByLead(User user);
 }

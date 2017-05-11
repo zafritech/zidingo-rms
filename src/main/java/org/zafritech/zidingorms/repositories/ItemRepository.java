@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.ItemCategory;
+import org.zafritech.zidingorms.domain.Project;
 
 /**
  *
@@ -19,6 +21,8 @@ import org.zafritech.zidingorms.domain.Item;
 public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
 
     Item findBySysId(String sysId);
+    
+    Item findFirstByIdentifier(String ident);
 
     List<Item> findByArtifactId(Long id);
 
@@ -29,4 +33,8 @@ public interface ItemRepository extends PagingAndSortingRepository<Item, Long> {
     List<Item> findByArtifactIdOrderBySortIndexAsc(Long id);
     
     List<Item> findByArtifact(Pageable pageable, Artifact artifact);
+    
+    List<Item> findByItemCategory(ItemCategory category);
+    
+    List<Item> findByItemCategory(Pageable pageable, ItemCategory category);
 }

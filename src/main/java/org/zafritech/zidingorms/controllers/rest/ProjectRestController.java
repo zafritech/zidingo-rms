@@ -24,6 +24,9 @@ import org.zafritech.zidingorms.services.impl.ProjectServiceImpl;
 @RestController
 public class ProjectRestController {
     
+    @Autowired
+    private ProjectRepository projectRepository;
+    
     private ProjectService projectService;
 
     @Autowired
@@ -55,6 +58,14 @@ public class ProjectRestController {
 
         return tree;
     }
+
+    @RequestMapping(value = "/api/project/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Project> getProjectUuId(@PathVariable(value = "id") Long id) {
+
+        Project project = projectRepository.findOne(id);
+        
+        return new ResponseEntity<Project>(project, HttpStatus.OK);
+    }
     
     @RequestMapping(value = "/api/projects/list", method = RequestMethod.GET)
     public List<Project> getProjectsList() {
@@ -74,7 +85,7 @@ public class ProjectRestController {
     @RequestMapping(value="/api/categories/list/{id}", method = RequestMethod.GET)
     public ResponseEntity<List<ItemCategory>> getProjectCategoriesList(@PathVariable(value = "id") Long id) {
         
-        List<ItemCategory> categories = projectService.getProjectItemCategories(id);
+        List<ItemCategory> categories = projectService.getProjectItemCategories(projectRepository.findOne(id).getUuId());
         
         return new ResponseEntity<List<ItemCategory>>(categories, HttpStatus.OK);
     }

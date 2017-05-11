@@ -29,4 +29,10 @@ public interface GeneralService {
     List<Task>  getActiveTasks(User user);
     
     Claim createClaim(ClaimDao claimDao);
+    
+    List<Claim> findUserClaims(User user);
+    
+    List<Task> findUserTasks(User user);
+    
+    Integer findUserTasksCount(User user);
 }

@@ -1,0 +1,27 @@
+!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorator="layouts/main">
+
+    <head>
+        <title>Zidingo RMS - Tasks</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+    </head>
+
+    <body>
+
+        <div layout:fragment="content">
+            
+            <div th:if="${user != null}" class="col-lg-12">
+                <h1 class="page-header" th:text="${user.firstName} + '\'s Tasks'">User's Tasks</h1>
+            </div>
+            
+        </div>
+        
+    </body>
+
+    <th:block layout:fragment="scripts"></th:block>
+
+</html>

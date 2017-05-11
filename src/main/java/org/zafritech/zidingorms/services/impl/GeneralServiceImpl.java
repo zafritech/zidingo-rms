@@ -6,8 +6,9 @@
 package org.zafritech.zidingorms.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import org.zafritech.zidingorms.domain.Task;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,8 +18,12 @@ import org.zafritech.zidingorms.commons.enums.ClaimType;
 import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.TaskDao;
 import org.zafritech.zidingorms.domain.Claim;
+import org.zafritech.zidingorms.domain.Item;
+import org.zafritech.zidingorms.domain.ItemCategory;
+import org.zafritech.zidingorms.domain.Task;
 import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.ClaimRepository;
+import org.zafritech.zidingorms.repositories.ItemRepository;
 import org.zafritech.zidingorms.repositories.TaskRepository;
 import org.zafritech.zidingorms.repositories.UserRepository;
 import org.zafritech.zidingorms.services.GeneralService;
@@ -31,6 +36,9 @@ import org.zafritech.zidingorms.services.GeneralService;
 public class GeneralServiceImpl implements GeneralService {
 
     @Autowired
+    private ItemRepository itemRepository;
+    
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -38,7 +46,7 @@ public class GeneralServiceImpl implements GeneralService {
     
     @Autowired
     private ClaimRepository claimRepository;
-    
+  
     @Override
     public User loggedInUser() {
         
@@ -60,11 +68,32 @@ public class GeneralServiceImpl implements GeneralService {
     @Override
     public Task createTask(TaskDao taskDao) {
 
-        Task task = new Task(taskDao.getTaskName(), 
-                             taskDao.getTaskDetails(), 
-                             taskDao.getTaskUnits(), 
-                             taskDao.getInitialSize(),
-                             userRepository.getByUuId(taskDao.getAssignedTo()));
+        Item item = itemRepository.findOne(taskDao.getItemId());
+        ItemCategory category = item.getItemCategory();
+        Task task = new Task(item, taskDao.getTaskAction(), taskDao.getBatchId());
+        Set<User> users = new HashSet<>();
+        
+        if (category != null) {
+            
+            users.add(category.getLead());
+            
+            List<Claim> claims = claimRepository.findByClaimTypeAndClaimValue(ClaimType.CATEGORY_MEMBER, 
+                                                                          category.getId().toString());
+        
+            if (claims != null) {
+
+                for (Claim claim : claims) {
+
+                    users.add(claim.getUser());
+                }
+            }
+
+            task.setAssignedTo(users);
+            
+        } else {
+            
+            System.out.println("Item " + item.getSysId() + " has no defined category.");
+        }
         
         return taskRepository.save(task);
     }
@@ -72,7 +101,7 @@ public class GeneralServiceImpl implements GeneralService {
     @Override
     public List<Task> getActiveTasks(User user) {
         
-        List<Task> tasks = taskRepository.findByAssignedToAndTaskStatus(user, "OPEN");
+        List<Task> tasks = taskRepository.findByAssignedToAndCompleted(user, false);
                 
         return tasks;
     }
@@ -85,5 +114,30 @@ public class GeneralServiceImpl implements GeneralService {
         Claim claim = new Claim(user, ClaimType.valueOf(claimDao.getUserClaimType()), claimDao.getUserClaimValue());
         
         return claimRepository.save(claim);
+    }
+
+    @Override
+    public List<Claim> findUserClaims(User user) {
+
+        List<Claim> claims = claimRepository.findByUser(user);
+                
+        return claims;
+    }
+
+    @Override
+    public List<Task> findUserTasks(User user) {
+
+        List<Task> tasks = taskRepository.findByAssignedToAndCompleted(user, false);
+       
+        return tasks;
+    }
+
+    @Override
+    public Integer findUserTasksCount(User user) {
+
+        List<Task> tasks = taskRepository.findByAssignedToAndCompleted(user, false);
+        Integer taskSize = tasks.size();
+                
+        return taskSize;
     }
 }

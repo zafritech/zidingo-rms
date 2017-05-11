@@ -79,9 +79,9 @@ function UpdateUserMessageAlerts() {
                     var whenSent = timeSince(index.sentDate) + '<br/>'+ date.toISOString().substring(0, 19).replace("T", " ");
 
                     var message  =  '<li class="message-preview">' +
-                                    '<a href="/profile/inbox/' + index.uuId + '">' +
+                                    '<a href="/messages/' + index.uuId + '">' +
                                     '<div class="media">' +
-                                    '<span class="pull-left"><img class="media-object" src="/images/admin.jpg" alt="" /></span>' +
+                                    '<span class="pull-left"><img class="media-object" src="/images/admin.png" alt="" /></span>' +
                                     '<div class="media-body">' +
                                     '<h5 class="media-heading">From:<strong> ' + index.sender.firstName + '</strong></h5>' +
                                     '<p class="small text-muted"><i class="fa fa-clock-o"></i> ' + whenSent + '</p>' +
@@ -95,7 +95,7 @@ function UpdateUserMessageAlerts() {
 
                 });
 
-                $('#userMessageSummaries').append('<li class="message-footer"><a href="#">Read All New Messages</a></li>');
+                $('#userMessageSummaries').append('<li class="message-footer"><a href="/messages">Read All New Messages</a></li>');
                 $('#userMessages').show();
                  
             } else {
@@ -145,7 +145,7 @@ function UpdateUserNotificationAlerts() {
                 });
 
                 $('#userNotificationDetails').append('<li class="divider"></li>');
-                $('#userNotificationDetails').append('<li class="message-footer"><a href="#">View all</a></li>');
+                $('#userNotificationDetails').append('<li class="message-footer"><a href="/notifications">View all</a></li>');
                 $('#userNotifications').show();
             
             } else {
@@ -171,6 +171,96 @@ function UpdateUserTasksAlerts() {
         dataType: "json",
         success: function (data) {
             
+            console.log(data);
+            
+            if (data.length > 0) {
+                
+                var taskCount = (data.length > 10) ? '10+' : data.length;
+                
+                $('#userTasksCount').html(taskCount);
+                $('#userTasksDetails').empty();
+                
+                var age = timeSince(data[0].creationDate);
+                var total = data.length;
+                var complete = 0;
+                var outstanding = 0;
+                var taskDetails = '';
+                 
+                $.each(data, function (key, index) {
+                    
+                    if (index.completed === true) {
+                        
+                        complete++;
+                    }
+                    
+                    if (index.completed === false) {
+                        
+                        outstanding++;
+                        
+                        var action = '';
+                        if (index.taskAction === "CONFIRM_REQ") { action = 'Confirmation'; }
+                        if (index.taskAction === "ACKNOWLEDGE_REQ") { action = 'Acknowlegement'; }
+                            
+                        taskDetails  =  taskDetails +
+                                        '<li>' +
+                                        '<a href="/tasks/' + index.uuId + '">' +
+                                        '<div style="padding: 10px; border-top: 1px solid #c0c0c0;">' +
+                                        '<span><strong>' + action +' Request</strong></span>' +
+                                        '<span class="pull-right" style="font-size: 75%">' + index.taskItem.sysId + '</span>' +
+                                        '<div style="margin-top: 5px;">Confirm requirement requirement with identifier: ' + index.taskItem.identifier + '</div>' +
+                                        '</div>' +
+                                        '</a>';
+                                        '</li>';
+                    }
+                });
+                
+                var pecentageComplete = Math.round(complete / total * 100);
+                    
+                var task =  '<li>' +
+                            '<a href="/tasks">' +
+                            '<div style="padding: 10px; border-top: 6px solid #369;">' +
+                            '<span><strong>Requirements Requests</strong></span>' +
+                            '<span class="pull-right" style="font-size: 75%">' + age + '</span>' +
+                            '<div style="margin-top: 5px;">You have ' + total + ' requirements confirmation requests.</div>' +
+                            '<div style="font-size: 85%; margin-top: 10px;">Completion with: ' + pecentageComplete + '%</div>' +
+                            '<div class="progress" style="margin-top: 4px;">' +
+                            '<div class="progress-bar progress-bar-success" role="progressbar" style="width: ' + pecentageComplete + '%" arial-valuenow="' + pecentageComplete + '" arial-valuemin="0" arial-valuemax="100"></div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</a>';
+                            '</li>';
+                            
+                task = task + taskDetails;
+
+                $('#userTasksDetails').append(task);
+
+                $('#userTasks').show();
+                
+            } else {
+                
+                $('#userTasks').hide();
+            }
+        },
+        error: function() {
+            
+            return;
+        }
+    });
+}
+
+
+/* Update User toolbar with tasks */
+function UpdateUserTasksAlertsOld() {
+    
+    $.ajax({
+        
+        url: '/api/tasks/active',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            
+            console.log(data);
+            
             if (data.length > 0) {
                 
                 var taskCount = (data.length > 10) ? '10+' : data.length;
@@ -195,7 +285,7 @@ function UpdateUserTasksAlerts() {
                             
                     var task =  '<li>' +
                                 '<div style="padding: 10px; border-top: 1px solid #c0c0c0;">' +
-                                '<span style="color: #369;"><strong>' + index.taskName + '</strong></span>' +
+                                '<span style="color: #369;"><strong>' + index.taskItem.identifier + '</strong></span>' +
                                 '<span class="pull-right">' + percentage + '%</span>' +
                                 '<div class="progress">' +
                                 '<div class="progress-bar ' + taskClass + '" role="progressbar" style="width: ' + percentage + '%" arial-valuenow="' + percentage + '" arial-valuemin="0" arial-valuemax="100"></div>' +
@@ -353,17 +443,28 @@ function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 
     var treeObj = $.fn.zTree.getZTreeObj("projectTree");
     var projectId = localStorage.getItem('currentProjectId');
-
+    
     if (treeNode.isParent) {
 
-        if (treeNode.pId === 0) {
+        $.ajax({
 
-            window.location.replace('/projects/' + treeNode.linkId);
-            
-        } else {
-            
-            window.location.replace('/projects/' + projectId + '/' + treeNode.id);
-        }
+            type: "GET",
+            contentType: "application/json",
+            url: '/api/project/' + projectId,
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+
+                if (treeNode.pId === 0) {
+
+                    window.location.replace('/projects/' + data.uuId);
+
+                } else {
+
+                    window.location.replace('/projects/' + data.uuId + '/' + treeNode.id);
+                }
+            }
+        });
 
         localStorage.setItem('currentFolderId', treeNode.id);
         treeObj.expandNode(treeNode, true, false, true);
@@ -440,6 +541,11 @@ function ToggleApplicationMenu() {
 }
 
 
+function BootboxCreateFolder(projectId) {
+    
+    BootboxCreateSubfolder(0, projectId);
+}
+
 function BootboxCreateSubfolder(parentId, projectId) {
     
     $.ajax({
@@ -450,7 +556,7 @@ function BootboxCreateSubfolder(parentId, projectId) {
             bootbox.confirm({
 
                 message: data,
-                title: "Create subfolder",
+                title: "Create folder/subfolder",
                 size: 'small',
                 buttons: {
                     cancel: {
@@ -937,27 +1043,30 @@ function BootboxAdminUserClaimsManage(uuId, user) {
                         className: "btn-success btn-fixed-width-100"
                     }
                 },
-                callback: function () {
+                callback: function (result) {
                     
-                    var data = {};
+                    if (result) {
                     
-                    data['userUuId'] = document.getElementById('userUuId').value;;
-                    data['userClaimType'] = document.getElementById('userClaimType').value;;
-                    data['userClaimValue'] = document.getElementById('userClaimTarget').value;
+                        var data = {};
                     
-                    $.ajax({
+                        data['userUuId'] = document.getElementById('userUuId').value;;
+                        data['userClaimType'] = document.getElementById('userClaimType').value;;
+                        data['userClaimValue'] = document.getElementById('userClaimTarget').value;
 
-                        type: "POST",
-                        contentType: "application/json",
-                        url: "/api/claims/new",
-                        data: JSON.stringify(data),
-                        dataType: "json",
-                        timeout: 60000,
-                        success: function () {
-                            
-                            location.reload('/admin/users/claims/' + uuId);
-                        }
-                    });
+                        $.ajax({
+
+                            type: "POST",
+                            contentType: "application/json",
+                            url: "/api/claims/new",
+                            data: JSON.stringify(data),
+                            dataType: "json",
+                            timeout: 60000,
+                            success: function () {
+
+                                location.reload('/admin/users/claims/' + uuId);
+                            }
+                        });
+                    }
                 }
             });
             
@@ -1045,6 +1154,8 @@ function OnUserClaimTypeChange() {
     var claimsArray = claimType.split('_');
     var targetType = claimsArray[0];
     
+    console.log(targetType);
+    
     if (targetType === "PROJECT") {
         
         $.ajax({
@@ -1086,6 +1197,30 @@ function OnUserClaimTypeChange() {
             $.each(data, function (key, index) {
 
                 selectDocumentOptions = selectDocumentOptions + '<option value="' + index.id + '">' + index.artifactLongName + '</option>';
+            });
+
+            $('#userClaimTarget').empty();
+            $('#userClaimTarget').append(selectDocumentOptions);
+            
+        });
+        
+    } else if (targetType === "CATEGORY") {
+        
+        $.ajax({
+                    
+            type: "GET",
+            contentType: "application/json",
+            url: "/api/categories/list/" + localStorage.getItem('currentProjectId'),
+            dataType: "json",
+            cache: false
+        })
+        .done(function (data) {
+            
+            var selectDocumentOptions = '';
+                    
+            $.each(data, function (key, index) {
+
+                selectDocumentOptions = selectDocumentOptions + '<option value="' + index.id + '">' + index.categoryName + '</option>';
             });
 
             $('#userClaimTarget').empty();
@@ -1146,7 +1281,7 @@ function BootboxProjectCategories(id) {
                             timeout: 60000,
                             success: function (data) {
 
-                                location.replace('/projects/metadata/' + id + '#categories');
+                                location.replace('/projects/metadata/' + id);
                                 showToastr('success', 'Password for ' + data.categoryName +' changed!');
                             }
                         });

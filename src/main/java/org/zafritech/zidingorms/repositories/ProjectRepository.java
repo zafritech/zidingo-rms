@@ -14,4 +14,5 @@ import org.zafritech.zidingorms.domain.Project;
  */
 public interface ProjectRepository extends CrudRepository<Project, Long> {
 
+    Project findByUuId(String uuid);
 }

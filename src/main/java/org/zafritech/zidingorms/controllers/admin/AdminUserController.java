@@ -1,6 +1,7 @@
 package org.zafritech.zidingorms.controllers.admin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -13,16 +14,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.zafritech.zidingorms.dao.ClaimDao;
 import org.zafritech.zidingorms.dao.UserDao;
 import org.zafritech.zidingorms.domain.Artifact;
 import org.zafritech.zidingorms.domain.Claim;
+import org.zafritech.zidingorms.domain.ItemCategory;
 import org.zafritech.zidingorms.domain.Project;
 import org.zafritech.zidingorms.domain.User;
 import org.zafritech.zidingorms.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.repositories.ClaimRepository;
+import org.zafritech.zidingorms.repositories.ItemCategoryRepository;
 import org.zafritech.zidingorms.repositories.ProjectRepository;
 import org.zafritech.zidingorms.repositories.RoleRepository;
+import org.zafritech.zidingorms.repositories.UserRepository;
 import org.zafritech.zidingorms.services.UserService;
 
 @Controller
@@ -30,6 +35,9 @@ import org.zafritech.zidingorms.services.UserService;
 public class AdminUserController {
 
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -44,15 +52,30 @@ public class AdminUserController {
     private ArtifactRepository artifactRepository;
     
     @Autowired
+    private ItemCategoryRepository ItemCategoryRepository;
+    
+    @Autowired
     public void setUserService(UserService userService) {
 
         this.userService = userService;
     }
 
     @RequestMapping(value = {"/admin/users", "/admin/users/list"})
-    public String listUsers(Model model) {
+    public String listUsers(@RequestParam(name = "s", defaultValue = "10") int pageSize,
+                            @RequestParam(name = "p", defaultValue = "1") int pageNumber,
+                            Model model) {
+        
+        Integer usersCount = userRepository.findAll().size();
+        Integer pageCount = (int)Math.ceil((float)(usersCount / pageSize)) + 1;
+        List<Integer> pageList = userService.getPagesList(pageNumber, pageCount);
 
-        model.addAttribute("users", userService.findOrderByFirstName());
+        model.addAttribute("users", userService.findOrderByFirstName(pageSize, pageNumber));
+        model.addAttribute("userCount", usersCount);
+        model.addAttribute("page", pageNumber);
+        model.addAttribute("size", pageSize);
+        model.addAttribute("list", pageList);
+        model.addAttribute("count", pageCount);
+        model.addAttribute("last", Collections.max(pageList));
 
         return "admin/users/list";
     }
@@ -93,6 +116,11 @@ public class AdminUserController {
                 
                 Artifact doc = artifactRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
                 dao.setUserClaimStringValue(doc.getArtifactName());
+                
+            } else if (str.substring(0, str.indexOf("_")).equals("CATEGORY")) {
+                
+                ItemCategory category = ItemCategoryRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                dao.setUserClaimStringValue(category.getCategoryName());
             }
             
             claims.add(dao);

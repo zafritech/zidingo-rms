@@ -47,15 +47,12 @@
                         <a href="/admin" class="dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
                             <i class="fa fa-cog"></i> <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu" style="width: 180px;">
+                        <ul class="dropdown-menu" style="width: 190px;">
                             <li>
-                                <a href="/admin/dash"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                                <a href="/admin/dashboard"><i class="fa fa-fw fa-bar-chart"></i> Dashboard</a>
                             </li>
                             <li>
-                                <a href="/admin/monitor"><i class="fa fa-fw fa-gears"></i> System Settings</a>
-                            </li>
-                            <li>
-                                <a href="/admin/users"><i class="fa fa-fw fa-user"></i> Manage Users</a>
+                                <a href="/admin/users"><i class="fa fa-fw fa-users"></i> Manage Users</a>
                             </li>
                             <li>
                                 <a href="javascript:void(0);" th:onclick="'javascript:CreateUserTask();'"><i class="fa fa-fw fa-tasks"></i> Create user task</a>
@@ -68,7 +65,10 @@
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="/admin/projects"><i class="fa fa-fw fa-bar-chart"></i> Project Settings</a>
+                                <a href="/admin"><i class="fa fa-fw fa-gears"></i> Administration</a>
+                            </li>
+                            <li>
+                                <a href="/admin/monitor"><i class="fa fa-fw fa-database"></i> System Monitoring</a>
                             </li>
                         </ul>
                     </li>
@@ -92,7 +92,7 @@
                             <i class="fa fa-tasks"></i> <b class="caret"></b>
                             <sup id="userTasksCount" class="badge badge-hitcount"></sup>
                         </a>
-                        <ul id="userTasksDetails" class="dropdown-menu tasks-dropdown" style="width: 300px;"></ul>
+                        <ul id="userTasksDetails" class="dropdown-menu tasks-dropdown" style="width: 350px;"></ul>
                     </li>
                     
                     <li class="dropdown">

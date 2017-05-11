@@ -1,17 +1,26 @@
 package org.zafritech.zidingorms.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.zafritech.zidingorms.commons.enums.TaskAction;
 
 @Entity(name = "TBL_TASKS")
 public class Task implements Serializable {
@@ -22,45 +31,55 @@ public class Task implements Serializable {
     
     private String uuId;
     
-    private String taskName;
+    private String batchId;
+        
+    @ManyToOne
+    @JoinColumn(name = "itemId")
+    private Item taskItem;
     
-    @Column(columnDefinition = "TEXT")
-    private String taskDetails;
+    @Enumerated(EnumType.STRING)
+    private TaskAction taskAction;
     
-    private String taskUnits;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "XREF_TASK_ASSIGNMENTS",
+               joinColumns = {@JoinColumn(name = "task_id", referencedColumnName = "id")},
+               inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+    )
+    @JsonBackReference
+    private Set<User> assignedTo = new HashSet<User>();
     
-    private double initialSize;
-    
-    private double taskProgress;
-    
-    private String taskStatus;
-    
-    @OneToOne
-    @JoinColumn(name = "assignedToId")
-    private User assignedTo;
+    private boolean completed;
     
     @Temporal(TemporalType.TIMESTAMP)
-    private Date assignedDate;
+    private Date creationDate;
+    
+    private User completedBy;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date completionDate;
 
+    @Override
+    public String toString() {
+        
+        return "Task{" + "id=" + getId() + ", uuId=" + getUuId() + ", taskItem=" + 
+                getTaskItem() + ", taskAction=" + getTaskAction() + ", assignedTo=" + 
+                getAssignedTo() + ", completed=" + isCompleted() + ", creationDate=" + 
+                getCreationDate() + ", completedBy=" + getCompletedBy() + ", completionDate=" 
+                + getCompletionDate() + '}';
+    }
+
+    
     public Task() {
         
     }
 
-    public Task(String taskName, 
-                String taskDetails, 
-                String taskUnits, 
-                double initialSize,
-                User assignedTo) {
+    public Task(Item taskItem, TaskAction taskAction, String batchId) {
         
         this.uuId = UUID.randomUUID().toString();
-        this.taskName = taskName;
-        this.taskDetails = taskDetails;
-        this.taskUnits = taskUnits;
-        this.initialSize = initialSize;
-        this.taskProgress = 0.0;
-        this.taskStatus = "OPEN";
-        this.assignedDate = new Timestamp(System.currentTimeMillis());
-        this.assignedTo = assignedTo;
+        this.taskItem = taskItem;
+        this.taskAction = taskAction;
+        this.batchId = batchId;
+        this.creationDate = new Timestamp(System.currentTimeMillis());
     }
 
     public Long getId() {
@@ -75,67 +94,68 @@ public class Task implements Serializable {
         this.uuId = uuId;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getBatchId() {
+        return batchId;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setBatchId(String batchId) {
+        this.batchId = batchId;
     }
 
-    public String getTaskDetails() {
-        return taskDetails;
+    public Item getTaskItem() {
+        return taskItem;
     }
 
-    public void setTaskDetails(String taskDetails) {
-        this.taskDetails = taskDetails;
+    public void setTaskItem(Item taskItem) {
+        this.taskItem = taskItem;
     }
 
-    public String getTaskUnits() {
-        return taskUnits;
+    public TaskAction getTaskAction() {
+        return taskAction;
     }
 
-    public void setTaskUnits(String taskUnits) {
-        this.taskUnits = taskUnits;
+    public void setTaskAction(TaskAction taskAction) {
+        this.taskAction = taskAction;
     }
 
-    public double getInitialSize() {
-        return initialSize;
-    }
-
-    public void setInitialSize(double initialSize) {
-        this.initialSize = initialSize;
-    }
-
-    public double getTaskProgress() {
-        return taskProgress;
-    }
-
-    public void setTaskProgress(double taskProgress) {
-        this.taskProgress = taskProgress;
-    }
-
-    public String getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(String taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public User getAssignedTo() {
+    public Set<User> getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(User assignedTo) {
+    public void setAssignedTo(Set<User> assignedTo) {
         this.assignedTo = assignedTo;
     }
 
-    public Date getAssignedDate() {
-        return assignedDate;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setAssignedDate(Date assignedDate) {
-        this.assignedDate = assignedDate;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public User getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(User completedBy) {
+        this.completedBy = completedBy;
+    }
+
+    public Date getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(Date completionDate) {
+        this.completionDate = completionDate;
+    }
+
 }
