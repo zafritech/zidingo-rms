@@ -64,6 +64,7 @@ public class StarterCLR implements CommandLineRunner {
         dataInitializer.initializeArtifactTypes();
         dataInitializer.initializeProjects();
         dataInitializer.initializeSystemVariable();
+        dataInitializer.initializeVerificationMethods();
     }
     
     private void moveFolder() {

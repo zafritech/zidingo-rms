@@ -21,6 +21,7 @@ import org.zafritech.zidingorms.database.domain.Project;
 import org.zafritech.zidingorms.database.domain.Role;
 import org.zafritech.zidingorms.database.domain.SystemVariable;
 import org.zafritech.zidingorms.database.domain.User;
+import org.zafritech.zidingorms.database.domain.VerificationMethod;
 import org.zafritech.zidingorms.database.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.database.repositories.ArtifactTypeRepository;
 import org.zafritech.zidingorms.database.repositories.CompanyRepository;
@@ -30,6 +31,7 @@ import org.zafritech.zidingorms.database.repositories.LinkTypeRepository;
 import org.zafritech.zidingorms.database.repositories.RoleRepository;
 import org.zafritech.zidingorms.database.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.database.repositories.UserRepository;
+import org.zafritech.zidingorms.database.repositories.VerificationMethodRepository;
 import org.zafritech.zidingorms.projects.ProjectServiceImpl;
 
 /**
@@ -68,6 +70,9 @@ public class DataInitializer {
     
     @Autowired
     private SystemVariableRepository systemVariableRepository;
+    
+    @Autowired
+    private VerificationMethodRepository verificationMethodRepository;
     
     public DataInitializer() {
         
@@ -424,5 +429,23 @@ public class DataInitializer {
         }
         
         System.out.println("Zidingo RMS: SystemVariables initialized....");
+    }
+    
+    @Transactional
+    public void initializeVerificationMethods() {
+        
+        verificationMethodRepository.save(new VerificationMethod("DS", "Design Review", "Throughout the design process a considerable number of requirements can be verified and agreed. Approved design documents will be used as evidence. Reference to the requirement has to be provided with/ within the design document."));
+        verificationMethodRepository.save(new VerificationMethod("SUB", "Submissions", "Submissions made and approved within the project like manuals and drawings will be considered as evidence. (e.g. manuals, plans, safety cases, standards, drawings, etc.)"));
+        verificationMethodRepository.save(new VerificationMethod("SACE", "Study, Assessment, Calculation or Evaluation of similar solution", "Calculations, analysis, research, studies, assessments or evaluations of similar solutions are performed in accordance with established internal quality management system procedures/instructions."));
+        verificationMethodRepository.save(new VerificationMethod("SIMU", "Simulation & Modelling", "Calculations, analysis, research, studies, assessments or evaluations of similar solutions are performed in accordance with established internal quality management system procedures/instructions."));
+        verificationMethodRepository.save(new VerificationMethod("FAT", "Factory Acceptance Tests", "To ensure the functionality of (sub) systems or components in factory environment. Test procedures are either available as standards or might be supplemented by project requirements"));
+        verificationMethodRepository.save(new VerificationMethod("TT", "Type Tests", "To validate the technical performance of the subsystem or parts of subsystem components compared to the contractual requirements and specifications. The procedures will be based on the Technical Requirements developed during the design phase."));
+        verificationMethodRepository.save(new VerificationMethod("XRCT", "External Certification", "Third party certification (e.g. Certificate of Conformity) shall be used as an evidence for the implementation of the requirement."));
+        verificationMethodRepository.save(new VerificationMethod("OSIN", "Installation Test (Onsite Test/Site Installation Test)", "Inspections and measurements / tests after delivery and installation of the equipment at the relevant installation site of the subsystem shall be the precondition for commissioning."));
+        verificationMethodRepository.save(new VerificationMethod("OSTC", "Function Test (Partial Test) - Static Testing", "In order to demonstrate that the function of parts or components of the subsystem after commissioning are fulfilled, the components are successively connected to a functional subsystem according to the requirements. The completeness of the components required can be demonstrated"));
+        verificationMethodRepository.save(new VerificationMethod("DYNT", "Function Test (Partial Test) - Dynamic Testing", "Test of the system as part of systems integration testing involving rolling stock."));
+        verificationMethodRepository.save(new VerificationMethod("SIT", "System Integration Testing", "SIT Shall take place subsequently to the testing of individual subsystems, equipment and facilities. System integration tests will be performed to validate: Proper functioning of system features that have not been verified by previous tests. Compatibility of equipment and/or facilities supplied by more than a single internal or external supplier."));
+        
+        System.out.println("Zidingo RMS: VerificationMethods initialized....");
     }
 }

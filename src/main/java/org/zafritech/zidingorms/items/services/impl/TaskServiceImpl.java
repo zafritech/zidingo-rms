@@ -95,4 +95,10 @@ public class TaskServiceImpl implements TaskService {
                 
         return taskSize;
     }
+
+    @Override
+    public Task findUserTaskByUuId(String uuid) {
+
+        return taskRepository.findByUuId(uuid);
+    }
 }

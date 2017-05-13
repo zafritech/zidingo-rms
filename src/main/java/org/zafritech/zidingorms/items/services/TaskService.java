@@ -24,5 +24,7 @@ public interface TaskService {
         
     List<Task> findUserTasks(User user);
     
+    Task findUserTaskByUuId(String uuid);
+    
     Integer findUserTasksCount(User user);
 }

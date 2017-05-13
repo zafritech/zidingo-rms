@@ -5,12 +5,18 @@
  */
 package org.zafritech.zidingorms.items.controllers;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zafritech.zidingorms.core.user.UserService;
+import org.zafritech.zidingorms.database.domain.ItemComment;
+import org.zafritech.zidingorms.database.domain.Task;
 import org.zafritech.zidingorms.database.domain.User;
+import org.zafritech.zidingorms.items.services.CommentService;
+import org.zafritech.zidingorms.items.services.TaskService;
 
 /**
  *
@@ -21,24 +27,36 @@ public class TaskController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private TaskService taskService;
+    
+    @Autowired
+    private CommentService commentService;
         
     @RequestMapping("/tasks")
     public String tasksActions(Model model) {
         
         User user = userService.loggedInUser();
+        List<Task> tasks = taskService.findUserTasks(user);
         
         model.addAttribute("user", user);
+        model.addAttribute("tasks", tasks);
         
-        return "/views/projects/tasks";
+        return "/views/item/tasks";
     }
     
     @RequestMapping("/tasks/{uuid}")
-    public String performTask(Model model) {
+    public String performTask(@PathVariable String uuid, Model model) {
         
         User user = userService.loggedInUser();
+        Task task = taskService.findUserTaskByUuId(uuid);
+        List<ItemComment> comments = commentService.findByItemIdOrderByCreationDateDesc(task.getTaskItem().getId());
         
         model.addAttribute("user", user);
+        model.addAttribute("task", task);
+        model.addAttribute("comments", comments);
         
-        return "/views/projects/tasks";
+        return "/views/item/taskdetails";
     }
 }

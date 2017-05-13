@@ -1,6 +1,5 @@
 package org.zafritech.zidingorms.database.domain;
 
-import org.zafritech.zidingorms.database.domain.Item;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -50,6 +49,9 @@ public class Task implements Serializable {
     private Set<User> assignedTo = new HashSet<User>();
     
     private boolean completed;
+    
+    @Enumerated(EnumType.STRING)
+    private TaskAction taskActionTaken;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
@@ -133,6 +135,14 @@ public class Task implements Serializable {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public TaskAction getTaskActionTaken() {
+        return taskActionTaken;
+    }
+
+    public void setTaskActionTaken(TaskAction taskActionTaken) {
+        this.taskActionTaken = taskActionTaken;
     }
 
     public Date getCreationDate() {

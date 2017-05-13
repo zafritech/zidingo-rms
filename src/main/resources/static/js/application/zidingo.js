@@ -171,8 +171,6 @@ function UpdateUserTasksAlerts() {
         dataType: "json",
         success: function (data) {
             
-            console.log(data);
-            
             if (data.length > 0) {
                 
                 var taskCount = (data.length > 10) ? '10+' : data.length;
@@ -2284,6 +2282,87 @@ function BootboxDeleteItem(id) {
     });
 }
 
+
+function BootboxConfirmItem(id) {
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        var itemToConfirm = data;
+
+        bootbox.confirm({
+            
+            message: itemToConfirm.itemValue,
+            title: "Confirm requirement: " + itemToConfirm.identifier + "?",
+            buttons: {
+                cancel: {
+                    label: "Cancel",
+                    className: "btn-danger btn-fixed-width-100"
+                },
+                confirm: {
+                    label: "Confirm",
+                    className: "btn-success btn-fixed-width-100"
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    
+                    // TBD
+                }
+            }
+        });
+        
+    });
+}
+
+
+function BootboxAcknowledgeItem(id) {
+    
+    $.ajax({
+
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        var itemToAcknowledge = data;
+
+        bootbox.confirm({
+            
+            message: itemToAcknowledge.itemValue,
+            title: "Acknowledge requirement: " + itemToAcknowledge.identifier + "?",
+            buttons: {
+                cancel: {
+                    label: "Cancel",
+                    className: "btn-danger btn-fixed-width-100"
+                },
+                confirm: {
+                    label: "Acknowledge",
+                    className: "btn-success btn-fixed-width-100"
+                }
+            },
+            callback: function (result) {
+
+                if (result) {
+                    
+                    // TBD
+                }
+            }
+        });
+        
+    });
+}
 
 
 function itemCreateIdentTemplateChange() {
