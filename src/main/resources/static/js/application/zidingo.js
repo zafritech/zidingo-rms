@@ -11,6 +11,24 @@ $(document).ready(function () {
 });
 
 
+var modalBusy = new function() {
+    
+    this.open = function(){
+        
+        $('#modal-busy').modal({
+        
+            backdrop: 'static',
+            keyboard: false
+        });
+    };
+    
+    this.close = function(){
+        
+        $('#modal-busy').modal('toggle');
+    };
+};
+
+
 /* Search results highlighting */
 $(document).ready(function () {
     
@@ -536,6 +554,16 @@ function ToggleApplicationMenu() {
         query.show();
         $('#more-less-appmenu').addClass('fa-minus-square').removeClass('fa-plus-square');
     }
+}
+
+
+function BootboxAlertTitle(title, message) {
+    
+    bootbox.alert({
+        
+        title: title,
+        message: message
+    });
 }
 
 
@@ -3188,6 +3216,109 @@ function BootboxLinkDeleteConfirm(id) {
             });
         }
     });
+    
+}
+
+
+
+function BootboxAdminImportItems() {
+        
+    bootbox.confirm({
+                
+        title: "Import Requirements",
+        message: "Do import requirements?",
+        size: 'small',
+        buttons: {
+            confirm: {
+
+                label: 'Import',
+                className: 'btn-success btn-fixed-width-100'
+            },
+            cancel: {
+
+                label: 'Cancel',
+                className: 'btn-danger btn-fixed-width-100'
+            }
+        },
+        callback: function(result) {
+              
+            if (result) {
+                
+                modalBusy.open();
+
+                $.ajax({
+
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/requirements/update",
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+
+                    modalBusy.close();
+                    showToastr('success', data + ' new requirements added.');
+                });
+            }
+        }
+    });
+}
+
+
+function BootboxAdminRefreshComments() {
+        
+    bootbox.confirm({
+                
+        title: "Confirm Comments Refresh",
+        message: "Do you want to refresh all comments?",
+        size: 'small',
+        buttons: {
+            confirm: {
+
+                label: 'Refresh',
+                className: 'btn-success btn-fixed-width-100'
+            },
+            cancel: {
+
+                label: 'Cancel',
+                className: 'btn-danger btn-fixed-width-100'
+            }
+        },
+        callback: function(result) {
+
+            if (result) {
+                
+                modalBusy.open();
+
+                $.ajax({
+
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/itemcomments/refresh",
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+
+                    modalBusy.close();
+                    showToastr('success', data + ' comments refreshed.');
+                });
+            }
+        }
+    });
+}
+
+
+function BootboxAdminModalTest() {
+    
+    modalBusy.open();
+    
+    setTimeout(function(){
+        
+        modalBusy.close();
+        showToastr('success', 'Comments refreshed.');
+    }, 
+    5000);
     
 }
 

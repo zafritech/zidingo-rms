@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.zafritech.zidingorms.core.commons.enums.ItemStatus;
@@ -24,10 +25,12 @@ public class VerificationReference implements Serializable {
     
     private String uuId;
     
+    @ManyToOne
     @JoinColumn(name = "itemId")
     private Item item;
     
-    @JoinColumn(name = "vvMethodId")
+    @ManyToOne
+    @JoinColumn(name = "verificationMethodId")
     private VerificationMethod method;
     
     @Column(columnDefinition = "TEXT")

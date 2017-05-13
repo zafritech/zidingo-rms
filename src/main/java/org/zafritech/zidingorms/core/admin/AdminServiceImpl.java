@@ -9,12 +9,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.core.commons.enums.ItemStatus;
@@ -30,8 +27,12 @@ import org.zafritech.zidingorms.database.repositories.ItemCommentRepository;
 import org.zafritech.zidingorms.database.repositories.ItemRepository;
 import org.zafritech.zidingorms.database.repositories.TaskRepository;
 import org.zafritech.zidingorms.database.repositories.UserRepository;
-import org.zafritech.zidingorms.core.admin.AdminService;
 import org.zafritech.zidingorms.core.messages.MessageService;
+import org.zafritech.zidingorms.database.domain.VerificationMethod;
+import org.zafritech.zidingorms.database.domain.VerificationReference;
+import org.zafritech.zidingorms.database.repositories.VerificationMethodRepository;
+import org.zafritech.zidingorms.database.repositories.VerificationReferenceRepository;
+import org.zafritech.zidingorms.io.excel.ExcelFunctions;
 import org.zafritech.zidingorms.items.services.TaskService;
 
 /**
@@ -42,7 +43,7 @@ import org.zafritech.zidingorms.items.services.TaskService;
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
-    private TaskService generalService;
+    private TaskService taskService;
     
     @Autowired
     private UserRepository userRepository;
@@ -62,6 +63,15 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private MessageService messageService;
     
+    @Autowired
+    private ExcelFunctions excelFunctions;
+    
+    @Autowired
+    private VerificationMethodRepository vvMethodRepository;
+    
+    @Autowired
+    private VerificationReferenceRepository vvReferenceRepository;
+            
     @Override
     public boolean loadPMSLeads(String filePath) {
         
@@ -69,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
             
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             
-            Workbook workbook = getWorkbook(inputStream, filePath);
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
             
             int i = 1;  // Skip header row, i = 0
@@ -77,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
             while(i <= worksheet.getLastRowNum()) {
                 
                 Row row = worksheet.getRow(i++);
-                String lead = (String) getCellValue(row.getCell(8));
+                String lead = (String) excelFunctions.getExcelCellValue(row.getCell(8));
                 String newLead;
                 
                 if (lead != null && !lead.isEmpty()) {
@@ -97,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
                             break;
                     }
                     
-                    String id = (String) getCellValue(row.getCell(0));
+                    String id = (String) excelFunctions.getExcelCellValue(row.getCell(0));
                     
                     ItemCategory cat = itemCategoryRepository.findFirstByCategoryCode(newLead);
                     
@@ -128,7 +138,7 @@ public class AdminServiceImpl implements AdminService {
             
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             
-            Workbook workbook = getWorkbook(inputStream, filePath);
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
             
             int i = 1;  // Skip header row, i = 0
@@ -136,11 +146,11 @@ public class AdminServiceImpl implements AdminService {
             while(i <= worksheet.getLastRowNum()) {
                 
                 Row row = worksheet.getRow(i++);
-                String lead = (String) getCellValue(row.getCell(8));
+                String lead = (String) excelFunctions.getExcelCellValue(row.getCell(8));
                 
                 if (lead != null && !lead.isEmpty()) {
                     
-                    String id = (String) getCellValue(row.getCell(0));
+                    String id = (String) excelFunctions.getExcelCellValue(row.getCell(0));
                     
                     ItemCategory cat = itemCategoryRepository.findFirstByCategoryCode(lead);
                     
@@ -171,7 +181,7 @@ public class AdminServiceImpl implements AdminService {
             
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             
-            Workbook workbook = getWorkbook(inputStream, filePath);
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
             
             int i = 1;  // Skip header row, i = 0
@@ -179,7 +189,7 @@ public class AdminServiceImpl implements AdminService {
             while(i <= worksheet.getLastRowNum()) {
                 
                 Row row = worksheet.getRow(i++);
-                String status = (String) getCellValue(row.getCell(6));
+                String status = (String) excelFunctions.getExcelCellValue(row.getCell(6));
                 
                 if (status != null && !status.isEmpty()) {
                     
@@ -206,7 +216,7 @@ public class AdminServiceImpl implements AdminService {
                             break;
                     }
                             
-                    String id = (String) getCellValue(row.getCell(0));
+                    String id = (String) excelFunctions.getExcelCellValue(row.getCell(0));
                     
                     Item item = itemRepository.findBySysId(id);
                     
@@ -232,7 +242,7 @@ public class AdminServiceImpl implements AdminService {
             
             FileInputStream inputStream = new FileInputStream(new File(filePath));
             
-            Workbook workbook = getWorkbook(inputStream, filePath);
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
             
             String batchId = UUID.randomUUID().toString();
@@ -242,15 +252,15 @@ public class AdminServiceImpl implements AdminService {
             while(i <= worksheet.getLastRowNum()) {
                 
                 Row row = worksheet.getRow(i++);
-                String confRequest = (String) getCellValue(row.getCell(12));
+                String confRequest = (String) excelFunctions.getExcelCellValue(row.getCell(12));
                 
                 if (confRequest != null && !confRequest.isEmpty() && confRequest.equals("Yes")) {
                     
                     TaskAction action = TaskAction.NONE; 
-                    String sysId = (String) getCellValue(row.getCell(0));
-                    String status = (String) getCellValue(row.getCell(5));
-                    String clientComment = (String) getCellValue(row.getCell(9));
-                    String contractorComment = (String) getCellValue(row.getCell(10));
+                    String sysId = (String) excelFunctions.getExcelCellValue(row.getCell(0));
+                    String status = (String) excelFunctions.getExcelCellValue(row.getCell(5));
+                    String clientComment = (String) excelFunctions.getExcelCellValue(row.getCell(9));
+                    String contractorComment = (String) excelFunctions.getExcelCellValue(row.getCell(10));
                     
                     if (null == status) {
                         
@@ -280,7 +290,7 @@ public class AdminServiceImpl implements AdminService {
                         task.setTaskAction(action); 
                         task.setBatchId(batchId); 
 
-                        generalService.createTask(task);
+                        taskService.createTask(task);
 
                         // Create comments
                         User client = userRepository.findByEmail("client@astad.qa");
@@ -325,43 +335,76 @@ public class AdminServiceImpl implements AdminService {
         return false;
     }
     
-    // Excel 2003 or 2007
-    private Workbook getWorkbook(FileInputStream inputStream, String excelFilePath) throws IOException {
+    @Override
+    public boolean updateVandVMethods(String filePath) {
+        
+        try {
+           
+            FileInputStream inputStream = new FileInputStream(new File(filePath));
+            
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
+            Sheet worksheet = workbook.getSheetAt(0);
+            
+            int i = 1;  // Skip header row, i = 0
+            
+            while(i <= worksheet.getLastRowNum()) {
+                
+                Row row = worksheet.getRow(i++);
+                
+                String sysId = (String) excelFunctions.getExcelCellValue(row.getCell(0));
+                String method = (String) excelFunctions.getExcelCellValue(row.getCell(7));
+                String refs = (String) excelFunctions.getExcelCellValue(row.getCell(8));
+                String edidence = (String) excelFunctions.getExcelCellValue(row.getCell(10));
+                
+                if (sysId != null && !sysId.isEmpty()) {
+                    
+                    Item item = itemRepository.findBySysId(sysId);
+                    
+                    if (item != null) {
+                        
+                        if (method != null && !method.isEmpty()) {
+                            
+                            VerificationMethod vvMethod = vvMethodRepository.findByMethodCode(method);
+                            
+                            // Check if item already exists in Verification References
+                            VerificationReference vvReference = vvReferenceRepository.findFirstByItem(item);
+                            
+                            if (vvReference == null) {
+                            
+                                vvReference = new VerificationReference(item, vvMethod);
+                                
+                            } else {
+                                
+                                vvReference.setMethod(vvMethod); 
+                            }
+                            
+                            if (refs != null && !refs.isEmpty()) {
+                                
+                                vvReference.setVvReferences(refs);
+                            }
+                            
+                            if (edidence != null && !edidence.isEmpty()) {
+                                
+                                vvReference.setVvEvidence(edidence); 
+                            }
+                            
+                            vvReferenceRepository.save(vvReference); 
+                        }
+                        
+                    } else {
+                        
+                        System.out.println("Item with SYS_ID " + sysId + " does not exist in the database.");
+                    }
+                }
+            }
+            
+            return true;
+            
+        } catch (IOException e) {
 
-        Workbook workbook = null;
-
-        if (excelFilePath.endsWith("xlsx")) {
-
-            workbook = new XSSFWorkbook(inputStream);
-
-        } else if (excelFilePath.endsWith("xls")) {
-
-            workbook = new HSSFWorkbook(inputStream);
-
-        } else {
-
-            throw new IllegalArgumentException("The specified file is not Excel file");
+            System.out.println(e.getMessage());
         }
-
-        return workbook;
-    }
-    
-    @SuppressWarnings("deprecation")
-    private Object getCellValue(Cell cell) {
-
-        switch (cell.getCellTypeEnum()) {
-
-            case STRING:
-                return cell.getStringCellValue();
-
-            case BOOLEAN:
-                return cell.getBooleanCellValue();
-
-            case NUMERIC:
-                return cell.getNumericCellValue();
-
-            default:
-                return null;
-        }
+        
+        return false;
     }
 }

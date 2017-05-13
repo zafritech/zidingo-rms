@@ -6,6 +6,7 @@
 package org.zafritech.zidingorms.database.repositories;
 
 import org.springframework.data.repository.CrudRepository;
+import org.zafritech.zidingorms.database.domain.Item;
 import org.zafritech.zidingorms.database.domain.VerificationReference;
 
 /**
@@ -14,4 +15,5 @@ import org.zafritech.zidingorms.database.domain.VerificationReference;
  */
 public interface VerificationReferenceRepository extends CrudRepository<VerificationReference, Long> {
     
+    VerificationReference findFirstByItem(Item item);
 }

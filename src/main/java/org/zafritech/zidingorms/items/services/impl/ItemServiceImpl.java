@@ -1,11 +1,17 @@
 package org.zafritech.zidingorms.items.services.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,12 +38,14 @@ import org.zafritech.zidingorms.database.repositories.ItemRepository;
 import org.zafritech.zidingorms.database.repositories.ItemTypeRepository;
 import org.zafritech.zidingorms.database.repositories.LinkRepository;
 import org.zafritech.zidingorms.database.repositories.SystemVariableRepository;
+import org.zafritech.zidingorms.io.excel.ExcelFunctions;
 import org.zafritech.zidingorms.items.services.ItemService;
 
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    private final static int PAGESIZE = 40;
+    @Autowired
+    private ExcelFunctions excelFunctions;
     
     @Autowired
     private ItemRepository itemRepository;
@@ -474,5 +482,45 @@ public class ItemServiceImpl implements ItemService {
         int itemIndex = items.indexOf(item) + 1;
         
         return (int)Math.ceil(itemIndex / pageSize) + 1;
+    }
+
+    @Override
+    public Integer importRequirementsFromExcel(String filePath) {
+
+        Integer reqsCount = 0;
+        
+        try {
+            
+            FileInputStream inputStream = new FileInputStream(new File(filePath));
+            
+            Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
+            Sheet worksheet = workbook.getSheetAt(0);
+            
+            int i = 1;  // Skip header row, i = 0
+            
+            while(i <= worksheet.getLastRowNum()) {
+                
+                Row row = worksheet.getRow(i++);
+                
+                String sysId = (String) excelFunctions.getExcelCellValue(row.getCell(0));
+                
+                if (sysId != null && !sysId.isEmpty()) {
+                    
+                    Item item = itemRepository.findBySysId(sysId);
+                    
+                    if (item == null) {
+                        
+                        reqsCount++;
+                        System.out.println("New Item: " + sysId);
+                    }
+                }
+            }
+            
+        } catch (IOException e) {
+
+            System.out.println(e.getMessage());
+        }
+        
+        return reqsCount;
     }
 }

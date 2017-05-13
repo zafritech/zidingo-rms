@@ -73,4 +73,12 @@ public class AdminController {
         
         return "redirect:/admin";
     }
+    
+    @RequestMapping("/admin/verification/methods/load")
+    public String importVandVMethodsFromXlsx() {
+       
+        adminService.updateVandVMethods(upload_dir + "DOORS-v23.xlsx");
+        
+        return "redirect:/admin";
+    }
 }

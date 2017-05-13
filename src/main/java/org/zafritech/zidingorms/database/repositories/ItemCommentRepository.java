@@ -15,6 +15,9 @@ import org.zafritech.zidingorms.database.domain.ItemComment;
  */
 public interface ItemCommentRepository extends CrudRepository<ItemComment, Long> {
 
+    @Override
+    List<ItemComment> findAll();
+    
     List<ItemComment> findByItemId(Long id);
     
     List<ItemComment> findByItemIdOrderByCreationDateDesc(Long id);

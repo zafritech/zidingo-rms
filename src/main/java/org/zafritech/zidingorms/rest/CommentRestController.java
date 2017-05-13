@@ -7,6 +7,7 @@ package org.zafritech.zidingorms.rest;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.zafritech.zidingorms.database.dao.CommentDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,9 @@ import org.zafritech.zidingorms.items.services.impl.CommentServiceImpl;
 @RestController
 public class CommentRestController {
 
+    @Value("${zidingo.upload-dir}")
+    private String upload_dir;
+    
     private CommentService commentService;
 
     @Autowired
@@ -49,5 +53,13 @@ public class CommentRestController {
         List<ItemComment> comments = commentService.findByItemIdOrderByCreationDateDesc(id);
         
         return comments;
+    }
+    
+    @RequestMapping(value = "/api/itemcomments/refresh", method = RequestMethod.GET)
+    public ResponseEntity<Integer> refreshItemComments() {
+        
+        Integer comments = commentService.refreshItemComments(upload_dir + "DOORS-v23.xlsx");
+        
+        return new ResponseEntity<Integer>(comments, HttpStatus.OK);
     }
 }

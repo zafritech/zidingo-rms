@@ -22,4 +22,6 @@ public interface CommentService {
     List<ItemComment> findByItemId(Long id);
     
     List<ItemComment> findByItemIdOrderByCreationDateDesc(Long id);
+    
+    Integer refreshItemComments(String filePath);
 }

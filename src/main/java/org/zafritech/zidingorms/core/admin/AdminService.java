@@ -21,4 +21,6 @@ public interface AdminService {
     boolean updateItemStatuses(String filePath);
     
     boolean updateConfirmationRequests(String filePath);
+    
+    boolean updateVandVMethods(String filePath);
 }

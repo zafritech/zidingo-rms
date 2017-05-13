@@ -58,4 +58,6 @@ public interface ItemService {
     List<Integer> getPagesList(int currentPage, int lastPage);
     
     Integer getPageWithItem(Long artifactId, Long itemId, int pageSize);
+    
+    Integer importRequirementsFromExcel(String filePath);
 }

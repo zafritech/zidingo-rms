@@ -15,6 +15,8 @@ import org.zafritech.zidingorms.core.user.UserService;
 import org.zafritech.zidingorms.database.domain.ItemComment;
 import org.zafritech.zidingorms.database.domain.Task;
 import org.zafritech.zidingorms.database.domain.User;
+import org.zafritech.zidingorms.database.domain.VerificationReference;
+import org.zafritech.zidingorms.database.repositories.VerificationReferenceRepository;
 import org.zafritech.zidingorms.items.services.CommentService;
 import org.zafritech.zidingorms.items.services.TaskService;
 
@@ -33,7 +35,10 @@ public class TaskController {
     
     @Autowired
     private CommentService commentService;
-        
+ 
+    @Autowired
+    private VerificationReferenceRepository vvReferenceRepository;
+    
     @RequestMapping("/tasks")
     public String tasksActions(Model model) {
         
@@ -52,10 +57,13 @@ public class TaskController {
         User user = userService.loggedInUser();
         Task task = taskService.findUserTaskByUuId(uuid);
         List<ItemComment> comments = commentService.findByItemIdOrderByCreationDateDesc(task.getTaskItem().getId());
+        VerificationReference verification = vvReferenceRepository.findFirstByItem(task.getTaskItem());
         
         model.addAttribute("user", user);
         model.addAttribute("task", task);
         model.addAttribute("comments", comments);
+        model.addAttribute("verification", verification);
+        model.addAttribute("newLineChar", "\n");
         
         return "/views/item/taskdetails";
     }

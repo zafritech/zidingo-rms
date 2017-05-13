@@ -14,4 +14,5 @@ import org.zafritech.zidingorms.database.domain.VerificationMethod;
  */
 public interface VerificationMethodRepository extends CrudRepository<VerificationMethod, Long> {
     
+    VerificationMethod findByMethodCode(String code);
 }

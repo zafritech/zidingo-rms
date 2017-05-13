@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,9 @@ import org.zafritech.zidingorms.items.services.impl.ItemServiceImpl;
 @RestController
 public class ItemRestController {
 
+    @Value("${zidingo.upload-dir}")
+    private String upload_dir;
+    
     private ItemService itemService;
 
     @Autowired
@@ -178,5 +182,13 @@ public class ItemRestController {
         int sortIndex = itemService.moveDown(id);
 
         return new ResponseEntity<Long>((long) sortIndex, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/requirements/update", method = RequestMethod.GET)
+    public ResponseEntity<Integer> importExcelRequirements() {
+
+        Integer reqsCount = itemService.importRequirementsFromExcel(upload_dir + "DOORS-v23.xlsx");
+
+        return new ResponseEntity<Integer>(reqsCount, HttpStatus.OK);
     }
 }

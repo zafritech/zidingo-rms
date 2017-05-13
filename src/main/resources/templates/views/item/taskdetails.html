@@ -55,30 +55,45 @@
                                     </tr>
                                     <tr th:if="${task.taskItem.itemValue != null}">
                                         <td style="width:20%"><strong>Requirement:</strong></td>
-                                        <td th:text="${task.taskItem.itemValue}">Requirement details</td>
+                                        <td>
+                                            <div class="row">
+                                                <div th:text="${task.taskItem.itemValue}" class="col-md-11">Requirement details</div>
+                                                <div class="col-md-1">
+                                                    <a th:href="@{'/artifact/search/result/' + ${task.taskItem.artifact.id} + '?item=' + ${task.taskItem.id} + '&amp;size=25&amp;q=' + ${task.taskItem.identifier}}">
+                                                        <span class="pull-right text-primary"><i class="fa fa-fw fa-2x fa-file-text"></i></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr th:if="${task.taskItem.itemStatus != null}">
                                         <td style="width:20%"><strong>Requirement Status:</strong></td>
                                         <td th:text="${task.taskItem.itemStatus}">Requirement status</td>
                                     </tr>
-                                    <tr>
+                                    <tr th:if="${verification != null}">
                                         <td style="width:20%"><strong>V and V Method:</strong></td>
-                                        <td>V and V Method</td>
+                                        <td>
+                                            <a th:href="@{'javascript:void(0);'}" th:onclick="'javascript:BootboxAlertTitle(\'' + ${verification.method.methodName} + '\', \'' + ${verification.method.methodDescription} + '\');'">
+                                                <span th:text="${verification.method.methodName}">V and V Method</span>
+                                            </a>
+                                        </td>
                                     </tr>
-                                    <tr>
+                                    <tr th:if="${verification != null}">
                                         <td style="width:20%"><strong>V and V Reference</strong></td>
-                                        <td>V and V Reference</td>
+                                        <td th:utext="${#strings.replace(verification.vvReferences, newLineChar, '&lt;br /&gt;')}">V and V Reference</td>
                                     </tr>
-                                    <tr>
+                                    <tr th:if="${!comments.isEmpty()}">
                                         <td style="width:20%"><strong>Comments:</strong></td>
                                         <td>
-                                            <div th:each="comment : ${comments}" 
-                                                 class="row" 
-                                                 style="padding: 5px 0; border-bottom: 1px solid #eee;">
-                                                <div th:text="${comment.author.firstName}" class="col-md-2">Author</div>
-                                                <div th:text="${comment.comment}" class="col-md-10">Comment</div>
+                                            <div th:each="comment : ${comments}" style="padding: 5px 0; border-bottom: 1px solid #eee;">
+                                                <span style="font-weight: bold;" th:text="${comment.author.firstName} + ' ' + ${comment.author.lastName}">Author</span>
+                                                <div th:utext="${#strings.replace(comment.comment, newLineChar, '&lt;br /&gt;')}">Comment</div>
                                             </div>
                                         </td>
+                                    </tr>
+                                    <tr th:if="${comments.isEmpty()}">
+                                        <td style="width:20%"><strong>Comments:</strong></td>
+                                        <td>No comments found.</td>
                                     </tr>
                                 </tbody>
                             </table>

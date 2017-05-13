@@ -13,41 +13,120 @@
         <div layout:fragment="content">
 
             <div class="col-lg-12">
-                <h1 class="page-header">System Administration</h1>
+                <h1 class="page-header">Administration</h1>
             </div>
-
-            <div class="col-md-10 col-md-offset-1">
-                <table class="table table-bordered table-hover" style="width: 100%;">
-                    <tbody>
-                        <tr>
-                            <td style="width: 25%; text-align: center;">
-                                <a href="/admin/pmsleads/load">
-                                    PMS Leads<br/>
-                                    <img src="/images/icons/tab-duplicate-icon.png" />
+            
+            <div class="row">
+                <div class="col-md-8 col-xs-12 col-md-offset-2">
+                    <div class="widget stacked">
+                        <div class="widget-header" style="padding-left: 12px;">
+                            <i class="fa fa-fw fa-bolt"></i>
+                            <span>Admin Quick Links</span>
+                        </div>
+                        <div class="widget-content">
+                            <div class="shortcuts">
+                                <a href="/admin/monitor" class="shortcut">
+                                    <i class="shortcut-icon fa fa-stethoscope"></i>
+                                    <span class="shortcut-label">System</span>
                                 </a>
-                            </td>
-                            <td style="width: 25%; text-align: center;">
-                                <a href="/admin/astadleads/load">
-                                    ASTAD Leads<br/>
-                                    <img src="/images/icons/x-kplato-icon.png" />
+                                <a href="/admin/users" class="shortcut">
+                                    <i class="shortcut-icon fa fa-users"></i>
+                                    <span class="shortcut-label">Users</span>
                                 </a>
-                            </td>
-                            <td style="width: 25%; text-align: center;">
-                                <a href="/admin/statuses/import">
-                                    Import Statuses<br/>
-                                    <img src="/images/icons/inode-directory-icon.png" />
+                                <a href="javascript:void(0);" th:onclick="'javascript:CreateUserTask();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-wrench"></i>
+                                    <span class="shortcut-label">Task</span>
                                 </a>
-                            </td>
-                            <td style="width: 25%; text-align: center;">
-                                <a href="/admin/requests/confirmation">
-                                    Confirmation Requests<br/>
-                                    <img src="/images/icons/list-details-icon.png" />
+                                <a href="javascript:void(0);" th:onclick="'javascript:SendMessage();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-envelope"></i>
+                                    <span class="shortcut-label">Message</span>
                                 </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <a href="javascript:void(0);" th:onclick="'javascript:SendNotification();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-bell"></i>
+                                    <span class="shortcut-label">Notice</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-bar-chart"></i>
+                                    <span class="shortcut-label">Reports</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-warning"></i>
+                                    <span class="shortcut-label">Blank</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-warning"></i>
+                                    <span class="shortcut-label">Blank</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-warning"></i>
+                                    <span class="shortcut-label">Blank</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-warning"></i>
+                                    <span class="shortcut-label">Blank</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <div class="row">
+                <div class="col-md-8 col-xs-12 col-md-offset-2">
+                    <div class="widget stacked">
+                        <div class="widget-header" style="padding-left: 12px;">
+                            <i class="fa fa-fw fa-database"></i>
+                            <span>Administration Tasks</span>
+                        </div>
+                        <div class="widget-content">
+                            <div class="shortcuts">
+                                <a href="/admin/pmsleads/load" class="shortcut">
+                                    <i class="shortcut-icon fa fa-users"></i>
+                                    <span class="shortcut-label">PMS Leads</span>
+                                </a>
+                                <a href="/admin/astadleads/load" class="shortcut">
+                                    <i class="shortcut-icon fa fa-users"></i>
+                                    <span class="shortcut-label">ASTAD Leads</span>
+                                </a>
+                                <a href="/admin/statuses/import" class="shortcut">
+                                    <i class="shortcut-icon fa fa-flag"></i>
+                                    <span class="shortcut-label">Statuses</span>
+                                </a>
+                                <a href="/admin/requests/confirmation" class="shortcut">
+                                    <i class="shortcut-icon fa fa-question-circle"></i>
+                                    <span class="shortcut-label">Requests</span>
+                                </a>
+                                <a href="/admin/verification/methods/load" class="shortcut">
+                                    <i class="shortcut-icon fa fa-flask"></i>
+                                    <span class="shortcut-label">V&amp;V Methods</span>
+                                </a>
+                                <a href="#" class="shortcut">
+                                    <i class="shortcut-icon fa fa-tasks"></i>
+                                    <span class="shortcut-label">User Tasks</span>
+                                </a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminRefreshComments();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-comments"></i>
+                                    <span class="shortcut-label">Comments</span>
+                                </a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminImportItems();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-upload"></i>
+                                    <span class="shortcut-label">Import Excel</span>
+                                </a>
+                                <a href="/admin/requirements/export" class="shortcut">
+                                    <i class="shortcut-icon fa fa-file-excel-o"></i>
+                                    <span class="shortcut-label">Export Excel</span>
+                                </a>
+                                <a href="javascript:void(0);" th:onclick="'javascript:BootboxAdminModalTest();'" class="shortcut">
+                                    <i class="shortcut-icon fa fa-warning"></i>
+                                    <span class="shortcut-label">Modal Text</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
             
         </div>
     </body>
