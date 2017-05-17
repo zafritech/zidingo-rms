@@ -1,16 +1,5 @@
 /* global toastr, bootbox, CKEDITOR */
 
-$(document).ready(function () {
- 
-    /* On page load */
-    RefreshUI();
-    
-    /* Repeat every minute */
-    var uiRefresh = window.setInterval(RefreshUI, 2*60*1000);
-    
-});
-
-
 var modalBusy = new function() {
     
     this.open = function(){
@@ -27,6 +16,27 @@ var modalBusy = new function() {
         $('#modal-busy').modal('toggle');
     };
 };
+
+/* Show busy modal for all ajax requests */
+$( document ).ajaxStart(function() {
+    
+    modalBusy.open();
+  
+}).ajaxStop(function() {
+    
+    modalBusy.close();
+});
+
+/* Refresh UI with notifications and messages even without user activity */
+$(document).ready(function () {
+ 
+    /* On page load */
+    RefreshUI();
+    
+    /* Repeat every minute */
+    var uiRefresh = window.setInterval(RefreshUI, 2*60*1000);
+    
+});
 
 
 /* Search results highlighting */
@@ -76,6 +86,7 @@ function UpdateUserMessageAlerts() {
     
     $.ajax({
         
+        global: false,
         url: '/api/messages/unread',
         type: "GET",
         dataType: "json",
@@ -133,6 +144,7 @@ function UpdateUserNotificationAlerts() {
     
     $.ajax({
         
+        global: false,
         url: '/api/notifications/unread',
         type: "GET",
         dataType: "json",
@@ -184,7 +196,8 @@ function UpdateUserTasksAlerts() {
     
     $.ajax({
         
-        url: '/api/tasks/active',
+        global: false,
+        url: '/api/tasks/all',
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -219,7 +232,7 @@ function UpdateUserTasksAlerts() {
                             
                         taskDetails  =  taskDetails +
                                         '<li>' +
-                                        '<a href="/tasks/' + index.uuId + '">' +
+                                        '<a href="javascript:void(0);" onclick="javascript:BootboxPerformTask(\'' + index.id + '\');">' +
                                         '<div style="padding: 10px; border-top: 1px solid #c0c0c0;">' +
                                         '<span><strong>' + action +' Request</strong></span>' +
                                         '<span class="pull-right" style="font-size: 75%">' + index.taskItem.sysId + '</span>' +
@@ -237,7 +250,7 @@ function UpdateUserTasksAlerts() {
                             '<div style="padding: 10px; border-top: 6px solid #369;">' +
                             '<span><strong>Requirements Requests</strong></span>' +
                             '<span class="pull-right" style="font-size: 75%">' + age + '</span>' +
-                            '<div style="margin-top: 5px;">You have ' + total + ' requirements confirmation requests.</div>' +
+                            '<div style="margin-top: 5px;">You have ' + outstanding + ' confirmation requests.</div>' +
                             '<div style="font-size: 85%; margin-top: 10px;">Completion with: ' + pecentageComplete + '%</div>' +
                             '<div class="progress" style="margin-top: 4px;">' +
                             '<div class="progress-bar progress-bar-success" role="progressbar" style="width: ' + pecentageComplete + '%" arial-valuenow="' + pecentageComplete + '" arial-valuemin="0" arial-valuemax="100"></div>' +
@@ -270,6 +283,7 @@ function UpdateUserTasksAlertsOld() {
     
     $.ajax({
         
+        global: false,
         url: '/api/tasks/active',
         type: "GET",
         dataType: "json",
@@ -332,10 +346,11 @@ function UpdateUserTasksAlertsOld() {
 $(document).ready(function () {
 
     var list = '';
-    var url = '/api/projects';
 
     $.ajax({
-        url: url,
+        
+        global: false,
+        url: '/api/projects',
         type: "GET",
         dataType: "json",
         success: function (data) {
@@ -346,19 +361,30 @@ $(document).ready(function () {
                         + '<li style="border-bottom: 1px solid #c0c0c0;">'
                         + '<a href="javascript:void(0);" onclick="return loadProjectTree(' + index.id + ');">'
                         + index.projectShortName
-                        + '<i class="fa fa-fw fa-table pull-right" style="margin: 4px 0;"></i>'
+                        + '<i class="fa fa-fw fa-bar-chart pull-right" style="margin: 4px 0;"></i>'
                         + '</a>'
                         + '</li>';
             });
 
             $("#projectsList").append(list);
 
-            if (localStorage.getItem('currentProjectId')) {
+            $.ajax({
 
-                projectId = localStorage.getItem('currentProjectId');
-                loadProjectTree(projectId);
-            }
+                global: false,
+                url:'/api/projects/selected',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
 
+                    var project = data;
+                    loadProjectTree(project.id);
+
+                },
+                erro: function () {
+
+                    // Do nothing
+                }
+            });
         },
         error: function () {
             
@@ -371,10 +397,7 @@ $(document).ready(function () {
 
 //Retrieve project specification tree
 function loadProjectTree(id) {
-
-    localStorage.setItem('currentProjectId', id);
-
-    var url = '/api/folders/' + id;
+ 
     var zTreeObj;
     var setting = {
         data: {
@@ -396,45 +419,77 @@ function loadProjectTree(id) {
 
     $.ajax({
         
-        url: url,
+        global: false,
+        url: '/api/projects/select/' + id,
         type: "GET",
         dataType: "json",
         success: function (data) {
+          
+            $('#projectModulesTitle').html(data.projectShortName);
             
-            if (!$.trim(data)) {
-
-                $.fn.zTree.destroy("projectTree");
-                $('#projectTree').empty();
-                $("#projectTree").append('<li style="width: 200px; margin: 10px; color:red;">No documents or folders found</li>');
-
-            } else {
-
-                $("#projectsList").collapse('hide');
-                $("#more-less").removeClass('fa-minus-square').addClass('fa-plus-square');
+            if (data) {
                 
-                $('#projectTree').show();
-                $('#more-less-modules').addClass('fa-minus-square').removeClass('fa-plus-square');
+                var project = data;
+                
+                $.ajax({
 
-                zTreeObj = $.fn.zTree.init($("#projectTree"), setting, data);
+                    global: false,
+                    url: '/api/project/folders/' + id,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        
+                        if (!$.trim(data)) {
 
-                if (localStorage.getItem('currentFolderId')) {
+                            $.fn.zTree.destroy("projectTree");
+                            $('#projectTree').empty();
+                            $("#projectTree").append('<li style="width: 200px; margin: 10px; color:red;">No documents or folders found</li>');
 
-                    var treeObj = $.fn.zTree.getZTreeObj("projectTree");
-                    var currFolderId = localStorage.getItem('currentFolderId');
+                        } else {
 
-                    currNode = treeObj.getNodeByParam("id", currFolderId, null);
-                    treeObj.expandNode(currNode, true, false, true);
-                }
+                            $("#projectsList").collapse('hide');
+                            $("#more-less").removeClass('fa-minus-square').addClass('fa-plus-square');
+
+                            $('#projectTree').hide();
+                            $('#more-less-modules').addClass('fa-plus-square').removeClass('fa-minus-square');
+
+                            $('#applicationMenu').hide();
+                            $('#more-less-appmenu').addClass('fa-plus-square').removeClass('fa-minus-square');
+
+                            zTreeObj = $.fn.zTree.init($("#projectTree"), setting, data);
+
+                            if (project.id) {
+                                
+                                $.ajax({
+
+                                    global: false,
+                                    url: '/api/folders/selected',
+                                    type: "GET",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        
+                                        var folder = data;
+                                        var currFolderId = folder.id;
+                                        var treeObj = $.fn.zTree.getZTreeObj("projectTree");
+
+                                        currNode = treeObj.getNodeByParam("id", currFolderId, null);
+                                        treeObj.expandNode(currNode, true, false, true);
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    error: function () {
+
+                        checkLogin();
+
+                        $('#projectTree').empty();
+                        $("#projectTree").append('<br/>Error!');
+                        $("#projectTree").hide();
+                        $('#more-less-modules').addClass('fa-plus-square').removeClass('fa-minus-square');
+                    }
+                });
             }
-        },
-        error: function () {
-
-            checkLogin();
-            
-            $('#projectTree').empty();
-            $("#projectTree").append('<br/>Error!');
-            $("#projectTree").hide();
-            $('#more-less-modules').addClass('fa-plus-square').removeClass('fa-minus-square');
         }
     });
 }
@@ -444,6 +499,7 @@ function checkLogin() {
     
     $.ajax({
         
+        global: false,
         url: '/api/login/check',
         type: "GET",
         dataType: "json",
@@ -458,40 +514,43 @@ function checkLogin() {
 function zTreeOnClick(event, treeId, treeNode, clickFlag) {
 
     var treeObj = $.fn.zTree.getZTreeObj("projectTree");
-    var projectId = localStorage.getItem('currentProjectId');
-    
-    if (treeNode.isParent) {
 
-        $.ajax({
+    $.ajax({
 
-            type: "GET",
-            contentType: "application/json",
-            url: '/api/project/' + projectId,
-            dataType: "json",
-            cache: false,
-            success: function (data) {
+        global: false,
+        url:'/api/projects/selected',
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+
+            var project = data;
+            
+            if (treeNode.isParent) {
 
                 if (treeNode.pId === 0) {
 
-                    window.location.replace('/projects/' + data.uuId);
+                    window.location.replace('/projects/' + project.uuId);
 
                 } else {
 
-                    window.location.replace('/projects/' + data.uuId + '/' + treeNode.id);
+                    window.location.replace('/projects/' + project.uuId + '/' + treeNode.id);
+                }
+
+                treeObj.expandNode(treeNode, true, false, true);
+
+            } else {
+
+                if (treeNode.linkId !== null) {
+                    
+                    window.location.replace('/artifacts/' + treeNode.linkId);
                 }
             }
-        });
-
-        localStorage.setItem('currentFolderId', treeNode.id);
-        treeObj.expandNode(treeNode, true, false, true);
-
-    } else {
-
-        if (treeNode.linkId !== null) {
-
-            window.location.replace('/artifacts/' + treeNode.linkId);
+        },
+        erro: function () {
+            
+            // Do nothing
         }
-    }
+    });
 }
 
 
@@ -548,7 +607,7 @@ function ToggleApplicationMenu() {
 
         query.hide();
         $('#more-less-appmenu').addClass('fa-plus-square').removeClass('fa-minus-square');
-    
+        
     } else {
 
         query.show();
@@ -562,7 +621,12 @@ function BootboxAlertTitle(title, message) {
     bootbox.alert({
         
         title: title,
-        message: message
+        message: message,
+        buttons: {
+            ok: {
+                label: "Close",
+                className: "btn-success btn-fixed-width-100"
+            }}
     });
 }
 
@@ -575,6 +639,8 @@ function BootboxCreateFolder(projectId) {
 function BootboxCreateSubfolder(parentId, projectId) {
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: '/modal/project/project-subfolder-create-form.html',
         success: function (data) {
@@ -635,6 +701,8 @@ function BootboxCreateSubfolder(parentId, projectId) {
 function BootboxAdminUserPwdReset(uuId, user) {
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: '/modal/user/user-admin-password-reset.html',
         success: function (data) {
@@ -665,6 +733,7 @@ function BootboxAdminUserPwdReset(uuId, user) {
                         data['confirmPassword'] = document.getElementById('confirmNewPassword').value;
                         
                         $.ajax({
+                            
                             type: "POST",
                             contentType: "application/json",
                             url: "/api/admin/password/reset",
@@ -688,6 +757,7 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
     
     $.ajax({
         
+        global: false,
         type: "GET",
         url: '/modal/user/user-admin-details-update.html',
         success: function (data) {
@@ -725,6 +795,7 @@ function BootboxAdminUserDetailsUpdate(uuId, user) {
                         data['postCode'] = '';
                         
                         $.ajax({
+                            
                             type: "POST",
                             contentType: "application/json",
                             url: "/api/user/update/" + uuId,
@@ -929,6 +1000,7 @@ function BootboxAdminUserRolesManage(uuId, user) {
     
     $.ajax({
         
+        global: false,
         type: "GET",
         url: '/modal/user/user-admin-roles-manage.html',
         success: function (data) {
@@ -1051,6 +1123,7 @@ function BootboxAdminUserClaimsManage(uuId, user) {
     
     $.ajax({
         
+        global: false,
         type: "GET",
         url: '/modal/user/user-admin-claims-manage.html',
         success: function (data) {
@@ -1233,25 +1306,38 @@ function OnUserClaimTypeChange() {
     } else if (targetType === "CATEGORY") {
         
         $.ajax({
-                    
+
+            global: false,
+            url:'/api/projects/selected',
             type: "GET",
-            contentType: "application/json",
-            url: "/api/categories/list/" + localStorage.getItem('currentProjectId'),
             dataType: "json",
-            cache: false
-        })
-        .done(function (data) {
-            
-            var selectDocumentOptions = '';
-                    
-            $.each(data, function (key, index) {
+            success: function (data) {
 
-                selectDocumentOptions = selectDocumentOptions + '<option value="' + index.id + '">' + index.categoryName + '</option>';
-            });
+                var project = data;
+                
+                $.ajax({
 
-            $('#userClaimTarget').empty();
-            $('#userClaimTarget').append(selectDocumentOptions);
-            
+                    global: false,
+                    type: "GET",
+                    contentType: "application/json",
+                    url: "/api/categories/list/" + project.id,
+                    dataType: "json",
+                    cache: false
+                })
+                .done(function (data) {
+
+                    var selectDocumentOptions = '';
+
+                    $.each(data, function (key, index) {
+
+                        selectDocumentOptions = selectDocumentOptions + '<option value="' + index.id + '">' + index.categoryName + '</option>';
+                    });
+
+                    $('#userClaimTarget').empty();
+                    $('#userClaimTarget').append(selectDocumentOptions);
+
+                });
+            }
         });
     }
 }
@@ -1266,6 +1352,8 @@ function BootboxProjectDetailsEdit(id) {
 function BootboxProjectCategories(id) {
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: '/modal/project/project-categories-create.html',
         success: function (data) {
@@ -1299,6 +1387,7 @@ function BootboxProjectCategories(id) {
                         console.log(data);
                         
                         $.ajax({
+                            
                             type: "POST",
                             contentType: "application/json",
                             url: "/api/project/category/create",
@@ -1462,6 +1551,8 @@ function BootboxAdminUserDelete(uuId, user) {
 function BootboxUserChangePassword(uuId) {
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: '/modal/user/user-password-change.html',
         success: function (data) {
@@ -1493,6 +1584,7 @@ function BootboxUserChangePassword(uuId) {
                         data['newPasswordConfirm'] = document.getElementById('confirmNewPassword').value;
                         
                         $.ajax({
+                            
                             type: "POST",
                             contentType: "application/json",
                             url: "/api/user/password/change/" + uuId,
@@ -1554,6 +1646,8 @@ function itemCreateClassChange() {
         $('#createIdentifierContainer').show();
 
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: "/api/items/nextidentifier",
             data: {id: document.getElementById('artifactId').value, template: document.getElementById('createIdentTemplate').value},
@@ -1580,6 +1674,8 @@ function itemCreateClassChange() {
 function itemCreateIdentTemplateChange() {
 
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: "/api/items/nextidentifier",
         data: {id: document.getElementById('artifactId').value, template: document.getElementById('createIdentTemplate').value},
@@ -1596,6 +1692,7 @@ function itemCreateIdentTemplateChange() {
 function moveItemUp(id) {
 
     $.ajax({
+        
         type: "GET",
         contentType: "application/json",
         url: "/api/items/moveup/" + id,
@@ -1629,6 +1726,7 @@ function addIdentFormatToMultipSelect() {
 function moveItemDown(id) {
 
     $.ajax({
+        
         type: "GET",
         contentType: "application/json",
         url: "/api/items/movedown/" + id,
@@ -1653,6 +1751,7 @@ function BootboxEditItem(id) {
     
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: "/api/item/edit/" + id,
@@ -1664,6 +1763,8 @@ function BootboxEditItem(id) {
         itemDao = data;
 
         $.ajax({
+                    
+            global: false,        
             type: "GET",
             url: '/modal/item/item-edit-form.html',
             success: function (data) {
@@ -1702,6 +1803,7 @@ function BootboxEditItem(id) {
                             
                             $.ajax({
 
+                                global: false,
                                 type: "POST",
                                 contentType: "application/json",
                                 url: "/api/items/save",
@@ -1857,6 +1959,7 @@ function BootboxEditItem(id) {
                     
                     $.ajax({
                         
+                        global: false,
                         url: '/api/link/incominglinks/' + itemDao.item.id,
                         type: "GET",
                         dataType: "json",
@@ -1893,6 +1996,7 @@ function BootboxCreateFirstItem(id) {
     
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: url,
@@ -1904,6 +2008,8 @@ function BootboxCreateFirstItem(id) {
         var refItem = data;
         
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: '/modal/item/item-create-form.html',
             success: function (data) {
@@ -1938,6 +2044,7 @@ function BootboxCreateFirstItem(id) {
                         
                             $.ajax({
                                 
+                                global: false,
                                 type: "POST",
                                 contentType: "application/json",
                                 url: "/api/items/new",
@@ -2016,6 +2123,241 @@ function BootboxCreateFirstItem(id) {
 }
 
 
+function BootboxViewItemDetails(id) {
+    
+    $.ajax({
+
+        global: false,
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/item/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        var item = data;
+
+        console.log(item);
+        
+        $.ajax({
+            
+            global: false,
+            type: "GET",
+            url: '/modal/item/item-details-view.html',
+            success: function (data) {
+                
+                var box = bootbox.alert({
+                    
+                    message: data,
+                    title: 'Item <strong>' + item.sysId + '</strong> details',
+                    size: 'large',
+                    buttons: {
+                        ok: {
+                            label: "Close",
+                            className: "btn-success btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) { 
+                        
+                        if (result) {
+                            
+                            
+                        }
+                    }
+                });
+                
+                box.on("shown.bs.modal", function(e) {
+                    
+                    $(e.currentTarget).find('td[id="sysId"]').html(item.sysId);
+                    $(e.currentTarget).find('td[id="artifactLongName"]').html(item.artifact.artifactLongName);
+                    $(e.currentTarget).find('td[id="itemDetails"]').html(item.itemValue.replace(/\n/g, '<br/>'));
+                    $(e.currentTarget).find('td[id="itemClass"]').html(item.itemClass);
+                    
+                    $.ajax({
+
+                        global: false,
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/api/itemcomments/" + id,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) {
+
+                        var comments = '';
+
+                        $.each(data, function (key, index) {
+
+                            comments = comments + '<div class="row" style="padding: 0 0 10px 16px;">';
+                            comments = comments + '<p><strong>' + index.author.firstName + ' ' + index.author.lastName + '</strong></p>';
+                            comments = comments + '<span>' + index.comment.replace(/\n/g, '<br/>') + '</span>';
+                            comments = comments + '</div>';
+                        });
+
+                        $(e.currentTarget).find('td[id="itemComments"]').html(comments);
+
+                        if (comments === '') { $('#rowItemComments').remove(); }
+                    });
+
+                    if (item.itemClass === "REQUIREMENT") {
+                        
+                        $(e.currentTarget).find('td[id="itemIdentifier"]').html(item.identifier);
+                        $(e.currentTarget).find('td[id="itemType"]').html(item.itemType.itemTypeLongName);
+                        $(e.currentTarget).find('td[id="itemStatus"]').html(item.itemStatus);
+                        $(e.currentTarget).find('td[id="itemCategory"]').html(item.itemCategory.categoryName);
+                        $(e.currentTarget).find('td[id="itemLead"]').html(item.itemCategory.lead.firstName + ' ' + item.itemCategory.lead.lastName);
+                        
+                        $.ajax({
+
+                            global: false,
+                            type: "GET",
+                            contentType: "application/json",
+                            url: '/api/verification/details/' + id,
+                            dataType: "json",
+                            cache: false
+                        })
+                        .done(function (data) { 
+
+                            var verification = data;
+                            $(e.currentTarget).find('td[id="vvMethod"]').html(verification.method.methodName);
+                            $(e.currentTarget).find('td[id="vvReferences"]').html(verification.vvReferences.replace(/\n/g, '<br/>'));         
+                        }); 
+                                                
+                    } else {
+                        
+                        $('#rowItemIdentifier').remove();
+                        $('#rowItemType').remove();
+                        $('#rowItemStatus').remove();
+                        $('#rowItemCategory').remove();
+                        $('#rowItemLead').remove();
+                        $('#rowVvMethod').remove();
+                        $('#rowVvReferences').remove();
+                    }
+                });
+                
+                box.modal('show');
+            }
+        });
+    });
+}
+
+
+function BootboxPerformTask(id) {
+    
+    $.ajax({
+
+        global: false,
+        type: "GET",
+        contentType: "application/json",
+        url: "/api/tasks/" + id,
+        dataType: "json",
+        cache: false
+    })
+    .done(function (data) {
+        
+        var task = data;
+        var taskAction = task.taskAction.replace("_REQ", "");
+        
+        $.ajax({
+            
+            global: false,
+            type: "GET",
+            url: '/modal/item/item-task-perform-form.html',
+            success: function (data) {
+                
+                var box = bootbox.alert({
+                    
+                    message: data,
+                    title: 'Performing Task: #<strong>' + id + '</strong>',
+                    size: 'large',
+                    buttons: {
+                        ok: {
+                            label: "Cancel",
+                            className: "btn-danger btn-fixed-width-100"
+                        }
+                    },
+                    callback: function (result) { 
+                        
+                        if (result) {
+                            
+                            /* Do nothing */
+                        }
+                    }
+                });
+                
+                box.on("shown.bs.modal", function(e) {
+                    
+                    if (taskAction === "CONFIRM") {
+                        
+                        $('#acknowledgeButton').remove();
+                        $(e.currentTarget).find('button[id="confirmButtom"]').attr('onclick', 'javascript:BootboxPerformTaskAction(\'' + task.id + '\', \'CONFIRMATION\')');
+                        
+                    } else {
+                        
+                        $('#confirmButtom').remove();
+                        $(e.currentTarget).find('button[id="acknowledgeButton"]').attr('onclick', 'javascript:BootboxPerformTaskAction(\'' + task.id + '\', \'ACKNOWLEDGEMENT\')');
+                    }
+                        
+                    $(e.currentTarget).find('button[id="commentButton"]').attr('onclick', 'javascript:BootboxPerformTaskComment(\'' + task.id + '\')');
+                   
+                    $(e.currentTarget).find('span[id="itemIdentifier"]').html(task.taskItem.identifier);
+                    $(e.currentTarget).find('td[id="sysId"]').html(task.taskItem.sysId);
+                    $(e.currentTarget).find('td[id="taskAction"]').html(taskAction);
+                    $(e.currentTarget).find('td[id="itemDetails"]').html(task.taskItem.itemValue.replace(/\n/g, '<br/>'));
+                    $(e.currentTarget).find('td[id="itemStatus"]').html(task.taskItem.itemStatus);
+                    
+                    /* Load V&V method and references */
+                    $.ajax({
+
+                        global: false,
+                        type: "GET",
+                        contentType: "application/json",
+                        url: '/api/verification/details/' + task.taskItem.id,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) { 
+
+                        var verification = data;
+                        $(e.currentTarget).find('td[id="vvMethod"]').html(verification.method.methodName);
+                        $(e.currentTarget).find('td[id="vvReferences"]').html(verification.vvReferences.replace(/\n/g, '<br/>'));         
+                    }); 
+                    
+                    /* Load comments */
+                    $.ajax({
+
+                        global: false,
+                        type: "GET",
+                        contentType: "application/json",
+                        url: "/api/itemcomments/" + task.taskItem.id,
+                        dataType: "json",
+                        cache: false
+                    })
+                    .done(function (data) {
+
+                        var comments = '';
+
+                        $.each(data, function (key, index) {
+
+                            comments = comments + '<div class="row" style="padding: 0 0 10px 16px;">';
+                            comments = comments + '<p><strong>' + index.author.firstName + ' ' + index.author.lastName + '</strong></p>';
+                            comments = comments + '<span>' + index.comment.replace(/\n/g, '<br/>') + '</span>';
+                            comments = comments + '</div>';
+                        });
+
+                        $(e.currentTarget).find('td[id="itemComments"]').html(comments);
+
+                        if (comments === '') { $('#rowItemComments').remove(); }
+                    });
+                });
+                
+                box.modal('show');
+            }
+        });
+    });
+}
+
 
 function BootboxCreateItem(id, pos) {
  
@@ -2024,6 +2366,7 @@ function BootboxCreateItem(id, pos) {
     
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: url,
@@ -2038,6 +2381,8 @@ function BootboxCreateItem(id, pos) {
         else { newSortIndex = refItem.item.sortIndex + 1; }
 
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: '/modal/item/item-create-form.html',
             success: function (data) {
@@ -2215,6 +2560,7 @@ function BootboxDeleteItem(id) {
  
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: "/api/item/" + id,
@@ -2226,6 +2572,8 @@ function BootboxDeleteItem(id) {
         var itemToDelete = data;
 
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: '/modal/item/item-delete-form.html',
             success: function (data) {
@@ -2249,6 +2597,8 @@ function BootboxDeleteItem(id) {
                         if (result) {
                             
                            $.ajax({
+                               
+                                global: false,
                                 type: "GET",
                                 contentType: "application/json",
                                 url: "/api/item/delete/" + id,
@@ -2267,6 +2617,7 @@ function BootboxDeleteItem(id) {
                     
                     $.ajax({
 
+                        global: false,
                         type: "GET",
                         contentType: "application/json",
                         url: "/api/link/links/" + id,
@@ -2311,86 +2662,171 @@ function BootboxDeleteItem(id) {
 }
 
 
-function BootboxConfirmItem(id) {
+function BootboxPerformTaskAction(id, action) {
+    
+    var labelText = '';
+    var confirm = false;
+    
+    if (action === 'CONFIRMATION') {
+        
+        labelText = 'Confirm';
+        confirm = true;
+        
+    } else if (action === 'ACKNOWLEDGEMENT') {
+        
+        labelText = 'Acknowledge';
+        confirm = false;
+    }
     
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
-        url: "/api/item/" + id,
+        url: "/api/tasks/" + id,
         dataType: "json",
         cache: false
     })
     .done(function (data) {
         
-        var itemToConfirm = data;
+        var task = data;
 
         bootbox.confirm({
             
-            message: itemToConfirm.itemValue,
-            title: "Confirm requirement: " + itemToConfirm.identifier + "?",
+            message: task.taskItem.itemValue,
+            title: labelText + " requirement: " + task.taskItem.identifier + "?",
             buttons: {
                 cancel: {
                     label: "Cancel",
-                    className: "btn-danger btn-fixed-width-100"
+                    className: "btn-danger btn-sm btn-fixed-width-120"
                 },
                 confirm: {
-                    label: "Confirm",
-                    className: "btn-success btn-fixed-width-100"
+                    label: labelText,
+                    className: "btn-success btn-sm btn-fixed-width-120"
                 }
             },
             callback: function (result) {
 
                 if (result) {
                     
-                    // TBD
+                    if (confirm === true) {
+                        
+                        $.ajax({
+
+                            global: false,
+                            type: "GET",
+                            contentType: "application/json",
+                            url: "/api/tasks/confirm/" + id,
+                            dataType: "json",
+                            cache: false
+                        })
+                        .done(function (data) {
+                            
+                            $('#task-id-' + data.id).remove();
+                            showToastr('success', "Task ID#: " + data.id + " confirmed.");
+                        });
+                        
+                    } else {
+                       
+                        $.ajax({
+
+                            global: false,
+                            type: "GET",
+                            contentType: "application/json",
+                            url: "/api/tasks/acknowledge/" + id,
+                            dataType: "json",
+                            cache: false
+                        })
+                        .done(function (data) {
+                            
+                            $('#task-id-' + data.id).remove();
+                            showToastr('success', "Task ID#: " + data.id + " acknowledged.");
+                        });
+                    }
                 }
             }
         });
-        
     });
 }
 
 
-function BootboxAcknowledgeItem(id) {
+function BootboxPerformTaskComment(id) {
     
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
-        url: "/api/item/" + id,
+        url: "/api/tasks/" + id,
         dataType: "json",
         cache: false
     })
     .done(function (data) {
         
-        var itemToAcknowledge = data;
+        var date = new Date().toISOString().substring(0, 10) + ': ';
+        var task = data;
+        
+        var msg =   '<div class="row">' +
+                    '<div class="col-md-12" style="padding: 15px;">' +
+                    '<span>' + task.taskItem.itemValue + '</span>' +
+                    '</div>' +
+                    '<div class="col-md-12">' +
+                    '<form action="/api/itemcomments/save" method="post">' +
+                    '<div class="row" style="margin-top: 10px;">' +
+                    '<div class="col-md-12">' +
+                    '<div class="form-group">' +
+                    '<input type="hidden" name="itemId" id="itemId" value="' + task.taskItem.id + '" />' +
+                    '<label for="commentValue">Comment:</label>' +
+                    '<textarea class="form-control" rows="8" cols="50" id="commentValue" name="commentValue">' + date + '</textarea>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '</div>';
 
         bootbox.confirm({
-            
-            message: itemToAcknowledge.itemValue,
-            title: "Acknowledge requirement: " + itemToAcknowledge.identifier + "?",
+
+            message: msg,
+            title: "Add Comment to Task#: " + task.id,
             buttons: {
                 cancel: {
-                    label: "Cancel",
-                    className: "btn-danger btn-fixed-width-100"
+                    label: 'Cancel',
+                    className: 'btn-danger btn-fixed-width-100'
                 },
                 confirm: {
-                    label: "Acknowledge",
-                    className: "btn-success btn-fixed-width-100"
-                }
+                    label: "Save",
+                    className: "btn-success btn-fixed-width-100"}
             },
-            callback: function (result) {
+            callback: function (comment) {
 
-                if (result) {
-                    
-                    // TBD
+                if (comment) {
+
+                    var data = {};
+                    data['itemId'] = task.taskItem.id;
+                    data['comment'] = $("#commentValue").val();
+
+                    $.ajax({
+
+                        global: false,
+                        type: "POST",
+                        contentType: "application/json",
+                        url: "/api/tasks/comment/" + id,
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        timeout: 60000,
+                        success: function (data) {
+                            
+                            $('#task-id-' + id).remove();
+                            showToastr('success', "Comment for Task#: " + id + " created.");
+                        }
+                    });
                 }
             }
         });
-        
     });
 }
+
 
 
 function itemCreateIdentTemplateChange() {
@@ -2458,6 +2894,8 @@ function itemCreateIdentTemplateChange() {
     };
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: "/api/items/nextidentifier",
         data: data,
@@ -2479,6 +2917,8 @@ function itemEditIdentTemplateChange() {
     if (isEmpty(str)) {
 
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: "/api/items/nextidentifier",
             data: {id: document.getElementById('artifactId').value, template: document.getElementById('editIdentTemplate').value},
@@ -2509,6 +2949,7 @@ function BootboxDisplayComments(id) {
 
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: "/api/itemcomments/" + id,
@@ -2588,6 +3029,7 @@ function BootboxAddComment(id) {
  
     $.ajax({
 
+        global: false,
         type: "GET",
         contentType: "application/json",
         url: "/api/item/" + id,
@@ -2640,6 +3082,7 @@ function BootboxAddComment(id) {
                     data['comment'] = $("#commentValue").val();
 
                     $.ajax({
+                        
                         type: "POST",
                         contentType: "application/json",
                         url: "/api/comments/new",
@@ -2680,6 +3123,8 @@ function BootboxAddComment(id) {
 function BootboxCreateLink(id, ident, projectId) {
     
     $.ajax({
+        
+        global: false,
         type: "GET",
         url: '/modal/link/link-create-form.html',
         success: function (data) { 
@@ -2710,6 +3155,7 @@ function BootboxCreateLink(id, ident, projectId) {
                         data['dstItemId'] = $("#dstItemId").val();
                         
                         $.ajax({
+                            
                             type: "POST",
                             contentType: "application/json",
                             url: "/api/link/new",
@@ -2757,6 +3203,7 @@ function BootboxCreateLink(id, ident, projectId) {
 function loadLinkArtifacts(id) {
     
     $.ajax({
+        
         url: '/api/link/artifacts/' + id,
         type: "GET",
         dataType: "json",
@@ -2782,6 +3229,7 @@ function loadLinkArtifacts(id) {
 function loadLinkTypes() {
     
     $.ajax({
+        
         url: '/api/link/linktypes',
         type: "GET",
         dataType: "json",
@@ -2855,6 +3303,8 @@ function BootboxDisplayLinks(id) {
         var value = data.identifier + ": " + data.itemValue;
 
         $.ajax({
+            
+            global: false,
             type: "GET",
             url: '/modal/link/link-display-form.html',
             success: function (data) { 
@@ -2963,6 +3413,7 @@ function BootboxDisplayLinks(id) {
 function ArtifactBasicMetadata(id) {
     
     $.ajax({
+        
         url: '/api/artifact/' + id,
         type: "GET",
         dataType: "json",
@@ -2978,6 +3429,8 @@ function ArtifactBasicMetadata(id) {
             var artifactDescription = data.artifactDescription;
 
             $.ajax({
+                
+                global: false,
                 type: 'GET',
                 url: '/modal/artifact/artifact-meta-form.html',
                 success: function(data) {
@@ -3022,6 +3475,7 @@ function ArtifactBasicMetadata(id) {
 function ArtifactStatusLoad(selectedId) {
     
     $.ajax({
+        
         url: '/api/artifacts/statuslist',
         type: "GET",
         dataType: "json",
@@ -3051,6 +3505,7 @@ function getArtifactTypes(selectedId) {
     var url = '/api/artifact/types';
 
     $.ajax({
+        
         url: url,
         type: "GET",
         dataType: "json",
@@ -3080,6 +3535,8 @@ function getFoldersByProject(projId, selectedId) {
     var url = '/api/projectfolders/' + projId;
     
     $.ajax({
+        
+        global: false,
         url: url,
         type: "GET",
         dataType: "json",
@@ -3131,6 +3588,7 @@ function showToastr(msgType, message) {
     toastr[msgType](message);
 }
 
+
 $(function () {
 
     $('.spinner .btn:first-of-type').on('click', function () {
@@ -3168,6 +3626,8 @@ $(function () {
 function BootboxLinkDeleteConfirm(id) {
     
     $.ajax({
+        
+        global: false,
         url: '/api/link/' + id,
         type: "GET",
         dataType: "json",
@@ -3226,7 +3686,7 @@ function BootboxAdminImportItems() {
     bootbox.confirm({
                 
         title: "Import Requirements",
-        message: "Do import requirements?",
+        message: "Import new requirements?",
         size: 'small',
         buttons: {
             confirm: {
@@ -3243,8 +3703,6 @@ function BootboxAdminImportItems() {
         callback: function(result) {
               
             if (result) {
-                
-                modalBusy.open();
 
                 $.ajax({
 
@@ -3256,7 +3714,6 @@ function BootboxAdminImportItems() {
                 })
                 .done(function (data) {
 
-                    modalBusy.close();
                     showToastr('success', data + ' new requirements added.');
                 });
             }
@@ -3287,8 +3744,6 @@ function BootboxAdminRefreshComments() {
         callback: function(result) {
 
             if (result) {
-                
-                modalBusy.open();
 
                 $.ajax({
 
@@ -3300,7 +3755,6 @@ function BootboxAdminRefreshComments() {
                 })
                 .done(function (data) {
 
-                    modalBusy.close();
                     showToastr('success', data + ' comments refreshed.');
                 });
             }
@@ -3326,6 +3780,7 @@ function BootboxAdminModalTest() {
 function BootboxAlertSmall(title, msg) {
     
     bootbox.alert({
+        
         title: '<span style="font-weight: bold; color: crimson;"><i class="fa fa-warning"></i> '+title+'</span>',
         message: msg,
         size: 'small',
@@ -3507,7 +3962,6 @@ function SendMessage() {
                     success: function () {
 
                         showToastr('success', 'Message sent!');
-
                     }
                 });
             }
@@ -3561,7 +4015,6 @@ function SendNotification() {
                     success: function () {
 
                         showToastr('success', 'Message sent!');
-
                     }
                 });
             }

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.zafritech.zidingorms.database.domain.ItemComment;
+import org.zafritech.zidingorms.database.domain.User;
+import org.zafritech.zidingorms.database.repositories.UserRepository;
 import org.zafritech.zidingorms.items.services.CommentService;
 import org.zafritech.zidingorms.items.services.impl.CommentServiceImpl;
 
@@ -30,6 +32,9 @@ public class CommentRestController {
 
     @Value("${zidingo.upload-dir}")
     private String upload_dir;
+ 
+    @Autowired
+    private UserRepository userRepository;
     
     private CommentService commentService;
 
@@ -53,6 +58,15 @@ public class CommentRestController {
         List<ItemComment> comments = commentService.findByItemIdOrderByCreationDateDesc(id);
         
         return comments;
+    }
+    
+    @RequestMapping(value = "/api/comments/client/item/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ItemComment> getItemCommentsByUser(@PathVariable(value = "id") Long id) {
+        
+        User user = userRepository.findByEmail("client@astad.qa");
+        ItemComment comment = commentService.getLastUserComment(user, id);
+        
+        return new ResponseEntity<ItemComment>(comment, HttpStatus.OK);
     }
     
     @RequestMapping(value = "/api/itemcomments/refresh", method = RequestMethod.GET)

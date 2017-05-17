@@ -70,12 +70,13 @@ body {
 }
 
 .top-nav>.open>.dropdown-menu {
+    
+    width: 200px;
     float: left;
     position: absolute;
     margin-top: 0;
     border: 1px solid rgba(0,0,0,.15);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    border-radius: 0px;
     background-color: #fff;
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
@@ -332,16 +333,16 @@ ul.alert-dropdown {
 .item-level-none-first {
     font-size: 12px; 
     padding: 11px 5px;
-    border: 1px solid #c0c0c0;
+    border: 1px solid #eeeeee;
 }
 
 .item-level-none {
     font-size: 12px; 
     padding: 11px 5px;
     /*border: 1px solid #c0c0c0;*/
-    border-left: 1px solid #c0c0c0;
-    border-right: 1px solid #c0c0c0;
-    border-bottom: 1px solid #c0c0c0;
+    border-left: 1px solid #eeeeee;
+    border-right: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
 }
 
 .item-level-0 {
@@ -555,6 +556,10 @@ ul.alert-dropdown {
 /* Modal boxes and Bootbox */
 .btn-fixed-width-100 {
     width: 100px !important;
+}
+
+.btn-fixed-width-120 {
+    width: 120px !important;
 }
 
 /* Modal dialog with Scrollbar body */

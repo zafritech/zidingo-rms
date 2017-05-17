@@ -22,9 +22,11 @@ import org.zafritech.zidingorms.database.dao.ItemEditDao;
 import org.zafritech.zidingorms.database.domain.Item;
 import org.zafritech.zidingorms.database.domain.ItemType;
 import org.zafritech.zidingorms.database.domain.SystemVariable;
+import org.zafritech.zidingorms.database.domain.VerificationReference;
 import org.zafritech.zidingorms.database.repositories.ItemRepository;
 import org.zafritech.zidingorms.database.repositories.ItemTypeRepository;
 import org.zafritech.zidingorms.database.repositories.SystemVariableRepository;
+import org.zafritech.zidingorms.database.repositories.VerificationReferenceRepository;
 import org.zafritech.zidingorms.items.services.ItemService;
 import org.zafritech.zidingorms.items.services.impl.ItemServiceImpl;
 
@@ -46,6 +48,9 @@ public class ItemRestController {
     @Autowired
     public ItemRepository itemRepository;
 
+    @Autowired
+    private VerificationReferenceRepository vvReferenceRepository;
+    
     @Autowired
     public void setItemService(ItemServiceImpl itemService) {
 
@@ -191,4 +196,14 @@ public class ItemRestController {
 
         return new ResponseEntity<Integer>(reqsCount, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/api/verification/details/{id}", method = RequestMethod.GET)
+    public ResponseEntity<VerificationReference> getItemVerificationDetails(@PathVariable(value = "id") Long id) {
+
+        VerificationReference verification = vvReferenceRepository.findFirstByItem(itemRepository.findOne(id));
+
+        return new ResponseEntity<VerificationReference>(verification, HttpStatus.OK);
+    }
+    
+    
 }

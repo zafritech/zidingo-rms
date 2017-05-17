@@ -48,6 +48,17 @@ public class CommentServiceImpl implements CommentService {
     private ItemRepository itemRepository;
 
     @Override
+    public ItemComment saveComment(Item item, String comment, User user) {
+
+        ItemComment newComment = new ItemComment(item, comment, user);
+        
+        ItemComment savedComment = commentRepository.save(newComment);
+        itemService.incrementCommentCount(item.getId());
+        
+        return savedComment;
+    }
+
+    @Override
     public ItemComment saveCommentDao(CommentDao commentDao) {
 
         Item item = itemRepository.findOne(commentDao.getItemId());
@@ -148,5 +159,13 @@ public class CommentServiceImpl implements CommentService {
         }
         
         return commentRepository.findAll().size();
+    }
+
+    @Override
+    public ItemComment getLastUserComment(User user, Long id) {
+
+        ItemComment comment = commentRepository.findFirstByAuthorAndItemIdOrderByCreationDateDesc(user, id);
+        
+        return comment;
     }
 }

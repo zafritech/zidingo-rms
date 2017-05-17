@@ -91,29 +91,12 @@
                                    <i class="fa fa-bars" style="color: #00aced; font-size: 18px;"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down fa-rotate-90"></i> Add item below</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'ABOVE\');'"><i class="fa fa-fw fa-level-up fa-rotate-270"></i> Add item above</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemUp(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-up"></i> Move item up</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:moveItemDown(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-arrow-circle-down"></i> Move item down</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxEditItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-pencil"></i> Edit item</a>
-                                    </li>
-                                    <li th:if="${item.itemClass} == 'REQUIREMENT'" class="divider"></li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
-                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxAddComment(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-comments"></i> Add item comment</a>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxViewItemDetails(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-file-text"></i> Show item details</a>
                                     </li>
                                     <li th:if="${item.itemClass} == 'REQUIREMENT'">
-                                        <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-tasks"></i> Item attributes</a>
+                                        <a href="#editItemModal" data-toggle="modal" th:attr="data-item-id=${item.id}"><i class="fa fa-fw fa-book"></i> Item in context</a>
                                     </li>
-                                    <li class="divider"></li>
                                     <li>
                                         <a href="javascript:void(0);" th:onclick="'javascript:BootboxDeleteItem(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-trash"></i> Delete item</a>
                                     </li>

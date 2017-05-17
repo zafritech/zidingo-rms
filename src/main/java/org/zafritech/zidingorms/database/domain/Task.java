@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -53,24 +54,38 @@ public class Task implements Serializable {
     @Enumerated(EnumType.STRING)
     private TaskAction taskActionTaken;
     
+    @Column(columnDefinition = "TEXT")
+    private String actionComment;
+    
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     
+    @ManyToOne
+    @JoinColumn(name = "userId")
     private User completedBy;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date completionDate;
+    
+    private boolean archived;
+    
+    @ManyToOne
+    @JoinColumn(name = "taskArchiveId")
+    private TaskArchive archive;
 
     @Override
     public String toString() {
         
-        return "Task{" + "id=" + getId() + ", uuId=" + getUuId() + ", taskItem=" + 
-                getTaskItem() + ", taskAction=" + getTaskAction() + ", assignedTo=" + 
-                getAssignedTo() + ", completed=" + isCompleted() + ", creationDate=" + 
-                getCreationDate() + ", completedBy=" + getCompletedBy() + ", completionDate=" 
-                + getCompletionDate() + '}';
+        return "Task{" + "id=" + id + ", uuId=" + uuId + ", batchId=" + batchId + 
+                ", taskItem=" + taskItem + ", taskAction=" + taskAction + 
+                ", assignedTo=" + assignedTo + ", completed=" + completed + 
+                ", taskActionTaken=" + taskActionTaken + ", actionComment=" + 
+                actionComment + ", creationDate=" + creationDate + ", completedBy=" + 
+                completedBy + ", completionDate=" + completionDate + ", archived=" + 
+                archived + ", archive=" + archive + '}';
     }
 
+    
     
     public Task() {
         
@@ -83,6 +98,7 @@ public class Task implements Serializable {
         this.taskAction = taskAction;
         this.batchId = batchId;
         this.creationDate = new Timestamp(System.currentTimeMillis());
+        this.archived = false;
     }
 
     public Long getId() {
@@ -145,6 +161,14 @@ public class Task implements Serializable {
         this.taskActionTaken = taskActionTaken;
     }
 
+    public String getActionComment() {
+        return actionComment;
+    }
+
+    public void setActionComment(String actionComment) {
+        this.actionComment = actionComment;
+    }
+
     public Date getCreationDate() {
         return creationDate;
     }
@@ -169,4 +193,19 @@ public class Task implements Serializable {
         this.completionDate = completionDate;
     }
 
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public TaskArchive getArchive() {
+        return archive;
+    }
+
+    public void setArchive(TaskArchive archive) {
+        this.archive = archive;
+    }
 }

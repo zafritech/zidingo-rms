@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.zafritech.zidingorms.database.domain.ApplicationSession;
 import org.zafritech.zidingorms.database.domain.Company;
 import org.zafritech.zidingorms.database.domain.ItemCategory;
 import org.zafritech.zidingorms.database.domain.Project;
@@ -28,6 +29,9 @@ import org.zafritech.zidingorms.database.repositories.ProjectRepository;
  */
 @Controller
 public class ProjectController {
+    
+    @Autowired
+    ApplicationSession appSession;
     
     @Autowired
     private ProjectService projectService;
@@ -61,10 +65,13 @@ public class ProjectController {
     }
     
     @RequestMapping("/projects/{uuid}")
-    public String getProject(@PathVariable String uuid, Model model) {
+    public String getProject(@PathVariable String uuid, 
+                             Model model) {
 
+        appSession.setProject(uuid); 
+        
         Project project = projectRepository.findByUuId(uuid); 
-
+        
         model.addAttribute("project", project);
         model.addAttribute("artifacts", artifactRepository.findByArtifactProject(project));
         model.addAttribute("folder", folderRepository.findOne(folderService.getProjectFolder(project.getId()).getId())); 
@@ -76,6 +83,8 @@ public class ProjectController {
     public String getProjectFolder(@PathVariable String uuid, @PathVariable Long folderId, Model model) {
         
         Project project = projectRepository.findByUuId(uuid);
+        
+        appSession.setFolderId(folderId);
 
         model.addAttribute("project", project);
         model.addAttribute("artifacts", artifactRepository.findByArtifactFolder(folderRepository.findOne(folderId)));

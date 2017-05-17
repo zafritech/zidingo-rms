@@ -47,7 +47,7 @@ public class ItemComment implements Serializable {
     private Date creationDate;
 
     public ItemComment() {
-
+        
     }
 
     public ItemComment(Item item, String comment) {
@@ -65,6 +65,14 @@ public class ItemComment implements Serializable {
         this.comment = comment;
         this.author = author;
         this.creationDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @Override
+    public String toString() {
+        
+        return "ItemComment{" + "id=" + id + ", uuId=" + uuId + ", item=" + 
+                item + ", comment=" + comment + ", author=" + author + 
+                ", creationDate=" + creationDate + '}';
     }
 
     public String getUuId() {

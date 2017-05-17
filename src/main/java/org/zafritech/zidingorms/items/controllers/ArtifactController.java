@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.zafritech.zidingorms.core.commons.enums.SystemVariableTypes;
 import org.zafritech.zidingorms.database.dao.SearchDao;
+import org.zafritech.zidingorms.database.domain.ApplicationSession;
 import org.zafritech.zidingorms.database.domain.Artifact;
 import org.zafritech.zidingorms.database.domain.Item;
 import org.zafritech.zidingorms.database.domain.Link;
@@ -33,7 +34,10 @@ import org.zafritech.zidingorms.items.services.LinkService;
  */
 @Controller
 public class ArtifactController {
-    
+  
+    @Autowired
+    ApplicationSession appSession;
+        
     @Autowired
     private ArtifactRepository artifactRepository;
     
@@ -77,6 +81,10 @@ public class ArtifactController {
                               @RequestParam(defaultValue = "25", value = "size", required=false) Integer size,
                               @RequestParam(defaultValue = "", value = "q", required=false) String q,
                               Model model) {
+        
+        
+        appSession.setFolderId(artifactRepository.findOne(id).getArtifactFolder().getId());
+        appSession.setArtifact(id);
         
         int pageCount = (int)Math.ceil((float)(itemService.getNumberOfItems(id) / size)) + 1;
         int currentPage = (page > pageCount) ? pageCount : page;

@@ -148,6 +148,9 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                     <li>
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxViewItemDetails(\'' + ${item.id} + '\');'"><i class="fa fa-fw fa-file-text"></i> View item details</a>
+                                    </li>
+                                    <li>
                                         <a href="javascript:void(0);" th:onclick="'javascript:BootboxCreateItem(\'' + ${item.id} + '\', \'BELOW\');'"><i class="fa fa-fw fa-level-down fa-rotate-90"></i> Add item below</a>
                                     </li>
                                     <li>

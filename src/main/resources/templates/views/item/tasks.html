@@ -14,34 +14,67 @@
 
         <div layout:fragment="content">
             
-            <div th:if="${user != null}" class="col-lg-12">
+<!--            <div th:if="${user != null}" class="col-lg-12">
                 <h1 class="page-header" th:text="${user.firstName} + '\'s Tasks'">User's Tasks</h1>
-            </div>
+            </div>-->
             
-            <div th:if="${!tasks.isEmpty()}" class="panel-body">
-                <div class="row">
-                    
+            <div th:if="${!tasks.isEmpty()}" class="row" style="background-color: #f5f5f5; border: 1px solid #eeeeee; margin: 0px;">
+                <div class="col-md-6 pull-left">
+                    <h2 th:text="${total}" style="font-weight: bold;">total</h2>
+                    <h5>All Tasks</h5>
+                </div>
+                <div class="col-md-2">
+                    <span class="pull-right">
+                        <h2 th:text="${open}" style="font-weight: bold;">open</h2>
+                        <h5>Open</h5>
+                    </span>
+                </div>
+                <div class="col-md-2">
+                    <span class="pull-right">
+                        <h2 th:text="${complete}" style="font-weight: bold;">complete</h2>
+                        <h5>Complete</h5>
+                    </span>
+                </div>
+                <div class="col-md-2">
+                    <span class="pull-right">
+                        <h2 th:text="${percentage} + '%'" style="font-weight: bold;">total</h2>
+                        <h5>% Complete</h5>
+                    </span>
                 </div>
             </div>
-            
+
             <div th:if="${!tasks.isEmpty()}" class="panel-body">
-                <div th:each="task : ${tasks}" th:class="${task.id} == ${tasks[0].id} ? 'row item-level-none-first' : 'row item-level-none'" >
+                <div th:each="task : ${tasks}"
+                     th:attr="id=${'task-id-' + task.id}"
+                     th:class="${task.id} == ${tasks[0].id} ? 'row item-level-none-first' : 'row item-level-none'" >
                     <div class="col-md-2 col-sm-6">
                         <a th:href="@{'/tasks/' + ${task.uuId}}">
-                            <span th:text="'Task ID#: ' + ${task.id}"></span>
+                            <span th:text="'Task ID#: ' + ${task.id}" style="font-weight: bold;">Task ID</span>
                         </a>
                     </div>
                     <div class="col-md-9 col-sm-6">
-                        <span th:utext="'&lt;strong&gt;' + ${#strings.replace(task.taskAction, '_REQ', '')} + ' Requirement.' + '&lt;/strong&gt;'">Action</span>
+                        <span th:utext="'&lt;strong&gt;' + ${#strings.replace(task.taskAction, '_REQ', '')} + '&lt;/strong&gt;'">Action</span>
                         <span class="pull-right" th:utext="'&lt;strong&gt;' + ${task.taskItem.identifier} + '&lt;/strong&gt;'">Identifier</span>
                         <div th:text="${task.taskItem.itemValue}" style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 5px;">
                             Item Value
                         </div>
                     </div>
                     <div class="col-md-1 col-sm-6">
-                        <span class="pull-right">
-                            <a th:href="@{'/tasks/' + ${task.uuId}}"><i class="fa fa-fw fa-wrench fa-2x"></i></a>
-                        </span>
+                        <li class="dropdown item-toolbar-li pull-right" style="margin-top: -5px;">
+                            <ul class="item-toolbar-ul dropup"> 
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-bars" style="color: #00aced; font-size: 18px;"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu" style="width: 180px; border-radius: 0px;">
+                                    <li style="display: block; border-bottom: 1px solid #eeeeee;">
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxPerformTask(\'' + ${task.id} + '\');'"><i class="fa fa-fw fa-tasks"></i> Open task</a>
+                                    </li>
+                                    <li style="display: block;">
+                                        <a href="javascript:void(0);" th:onclick="'javascript:BootboxViewItemDetails(\'' + ${task.taskItem.id} + '\');'"><i class="fa fa-fw fa-file-text"></i> Full item details</a>
+                                    </li>
+                                </ul>
+                            </ul>
+                        </li>
                     </div>
                 </div>
             </div>

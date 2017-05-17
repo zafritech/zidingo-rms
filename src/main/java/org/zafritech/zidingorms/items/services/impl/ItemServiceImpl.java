@@ -18,7 +18,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.zafritech.zidingorms.core.commons.enums.ItemClass;
+import org.zafritech.zidingorms.core.commons.enums.ItemStatus;
 import org.zafritech.zidingorms.core.commons.enums.SystemVariableTypes;
+import org.zafritech.zidingorms.core.user.UserService;
 import org.zafritech.zidingorms.database.dao.ItemCreateDao;
 import org.zafritech.zidingorms.database.dao.ItemDao;
 import org.zafritech.zidingorms.database.dao.ItemEditDao;
@@ -32,23 +34,38 @@ import org.zafritech.zidingorms.database.domain.ItemHistory;
 import org.zafritech.zidingorms.database.domain.Link;
 import org.zafritech.zidingorms.database.domain.Project;
 import org.zafritech.zidingorms.database.domain.SystemVariable;
+import org.zafritech.zidingorms.database.domain.VerificationMethod;
+import org.zafritech.zidingorms.database.domain.VerificationReference;
 import org.zafritech.zidingorms.database.repositories.ArtifactRepository;
+import org.zafritech.zidingorms.database.repositories.ItemCategoryRepository;
 import org.zafritech.zidingorms.database.repositories.ItemHistoryRepository;
 import org.zafritech.zidingorms.database.repositories.ItemRepository;
 import org.zafritech.zidingorms.database.repositories.ItemTypeRepository;
 import org.zafritech.zidingorms.database.repositories.LinkRepository;
 import org.zafritech.zidingorms.database.repositories.SystemVariableRepository;
+import org.zafritech.zidingorms.database.repositories.VerificationMethodRepository;
+import org.zafritech.zidingorms.database.repositories.VerificationReferenceRepository;
 import org.zafritech.zidingorms.io.excel.ExcelFunctions;
+import org.zafritech.zidingorms.items.services.CommentService;
 import org.zafritech.zidingorms.items.services.ItemService;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-
+    
+    @Autowired
+    private UserService userService;
+    
     @Autowired
     private ExcelFunctions excelFunctions;
     
     @Autowired
     private ItemRepository itemRepository;
+     
+    @Autowired
+    private ItemCategoryRepository itemCategoryRepository;
+       
+    @Autowired
+    private CommentService commentService;
 
     @Autowired
     public ItemTypeRepository itemTypeRepository;
@@ -68,6 +85,12 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private LinkRepository linkRepository;
     
+    @Autowired
+    private VerificationMethodRepository vvMethodRepository;
+    
+    @Autowired
+    private VerificationReferenceRepository vvReferenceRepository;
+               
     @Override
     public Item findById(Long id) {
 
@@ -496,6 +519,7 @@ public class ItemServiceImpl implements ItemService {
             Workbook workbook = excelFunctions.getExcelWorkbook(inputStream, filePath);
             Sheet worksheet = workbook.getSheetAt(0);
             
+            int sortIndex = 0;
             int i = 1;  // Skip header row, i = 0
             
             while(i <= worksheet.getLastRowNum()) {
@@ -510,11 +534,47 @@ public class ItemServiceImpl implements ItemService {
                     
                     if (item == null) {
                         
+                        ItemDao itemDao = new ItemDao();
+                        
+                        itemDao.setSysId(sysId);
+                        
+                        String ident = (String) excelFunctions.getExcelCellValue(row.getCell(1));
+                        itemDao.setIdentifier((ident != null && !ident.isEmpty()) ? ident : "");
+                        
+                        String value = (String) excelFunctions.getExcelCellValue(row.getCell(2));
+                        itemDao.setItemValue((value != null && !value.isEmpty()) ? value : "");
+                        
+                        String itemClass = (String) excelFunctions.getExcelCellValue(row.getCell(3));
+                        itemDao.setItemClass((itemClass.equalsIgnoreCase("DEF")) ? ItemClass.REQUIREMENT.name() : itemClass.toUpperCase());
+                        
+                        itemDao.setItemType((itemClass.equalsIgnoreCase("DEF") || itemClass.equalsIgnoreCase("REQUIREMENT")) 
+                                                                                ? itemTypeRepository.findByItemTypeName("Functional")
+                                                                                : itemTypeRepository.findByItemTypeName("None"));
+                
+                        int level = (int) (double) excelFunctions.getExcelCellValue(row.getCell(14));
+                        itemDao.setItemLevel(level);
+                        
+                        itemDao.setSortIndex(sortIndex++);
+                        itemDao.setArtifactId(53L);
+                        
+                        Item newItem = itemRepository.save(daoToItem.convert(itemDao));
+                        newItem.setItemCategory(getItemCategory(row)); 
+                        newItem.setItemStatus(getItemStatus(row)); 
+                        newItem = itemRepository.save(newItem);
+                        
+                        // Item comments
+                        createItemComment(newItem, row);
+                        
+                        // Item verification data
+                        createItemVerification(newItem, row);
+                        
                         reqsCount++;
-                        System.out.println("New Item: " + sysId);
+                        System.out.println("New Item: " + sysId + " ----> ID: " + newItem.getId());
                     }
                 }
             }
+                
+            System.out.println("\n\rItems found: " + reqsCount);
             
         } catch (IOException e) {
 
@@ -522,5 +582,124 @@ public class ItemServiceImpl implements ItemService {
         }
         
         return reqsCount;
+    }
+    
+    private void createItemComment(Item item, Row row) {
+        
+        // Item comments
+        String clientComment = (row.getCell(11, Row.RETURN_BLANK_AS_NULL) != null) 
+                             ? (String) excelFunctions.getExcelCellValue(row.getCell(11, Row.RETURN_BLANK_AS_NULL)) 
+                             : "";
+        String contractorComment = (row.getCell(12, Row.RETURN_BLANK_AS_NULL) != null) 
+                             ? (String) excelFunctions.getExcelCellValue(row.getCell(12, Row.RETURN_BLANK_AS_NULL)) 
+                             : "";
+
+        // Save client comment
+        if (clientComment != null && !clientComment.isEmpty()) {
+
+            commentService.saveComment(item, clientComment, userService.findByEmail("client@astad.qa"));
+        }
+
+        // Save client comment
+        if (contractorComment != null && !contractorComment.isEmpty()) {
+
+            commentService.saveComment(item, contractorComment, userService.findByEmail("contractor@astad.qa"));
+        }
+    }
+    
+    private void createItemVerification(Item item, Row row) {
+        
+        String method = (String) excelFunctions.getExcelCellValue(row.getCell(7));
+        String refs = (String) excelFunctions.getExcelCellValue(row.getCell(8));
+        String edidence = (String) excelFunctions.getExcelCellValue(row.getCell(10));
+        
+        if (method != null && !method.isEmpty()) {
+                            
+            VerificationMethod vvMethod = vvMethodRepository.findByMethodCode(method);
+
+            // Check if item already exists in Verification References
+            VerificationReference vvReference = vvReferenceRepository.findFirstByItem(item);
+
+            if (vvReference == null) {
+
+                vvReference = new VerificationReference(item, vvMethod);
+
+            } else {
+
+                vvReference.setMethod(vvMethod); 
+            }
+
+            if (refs != null && !refs.isEmpty()) {
+
+                vvReference.setVvReferences(refs);
+            }
+
+            if (edidence != null && !edidence.isEmpty()) {
+
+                vvReference.setVvEvidence(edidence); 
+            }
+
+            vvReferenceRepository.save(vvReference); 
+        }
+    }
+    
+    private ItemCategory getItemCategory(Row row) {
+        
+        String lead = (String) excelFunctions.getExcelCellValue(row.getCell(4));
+        String newLead;
+        
+        if (lead != null && !lead.isEmpty()) {
+                    
+            switch (lead) {
+                case "PM":
+                    newLead = "PJM";
+                    break;
+                case "COM_Radio":
+                    newLead = "RAD";
+                    break;
+                case "QF":
+                    newLead = "QFN";
+                    break;
+                default:
+                    newLead = lead;
+                    break;
+            }
+
+            return itemCategoryRepository.findFirstByCategoryCode(newLead);
+        }
+        
+        return null;
+    }
+    
+    private ItemStatus getItemStatus(Row row) {
+        
+        ItemStatus itemStatus = ItemStatus.NONE;
+        String status = (String) excelFunctions.getExcelCellValue(row.getCell(6));
+        
+        if (status != null && !status.isEmpty()) {
+
+            switch (status) {
+                case "Closed":
+                    itemStatus = ItemStatus.CLOSED;
+                    break;
+                case "Confirmed":
+                    itemStatus = ItemStatus.CONFIRMED;
+                    break;
+                case "Defined":
+                    itemStatus = ItemStatus.DEFINED;
+                    break;
+                case "Open":
+                    itemStatus = ItemStatus.OPEN;
+                    break;
+                case "Selected":
+                    itemStatus = ItemStatus.SELECTED;
+                    break;
+                default:
+                    itemStatus = ItemStatus.NONE;
+                    break;
+            }
+        }
+
+        return itemStatus;
     }
 }
