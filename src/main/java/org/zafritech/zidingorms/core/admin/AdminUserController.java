@@ -107,20 +107,25 @@ public class AdminUserController {
             
             String str = userClaim.getClaimType().name();
             
-            if (str.substring(0, str.indexOf("_")).equals("PROJECT")) {
+            switch (str.substring(0, str.indexOf("_"))) {
                 
-                Project proj = projectRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
-                dao.setUserClaimStringValue(proj.getProjectShortName());
-                
-            } else if (str.substring(0, str.indexOf("_")).equals("DOCUMENT")) {
-                
-                Artifact doc = artifactRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
-                dao.setUserClaimStringValue(doc.getArtifactName());
-                
-            } else if (str.substring(0, str.indexOf("_")).equals("CATEGORY")) {
-                
-                ItemCategory category = ItemCategoryRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
-                dao.setUserClaimStringValue(category.getCategoryName());
+                case "PROJECT":
+                    Project proj = projectRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                    dao.setUserClaimStringValue(proj.getProjectShortName());
+                    break;
+                    
+                case "DOCUMENT":
+                    Artifact doc = artifactRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                    dao.setUserClaimStringValue(doc.getArtifactName());
+                    break;
+                    
+                case "CATEGORY":
+                    ItemCategory category = ItemCategoryRepository.findOne(Long.parseLong(userClaim.getClaimValue()));
+                    dao.setUserClaimStringValue(category.getCategoryName());
+                    break;
+                    
+                default:
+                    break;
             }
             
             claims.add(dao);

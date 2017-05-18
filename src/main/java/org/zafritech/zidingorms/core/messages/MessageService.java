@@ -24,7 +24,13 @@ public interface MessageService {
     
     Notification sendNotification(NoticeDao noticeDao);
     
+    List<Message> getIncomingMessages(User user);
+    
     List<Message> getUnreadMessages(User user);
     
+    List<Message> getSentMessages(User user);
+    
     List<Notification> getUnreadNotifications(User user);
+    
+    List<Message> getDeletedMessages(User user);
 }

@@ -5,11 +5,14 @@
  */
 package org.zafritech.zidingorms.core.controllers;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.zafritech.zidingorms.core.messages.MessageService;
 import org.zafritech.zidingorms.core.user.UserService;
+import org.zafritech.zidingorms.database.domain.Message;
 import org.zafritech.zidingorms.database.domain.User;
 
 /**
@@ -21,28 +24,36 @@ public class MessageController {
     
     @Autowired
     private UserService userService;
-    
-    @RequestMapping("/messages")
-    public String messagesActions(Model model) {
+ 
+    @Autowired
+    public MessageService messageService;
+       
+    @RequestMapping(value = {"/messages", "/messages/inbox"})
+    public String messagesInbox(Model model) {
         
         User user = userService.loggedInUser();
         
-        model.addAttribute("user", user);
+        List<Message> messages = messageService.getIncomingMessages(user);
         
-        return "/views/messages/messages";
+        model.addAttribute("user", user);
+        model.addAttribute("messages", messages);
+          
+        return "/views/messages/inbox";
     }
-    
-    @RequestMapping("/messages/{uuid}")
-    public String readMessage(Model model) {
+       
+    @RequestMapping(value = {"/messages/sent"})
+    public String sentMessages(Model model) {
         
         User user = userService.loggedInUser();
+        List<Message> messages = messageService.getSentMessages(user);
         
         model.addAttribute("user", user);
-        
-        return "/views/messages/messages";
+        model.addAttribute("messages", messages);
+          
+        return "/views/messages/sent";
     }
     
-    @RequestMapping("/notifications")
+    @RequestMapping(value = {"/notifications", "/messages/notifications"})
     public String notificationsActions(Model model) {
         
         User user = userService.loggedInUser();
@@ -52,6 +63,16 @@ public class MessageController {
         return "/views/messages/notifications";
     }
     
+    @RequestMapping("/messages/{uuid}")
+    public String readMessage(Model model) {
+        
+        User user = userService.loggedInUser();
+        
+        model.addAttribute("user", user);
+       
+        return "/views/messages/message";
+    }
+    
     @RequestMapping("/notifications/{uuid}")
     public String readNotification(Model model) {
         
@@ -59,6 +80,18 @@ public class MessageController {
         
         model.addAttribute("user", user);
         
-        return "/views/messages/notifications";
+        return "/views/messages/notification";
+    }
+    
+    @RequestMapping("/messages/trash")
+    public String trashedItems(Model model) {
+        
+        User user = userService.loggedInUser();
+        List<Message> messages = messageService.getDeletedMessages(user);
+        
+        model.addAttribute("user", user);
+        model.addAttribute("messages", messages);
+        
+        return "/views/messages/trash";
     }
 }

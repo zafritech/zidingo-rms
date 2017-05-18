@@ -5,8 +5,10 @@
  */
 package org.zafritech.zidingorms.database.repositories;
 
+import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.zafritech.zidingorms.database.domain.Message;
+import org.zafritech.zidingorms.database.domain.User;
 
 /**
  *
@@ -14,4 +16,5 @@ import org.zafritech.zidingorms.database.domain.Message;
  */
 public interface MessageRepository extends CrudRepository<Message, Long> {
     
+    List<Message> findBySentTo(User user);
 }

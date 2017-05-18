@@ -12,8 +12,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
 
-@Entity(name = "TBL_MESSAGE_RECIPIENTS")
-public class MessageRecipient implements Serializable {
+@Entity(name = "TBL_MESSAGE_STATUS")
+public class MessageStatus implements Serializable {
 
     @Id
     @GeneratedValue
@@ -35,11 +35,11 @@ public class MessageRecipient implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date messageReadDate;
     
-    public MessageRecipient() {
+    public MessageStatus() {
         
     }
 
-    public MessageRecipient(User recipient, Message message) {
+    public MessageStatus(User recipient, Message message) {
         
         this.uuId = UUID.randomUUID().toString();
         this.recipient = recipient;

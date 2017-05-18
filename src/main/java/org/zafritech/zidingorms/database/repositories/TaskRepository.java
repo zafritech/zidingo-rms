@@ -16,11 +16,11 @@ import org.zafritech.zidingorms.database.domain.User;
  */
 public interface TaskRepository extends CrudRepository<Task, Long> {
     
+    List<Task> findByAssignedTo(User user);
+    
     List<Task> findByAssignedToAndCompleted(User user, boolean completed);
     
     Task findByUuId(String uuid);
     
     List<Task> findByBatchId(String batchId);
-    
-    List<Task> findByAssignedTo(User user);
 }

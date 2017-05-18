@@ -48,12 +48,6 @@ public class TaskRestController {
     @Autowired
     private TaskRepository taskRepository;
     
-    @Autowired
-    private ItemRepository itemRepository;
- 
-    @Autowired
-    private ItemCommentRepository commentRepository;
-                
     @RequestMapping(value = "/api/tasks/new", method = POST)
     public ResponseEntity<Task> newTask(@RequestBody TaskDao taskDao) {
         
@@ -69,7 +63,7 @@ public class TaskRestController {
         User user = userService.findByUserName(auth.getName());
         
         List<Task> tasks = taskService.getActiveTasks(user);
-        
+                
         return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
     }
     

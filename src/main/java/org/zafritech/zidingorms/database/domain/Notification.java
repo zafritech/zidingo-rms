@@ -1,11 +1,19 @@
 package org.zafritech.zidingorms.database.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,6 +34,14 @@ public class Notification implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String notification;
     
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "XREF_NOTIFICATION_RECIPIENTS",
+               joinColumns = {@JoinColumn(name = "message_id", referencedColumnName = "id")},
+               inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
+    )
+    @JsonBackReference
+    private Set<User> notificationRecipients = new HashSet<User>();
+    
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date notificationDate; 
@@ -44,9 +60,9 @@ public class Notification implements Serializable {
     @Override
     public String toString() {
         
-        return "Notification{" + "id=" + id + ", uuId=" + uuId + 
-               ", notification=" + notification + ", notificationDate=" + 
-               notificationDate + '}';
+        return "Notification{" + "id=" + getId() + ", uuId=" + getUuId() + 
+               ", notification=" + getNotification() + ", notificationDate=" + 
+               getNotificationDate() + '}';
     }
 
     public Long getId() {
@@ -61,14 +77,6 @@ public class Notification implements Serializable {
         this.uuId = uuId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getNotificationPriority() {
         return notificationPriority;
     }
@@ -77,12 +85,28 @@ public class Notification implements Serializable {
         this.notificationPriority = notificationPriority;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getNotification() {
         return notification;
     }
 
     public void setNotification(String notification) {
         this.notification = notification;
+    }
+
+    public Set<User> getNotificationRecipients() {
+        return notificationRecipients;
+    }
+
+    public void setNotificationRecipients(Set<User> notificationRecipients) {
+        this.notificationRecipients = notificationRecipients;
     }
 
     public Date getNotificationDate() {

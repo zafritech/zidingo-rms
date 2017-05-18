@@ -8,8 +8,6 @@ package org.zafritech.zidingorms.projects;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,6 @@ import org.zafritech.zidingorms.database.repositories.ItemCategoryRepository;
 import org.zafritech.zidingorms.database.repositories.ItemRepository;
 import org.zafritech.zidingorms.database.repositories.ProjectRepository;
 import org.zafritech.zidingorms.database.repositories.UserRepository;
-import org.zafritech.zidingorms.projects.ProjectService;
 
 /**
  *
@@ -42,10 +39,7 @@ import org.zafritech.zidingorms.projects.ProjectService;
 public class ProjectServiceImpl implements ProjectService {
 
     private final static int PAGESIZE = 3;
-    
-    @PersistenceContext
-    private EntityManager em;
-
+   
     @Autowired
     private ProjectRepository projectRepository;
 
@@ -248,7 +242,7 @@ public class ProjectServiceImpl implements ProjectService {
             dao.setCategoryName(cat.getCategoryName());
             dao.setItemCount(itemRepository.findByItemCategory(cat).size()); 
             
-            // Exclude empty disciplenes/departments
+            // Exclude empty disciplines/departments
             if (dao.getItemCount() > 0) {
             
                 daos.add(dao);

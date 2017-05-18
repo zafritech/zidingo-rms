@@ -88,7 +88,7 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> getActiveTasks(User user) {
         
         List<Task> tasks = taskRepository.findByAssignedToAndCompleted(user, false);
-                
+                        
         return tasks;
     }
     
@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> findUserTasks(User user) {
 
         List<Task> tasks = taskRepository.findByAssignedTo(user);
-       
+        
         return tasks;
     }
 
