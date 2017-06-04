@@ -193,7 +193,7 @@ public class AdminServiceImpl implements AdminService {
                 
                 if (status != null && !status.isEmpty()) {
                     
-                    ItemStatus itemStatus = ItemStatus.NONE;
+                    ItemStatus itemStatus;
                     
                     switch (status) {
                         case "Closed":
@@ -256,7 +256,7 @@ public class AdminServiceImpl implements AdminService {
                 
                 if (confRequest != null && !confRequest.isEmpty() && confRequest.equals("Yes")) {
                     
-                    TaskAction action = TaskAction.NONE; 
+                    TaskAction action; 
                     String sysId = (String) excelFunctions.getExcelCellValue(row.getCell(0));
                     String status = (String) excelFunctions.getExcelCellValue(row.getCell(5));
                     String clientComment = (String) excelFunctions.getExcelCellValue(row.getCell(9));

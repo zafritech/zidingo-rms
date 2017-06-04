@@ -12,7 +12,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.zafritech.zidingorms.database.domain.Artifact;
 import org.zafritech.zidingorms.database.domain.Item;
 import org.zafritech.zidingorms.database.domain.ItemCategory;
-import org.zafritech.zidingorms.database.domain.Project;
 
 /**
  *

@@ -65,7 +65,7 @@ public class TaskController {
         model.addAttribute("total", total);
         model.addAttribute("percentage", percentage);
         
-        return "/views/item/tasks";
+        return "views/item/tasks";
     }
     
     @RequestMapping("/tasks/{uuid}")
@@ -82,6 +82,6 @@ public class TaskController {
         model.addAttribute("verification", verification);
         model.addAttribute("newLineChar", "\n");
         
-        return "/views/item/taskdetails";
+        return "views/item/taskdetails";
     }
 }

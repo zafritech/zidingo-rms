@@ -20,20 +20,23 @@ public class MonitoringController {
     public String home(Model model) {
 
         model.addAttribute("attribute", "value");
-        return "/admin/monitor/index";
+        
+        return "admin/monitor/index";
     }
 
     @RequestMapping("/admin/monitor/health")
     public String health(Model model) {
 
         model.addAttribute("health", "/health");
-        return "/admin/monitor/health";
+        
+        return "admin/monitor/health";
     }
 
     @RequestMapping("/admin/monitor/metrics")
     public String metrics(Model model) {
 
         model.addAttribute("metrics", "/metrics");
-        return "/admin/monitor/metrics";
+        
+        return "admin/monitor/metrics";
     }
 }

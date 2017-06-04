@@ -61,7 +61,7 @@ public class ProjectController {
 
         model.addAttribute("projects", projects);
 
-        return "/views/projects/index";
+        return "views/projects/index";
     }
     
     @RequestMapping("/projects/{uuid}")
@@ -76,7 +76,7 @@ public class ProjectController {
         model.addAttribute("artifacts", artifactRepository.findByArtifactProject(project));
         model.addAttribute("folder", folderRepository.findOne(folderService.getProjectFolder(project.getId()).getId())); 
 
-        return "/views/projects/project";
+        return "views/projects/project";
     }
     
     @RequestMapping("/projects/{uuid}/{folderId}")
@@ -90,7 +90,7 @@ public class ProjectController {
         model.addAttribute("artifacts", artifactRepository.findByArtifactFolder(folderRepository.findOne(folderId)));
         model.addAttribute("folder", folderRepository.findOne(folderId));
         
-        return "/views/projects/project";
+        return "views/projects/project";
     }
     
     @RequestMapping("/projects/details/{uuid}")
@@ -104,7 +104,7 @@ public class ProjectController {
         model.addAttribute("company", company);
         model.addAttribute("categories", categories);
         
-        return "/views/projects/details";
+        return "views/projects/details";
     }
     
     @RequestMapping("/projects/categories/{uuid}")
@@ -133,6 +133,6 @@ public class ProjectController {
         model.addAttribute("count", pageCount);
         model.addAttribute("last", Collections.max(pageList));
         
-        return "/views/projects/categories";
+        return "views/projects/categories";
     }
 }

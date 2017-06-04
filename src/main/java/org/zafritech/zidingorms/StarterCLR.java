@@ -6,14 +6,11 @@
 package org.zafritech.zidingorms;
 
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.zafritech.zidingorms.database.domain.Artifact;
 import org.zafritech.zidingorms.database.domain.Folder;
-import org.zafritech.zidingorms.database.domain.Item;
-import org.zafritech.zidingorms.database.domain.Project;
 import org.zafritech.zidingorms.core.loader.DataInitializer;
 import org.zafritech.zidingorms.database.repositories.ArtifactRepository;
 import org.zafritech.zidingorms.database.repositories.ArtifactTypeRepository;

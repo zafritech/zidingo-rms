@@ -17,4 +17,6 @@ import org.zafritech.zidingorms.database.domain.User;
 public interface MessageRepository extends CrudRepository<Message, Long> {
     
     List<Message> findBySentTo(User user);
+    
+    Message findByUuId(String uuid);
 }

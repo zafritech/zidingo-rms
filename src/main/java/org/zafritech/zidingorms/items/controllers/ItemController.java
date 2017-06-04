@@ -67,6 +67,6 @@ public class ItemController {
         model.addAttribute("pageList", pageList);
         model.addAttribute("lastDisplayed", Collections.max(pageList));
         
-        return "/views/item/categories";
+        return "views/item/categories";
     }
 }

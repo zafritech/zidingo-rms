@@ -9,11 +9,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.zafritech.zidingorms.core.messages.MessageService;
 import org.zafritech.zidingorms.core.user.UserService;
 import org.zafritech.zidingorms.database.domain.Message;
 import org.zafritech.zidingorms.database.domain.User;
+import org.zafritech.zidingorms.database.repositories.MessageRepository;
 
 /**
  *
@@ -27,7 +29,10 @@ public class MessageController {
  
     @Autowired
     public MessageService messageService;
-       
+  
+    @Autowired
+    private MessageRepository messageRepository;
+           
     @RequestMapping(value = {"/messages", "/messages/inbox"})
     public String messagesInbox(Model model) {
         
@@ -38,7 +43,7 @@ public class MessageController {
         model.addAttribute("user", user);
         model.addAttribute("messages", messages);
           
-        return "/views/messages/inbox";
+        return "views/messages/inbox";
     }
        
     @RequestMapping(value = {"/messages/sent"})
@@ -50,7 +55,7 @@ public class MessageController {
         model.addAttribute("user", user);
         model.addAttribute("messages", messages);
           
-        return "/views/messages/sent";
+        return "views/messages/sent";
     }
     
     @RequestMapping(value = {"/notifications", "/messages/notifications"})
@@ -60,17 +65,20 @@ public class MessageController {
         
         model.addAttribute("user", user);
         
-        return "/views/messages/notifications";
+        return "views/messages/notifications";
     }
     
     @RequestMapping("/messages/{uuid}")
-    public String readMessage(Model model) {
+    public String readMessage(@PathVariable(value = "uuid") String uuid, Model model) {
         
         User user = userService.loggedInUser();
+        Message message = messageRepository.findByUuId(uuid);
         
         model.addAttribute("user", user);
-       
-        return "/views/messages/message";
+        model.addAttribute("message", message);
+        model.addAttribute("newLineChar", "\n");
+        
+        return "views/messages/message";
     }
     
     @RequestMapping("/notifications/{uuid}")
@@ -80,7 +88,7 @@ public class MessageController {
         
         model.addAttribute("user", user);
         
-        return "/views/messages/notification";
+        return "views/messages/notification";
     }
     
     @RequestMapping("/messages/trash")
@@ -92,6 +100,6 @@ public class MessageController {
         model.addAttribute("user", user);
         model.addAttribute("messages", messages);
         
-        return "/views/messages/trash";
+        return "views/messages/trash";
     }
 }

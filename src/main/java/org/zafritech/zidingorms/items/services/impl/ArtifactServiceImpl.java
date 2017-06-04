@@ -35,6 +35,8 @@ import org.zafritech.zidingorms.database.repositories.SystemVariableRepository;
 import org.zafritech.zidingorms.io.excel.ExcelFunctions;
 import org.zafritech.zidingorms.items.services.ItemService;
 import org.zafritech.zidingorms.core.user.UserService;
+import org.zafritech.zidingorms.database.domain.VerificationReference;
+import org.zafritech.zidingorms.database.repositories.VerificationReferenceRepository;
 import org.zafritech.zidingorms.items.services.ArtifactService;
 
 @Service
@@ -54,6 +56,9 @@ public class ArtifactServiceImpl implements ArtifactService {
     
     @Autowired
     private ItemCommentRepository commentRepository;
+    
+    @Autowired
+    private VerificationReferenceRepository vrRepository;
     
     @Autowired
     private ItemService itemService;
@@ -132,7 +137,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 //            while ((i <= 501) && (i <= worksheet.getLastRowNum())) {
 
                 ItemDao itemDao = new ItemDao();
-                Item item = new Item();
+                Item item;
                 Row row = worksheet.getRow(i++);
 
                 // Item System ID
@@ -212,7 +217,6 @@ public class ArtifactServiceImpl implements ArtifactService {
     public XSSFWorkbook DownloadExcel(Long id) throws FileNotFoundException, IOException {
         
         XSSFWorkbook workbook = new XSSFWorkbook();
-//        styles = createStyles(workbook);
         styles = excelFunctions.getExcelStyles(workbook);
         
         workbook = addRequirementsToWorksheet(workbook, id);
@@ -227,12 +231,20 @@ public class ArtifactServiceImpl implements ArtifactService {
         XSSFSheet reqSheet = workbook.createSheet("Requirements");
         
         // Column Widths
-        reqSheet.setColumnWidth(0, 5000);
-        reqSheet.setColumnWidth(1, 5000);
-        reqSheet.setColumnWidth(2, 5000);
-        reqSheet.setColumnWidth(3, 25000);
-        reqSheet.setColumnWidth(4, 3000);
-        reqSheet.setColumnWidth(5, 3000);
+        reqSheet.setColumnWidth(0, 5000);       // SysId
+        reqSheet.setColumnWidth(1, 5000);       // UniqueID (requirement)
+        reqSheet.setColumnWidth(2, 3000);       // Lead (Lead department)
+        reqSheet.setColumnWidth(3, 5000);       // ItemType (HEADER/PROSE/REQUIREMENT)
+        reqSheet.setColumnWidth(4, 25000);      // Value (TEXT)
+        reqSheet.setColumnWidth(5, 4000);       // Status
+        reqSheet.setColumnWidth(6, 7000);       // VV_Method
+        reqSheet.setColumnWidth(7, 10000);      // VV_Reference
+        reqSheet.setColumnWidth(8, 10000);      // VV_Evidence
+        reqSheet.setColumnWidth(9, 15000);      // ClientComment
+        reqSheet.setColumnWidth(10, 15000);     // ContractorComment
+        reqSheet.setColumnWidth(11, 3000);      // Level
+        reqSheet.setColumnWidth(12, 3000);      // SortIndex
+        reqSheet.setColumnWidth(13, 3000);      // Confirmation Request
           
         Row headerRow = reqSheet.createRow(0);
         headerRow.setHeightInPoints(28);
@@ -245,29 +257,76 @@ public class ArtifactServiceImpl implements ArtifactService {
         cellIdent.setCellValue("UNIQUE_ID");
         cellIdent.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
         
-        Cell cellClass = headerRow.createCell(2);
+        Cell cellLead = headerRow.createCell(2);
+        cellLead.setCellValue("LEAD");
+        cellLead.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellClass = headerRow.createCell(3);
         cellClass.setCellValue("TYPE");
         cellClass.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
         
-        Cell cellValue = headerRow.createCell(3);
+        Cell cellValue = headerRow.createCell(4);
         cellValue.setCellValue("VALUE");
         cellValue.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
         
-        Cell cellLevel = headerRow.createCell(4);
+        Cell cellStatus = headerRow.createCell(5);
+        cellStatus.setCellValue("STATUS");
+        cellStatus.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellVVMethod = headerRow.createCell(6);
+        cellVVMethod.setCellValue("VV_METHOD");
+        cellVVMethod.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellVVRef = headerRow.createCell(7);
+        cellVVRef.setCellValue("VV_REF");
+        cellVVRef.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellVVEvidence = headerRow.createCell(8);
+        cellVVEvidence.setCellValue("VV_EVIDENCE");
+        cellVVEvidence.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellClientComment = headerRow.createCell(9);
+        cellClientComment.setCellValue("CLIENT_COMMENT");
+        cellClientComment.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellContractorComment = headerRow.createCell(10);
+        cellContractorComment.setCellValue("CONTRACTOR_COMMENT");
+        cellContractorComment.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
+        
+        Cell cellLevel = headerRow.createCell(11);
         cellLevel.setCellValue("LEVEL");
         cellLevel.setCellStyle((CellStyle) styles.get("HeaderCenterAlign"));
         
-        Cell cellSortIdx = headerRow.createCell(5);
+        Cell cellSortIdx = headerRow.createCell(12);
         cellSortIdx.setCellValue("INDEX");
         cellSortIdx.setCellStyle((CellStyle) styles.get("HeaderCenterAlign"));
+        
+        Cell cellRequest = headerRow.createCell(13);
+        cellRequest.setCellValue("REQUEST");
+        cellRequest.setCellStyle((CellStyle) styles.get("HeaderCenterAlign"));
         
         List<Item> items = itemRepository.findByArtifactId(id);
         
         int rowCount = 0;
         
         for (Item item : items ) {
-            
+                    
             Row row = reqSheet.createRow(++rowCount);
+            
+            String method = "";
+            String reference = "";
+            String evidence = "";
+            String status = "";
+            
+            VerificationReference verification = vrRepository.findFirstByItem(item);
+            
+            if (verification != null) {
+                
+                method = (verification.getMethod() != null) ? verification.getMethod().getMethodCode() : "";
+                reference = (verification.getVvReferences() != null) ? verification.getVvReferences() : "";
+                evidence = (verification.getVvEvidence() != null) ? verification.getVvEvidence() : "";
+                status = (verification.getVvStatus() != null) ? verification.getVvStatus().name() : "";
+            }
             
             Cell cell0 = row.createCell(0);
             if (item.getSysId() instanceof String) { cell0.setCellValue(item.getSysId()); } 
@@ -278,20 +337,56 @@ public class ArtifactServiceImpl implements ArtifactService {
             cell1.setCellStyle((CellStyle) styles.get("BodyLeftAlign"));
             
             Cell cell2 = row.createCell(2);
-            if (item.getItemClass() instanceof String) { cell2.setCellValue(item.getItemClass()); } 
+            if (item.getItemCategory() != null) {
+                if (item.getItemCategory().getCategoryCode() instanceof String) { 
+                    cell2.setCellValue(item.getItemCategory().getCategoryCode()); 
+                } else { cell2.setCellValue(""); }
+            } else { cell2.setCellValue(""); }
             cell2.setCellStyle((CellStyle) styles.get("BodyLeftAlign"));
             
             Cell cell3 = row.createCell(3);
-            if (item.getItemValue() instanceof String) { cell3.setCellValue(item.getItemValue()); } 
-            cell3.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
-                    
+            if (item.getItemClass() instanceof String) { cell3.setCellValue(item.getItemClass()); } 
+            cell3.setCellStyle((CellStyle) styles.get("BodyLeftAlign"));
+            
             Cell cell4 = row.createCell(4);
-            cell4.setCellValue(item.getItemLevel());
-            cell4.setCellStyle((CellStyle) styles.get("BodyCenterAlign"));
+            if (item.getItemValue() instanceof String) { cell4.setCellValue(item.getItemValue()); } 
+            cell4.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
             
             Cell cell5 = row.createCell(5);
-            cell5.setCellValue(item.getSortIndex());
-            cell5.setCellStyle((CellStyle) styles.get("BodyCenterAlign"));
+            if (item.getItemStatus() != null) {
+                if (item.getItemStatus().name() instanceof String) { 
+                    cell5.setCellValue(item.getItemStatus().name()); 
+                } else { cell5.setCellValue(""); }
+            } else { cell5.setCellValue(""); }
+            cell5.setCellStyle((CellStyle) styles.get("BodyLeftAlign"));
+                    
+            Cell cell6 = row.createCell(6);
+            cell6.setCellValue(method);
+            cell6.setCellStyle((CellStyle) styles.get("BodyLeftAlign"));
+                    
+            Cell cell7 = row.createCell(7);
+            cell7.setCellValue(reference);
+            cell7.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
+                    
+            Cell cell8 = row.createCell(8);
+            cell8.setCellValue(evidence);
+            cell8.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
+                    
+            Cell cell9 = row.createCell(9);
+            cell9.setCellValue(getUserItemComment("client@astad.qa", item.getId()));
+            cell9.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
+                    
+            Cell cell10 = row.createCell(10);
+            cell10.setCellValue(getUserItemComment("contractor@astad.qa", item.getId()));
+            cell10.setCellStyle((CellStyle) styles.get("BodyLeftAlignWrapText"));
+                    
+            Cell cell11 = row.createCell(11);
+            cell11.setCellValue(item.getItemLevel());
+            cell11.setCellStyle((CellStyle) styles.get("BodyCenterAlign"));
+            
+            Cell cell12 = row.createCell(12);
+            cell12.setCellValue(item.getSortIndex());
+            cell12.setCellStyle((CellStyle) styles.get("BodyCenterAlign"));
         }
         
         return workbook;
@@ -420,5 +515,12 @@ public class ArtifactServiceImpl implements ArtifactService {
         cellDate.setCellStyle((CellStyle) styles.get("HeaderLeftAlign")); 
         
         return workbook;
+    }
+    
+    private String getUserItemComment(String email, Long id) {
+        
+        ItemComment comment = commentRepository.findFirstByAuthorAndItemIdOrderByCreationDateDesc(userService.findByEmail(email), id);
+            
+        return (comment != null) ? comment.getComment() : "";
     }
 }

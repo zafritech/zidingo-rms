@@ -47,7 +47,7 @@ public class DaoToItemConverter implements Converter<ItemDao, Item> {
 
         } else {
 
-            ItemType itemType = new ItemType();
+            ItemType itemType;
 
             if (itemDao.getItemType() != null) {
 

@@ -151,7 +151,7 @@ public class AdminUserController {
         UserDao user = new UserDao();
         model.addAttribute("user", user);
 
-        return "/admin/users/new";
+        return "admin/users/new";
     }
 
     @RequestMapping(value = "/admin/users", method = RequestMethod.POST)
@@ -171,7 +171,7 @@ public class AdminUserController {
 
         if (bindingResult.hasErrors()) {
 
-            return "/admin/users/new";
+            return "admin/users/new";
         }
 
         User user = userService.saveDao(userDao);

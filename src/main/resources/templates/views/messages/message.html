@@ -19,7 +19,7 @@
                     <div><h1 class="page-header" th:text="${user.firstName} + '\'s Messages'">User's Messages</h1></div>
                 </div>
             </div>
-            
+     
             <div class="row" style="padding-top: 15px; background-color: #eaeaea; color: #676a6c;">
                 
                 <div class="col-md-3">
@@ -105,43 +105,21 @@
                             </div>
                         </div>
                         
-                        <div class="panel-body" style="border-radius: 0px;">
+                        <div class="panel-body" style="border-radius: 0px; border-top: 1px solid #eaeaea;">
                             
-                            <table th:if="${!messages.isEmpty()}" class="table table-hover" style="font-size: 12px;">
-                                <tbody>
-                                    <tr th:each="message : ${messages}">
-                                        <td style="width: 30px; text-align: left;">
-                                            <input type="checkbox" style="height: 16px; width: 16px; margin-top: -1px; cursor: pointer;" />
-                                        </td>
-                                        <td style="width: 30px;; text-align: left;">
-                                            <i class="fa fa-fw fa-star-o"></i>
-                                        </td>
-                                        <td style="width: 140px; text-align: left;">
-                                            <span th:text="${message.sender.firstName} + ' ' + ${message.sender.lastName}">Administrator</span>
-                                        </td>
-                                        <td style="text-align: left;">
-                                            <a th:href="@{'/messages/' + ${message.uuId}}">
-                                                <span th:text="${message.subject}">Message title</span>
-                                            </a>
-                                        </td>
-                                        <td style="width: 145px; text-align: left;">
-                                            <span th:text="${#dates.format(message.sentDate, 'dd MMM yyyy HH:mm:ss')}">2017-05-17 12:07:54</span>
-                                        </td>
-                                        <td style="width: 20px; text-align: right;">
-                                            <i class="fa fa-fw fa-paperclip"></i>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div th:if="${message != null}" style="margin-top: -20px;">
+                                <h3 th:text="${message.subject}">Subject</h3>
+                                <div th:utext="${#strings.replace(message.message, newLineChar, '&lt;br /&gt;')}">Message</div>
+                            </div>
                             
-                            <div th:if="${messages.isEmpty()}" style="text-align: center;">
+                            <div th:if="${message == null}" style="text-align: center;">
                                 
                                 <div class="text-center" style="color: #c0c0c0;">
                                     <i class="fa fa-inbox fa-5x"></i>
                                 </div>
 
                                 <div class="text-center" style="color: #c0c0c0;">
-                                    <h4>You have no messages in your Inbox.</h4>
+                                    <h4>The message is empty.</h4>
                                 </div>
 
                             </div>

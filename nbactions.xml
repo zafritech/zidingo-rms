@@ -6,7 +6,7 @@
                 <packaging>jar</packaging>
             </packagings>
             <goals>
-                <goal>org.springframework.boot:spring-boot-maven-plugin:1.5.1.RELEASE:run</goal>
+                <goal>org.springframework.boot:spring-boot-maven-plugin:1.5.3.RELEASE:run</goal>
             </goals>
         </action>
     </actions>

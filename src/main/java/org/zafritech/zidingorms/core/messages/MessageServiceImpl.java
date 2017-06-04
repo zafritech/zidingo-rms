@@ -88,9 +88,6 @@ public class MessageServiceImpl implements MessageService {
         
         List<Message> inbox = messageRepository.findBySentTo(user);
         
-        System.out.println("\n\r" + user);
-        System.out.println("\n\r" + inbox);
-        
         return inbox;
     }
     

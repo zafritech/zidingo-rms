@@ -72,7 +72,7 @@ public class ArtifactController {
 
         model.addAttribute("artifacts", artifacts);
 
-        return "/views/artifacts/index";
+        return "views/artifacts/index";
     }
 
     @RequestMapping("/artifacts/{id}")
@@ -102,7 +102,7 @@ public class ArtifactController {
         model.addAttribute("newLineChar", "\n");
         if (!q.isEmpty()) { model.addAttribute("q", q); }
 
-        return "/views/artifacts/artifact";
+        return "views/artifacts/artifact";
     }
 
     @RequestMapping("/artifacts/metadata/{id}")
@@ -144,7 +144,7 @@ public class ArtifactController {
         model.addAttribute("templateDigits", sysNumDigits.get(0).getVariableValue());
         model.addAttribute("reqIdDigits", reqNumDigits.get(0).getVariableValue());
 
-        return "/views/artifacts/metadata";
+        return "views/artifacts/metadata";
     }
     
     @RequestMapping("/items/links/{id}")
@@ -179,7 +179,7 @@ public class ArtifactController {
         model.addAttribute("results", searchResults);
         model.addAttribute("string", q.replace(" ", "+"));
         
-        return "/views/artifacts/search";
+        return "views/artifacts/search";
     }
     
     @RequestMapping("/artifact/search/result/{id}")
@@ -194,6 +194,6 @@ public class ArtifactController {
         
         String url = "/artifacts/" + id + "?size=" + size + "&page=" + page + queryString;
          
-          return "redirect:" + url;
+        return "redirect:" + url;
      }
 }
