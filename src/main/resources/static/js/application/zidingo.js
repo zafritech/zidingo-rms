@@ -380,7 +380,7 @@ $(document).ready(function () {
                     loadProjectTree(project.id);
 
                 },
-                erro: function () {
+                error: function () {
 
                     // Do nothing
                 }
@@ -472,7 +472,7 @@ function loadProjectTree(id) {
                                         var currFolderId = folder.id;
                                         var treeObj = $.fn.zTree.getZTreeObj("projectTree");
 
-                                        currNode = treeObj.getNodeByParam("id", currFolderId, null);
+                                        var currNode = treeObj.getNodeByParam("id", currFolderId, null);
                                         treeObj.expandNode(currNode, true, false, true);
                                     }
                                 });
@@ -546,7 +546,7 @@ function zTreeOnClick(event, treeId, treeNode, clickFlag) {
                 }
             }
         },
-        erro: function () {
+        error: function () {
             
             // Do nothing
         }
@@ -2828,7 +2828,6 @@ function BootboxPerformTaskComment(id) {
 }
 
 
-
 function itemCreateIdentTemplateChange() {
     
     var itemClass = document.getElementById('createItemClass');
@@ -2907,7 +2906,6 @@ function itemCreateIdentTemplateChange() {
         }
     });
 }
-
 
 
 function itemEditIdentTemplateChange() {

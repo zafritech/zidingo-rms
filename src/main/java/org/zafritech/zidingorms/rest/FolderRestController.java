@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.zafritech.zidingorms.database.domain.ApplicationSession;
 import org.zafritech.zidingorms.database.domain.Folder;
-import org.zafritech.zidingorms.database.domain.Project;
 import org.zafritech.zidingorms.database.repositories.FolderRepository;
 import org.zafritech.zidingorms.projects.FolderService;
 
@@ -58,7 +57,7 @@ public class FolderRestController {
     @RequestMapping(value = "/api/folders/selected", method = RequestMethod.GET)
     public ResponseEntity<Folder> getSelectedProject() {
         
-        Folder folder = new Folder();
+        Folder folder;
         
         Long folderId = appSession.getFolderId();
         

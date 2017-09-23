@@ -1,7 +1,5 @@
 package org.zafritech.zidingorms.database.domain;
 
-import org.zafritech.zidingorms.database.domain.Item;
-import org.zafritech.zidingorms.database.domain.Artifact;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;

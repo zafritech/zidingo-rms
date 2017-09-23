@@ -9,4 +9,13 @@
                 <goal>org.springframework.boot:spring-boot-maven-plugin:1.5.3.RELEASE:run</goal>
             </goals>
         </action>
+        <action>
+            <actionName>test</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>test</goal>
+            </goals>
+        </action>
     </actions>

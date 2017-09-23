@@ -28,7 +28,7 @@ public class ItemToEditDaoConverter implements Converter<Item, ItemEditDao> {
         editDao.setMediaTypes(Arrays.asList(MediaType.values())); 
         
         // List<MediaType> mediaTypes and List<SystemVariable> identPrefices 
-        // will be added by the Controller. For some reason JPA doesn't work 
+        // will be added by the Controller/Service. For some reason JPA doesn't work 
         // in this class -> returns null Exceptions.
         
         return editDao;

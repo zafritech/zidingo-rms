@@ -94,6 +94,7 @@ public class Item implements Serializable {
     }
 
     public Item() {
+    
     }
 
     public Item(String sysId,

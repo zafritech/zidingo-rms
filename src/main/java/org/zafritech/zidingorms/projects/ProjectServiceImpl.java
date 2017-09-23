@@ -91,7 +91,9 @@ public class ProjectServiceImpl implements ProjectService {
 
             if (folder.getFolderType().equals(FolderType.PROJECT.name())) {
             
-                projectTree.add(new ProjectTreeDao(folder.getId(),
+                projectTree.add(new ProjectTreeDao(
+                        
+                        folder.getId(),
                         (folder.getParent() == null) ? 0L : folder.getParent().getId(),
                         folder.getFolderName(),
                         (folder.getParent() == null),
@@ -101,7 +103,9 @@ public class ProjectServiceImpl implements ProjectService {
                 
             } else {
             
-                projectTree.add(new ProjectTreeDao(folder.getId(),
+                projectTree.add(new ProjectTreeDao(
+                        
+                        folder.getId(),
                         (folder.getParent() == null) ? 0L : folder.getParent().getId(),
                         folder.getFolderName(),
                         (folder.getParent() == null),
